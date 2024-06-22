@@ -1,0 +1,23 @@
+{
+  "name": "eleventy-plugin-podcasting",
+  "version": "1.0.0",
+  "description": "An Eleventy plugin that allows you to create and host a podcast",
+  "main": "eleventy.config.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "eleventy",
+    "eleventy-plugin",
+    "podcast",
+    "podcasting",
+    "rss"
+  ],
+  "author": "Nathan Bottomley",
+  "license": "ISC",
+  "dependencies": {
+    "@11ty/eleventy-plugin-rss": "^2.0.1",
+    "luxon": "^3.4.4"
+  }
+}

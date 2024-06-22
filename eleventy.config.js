@@ -69,7 +69,6 @@ const podcastFeedTemplate = `
 export default async function (eleventyConfig) {
   const podcastDataFile = path.join(eleventyConfig.directories.data, 'podcast.json')
   const podcastData = JSON.parse(await readFile(podcastDataFile))
-
   await eleventyConfig.addPlugin(rssPlugin, {
     posthtmlRenderOptions: {
       closingSingleTag: 'default' // opt-out of <img/>-style XHTML single tags

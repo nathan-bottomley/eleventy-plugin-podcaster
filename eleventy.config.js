@@ -69,6 +69,7 @@ const podcastFeedTemplate = `
 export default async function (eleventyConfig) {
   const podcastDataFile = path.join(eleventyConfig.directories.data, 'podcast.json')
   const podcastData = JSON.parse(await readFile(podcastDataFile))
+
   await eleventyConfig.addPlugin(rssPlugin, {
     posthtmlRenderOptions: {
       closingSingleTag: 'default' // opt-out of <img/>-style XHTML single tags
@@ -99,26 +100,6 @@ export default async function (eleventyConfig) {
       zone: 'UTC'
     })
     return result.setLocale('en-GB').toLocaleString(DateTime.DATE_HUGE)
-  })
-  eleventyConfig.addGlobalData('eleventyComputed.permalink', () => {
-    return (data) => {
-      if (data.draft && !process.env.BUILD_DRAFTS) {
-        return false
-      } else if (data.tags?.includes('post')) {
-        return `/season/${data.seasonNumber}/episode/${data.episodeNumber}/`
-      } else {
-        return data.permalink
-      }
-    }
-  })
-  eleventyConfig.addGlobalData('eleventyComputed.eleventyExcludeFromCollections', () => {
-    return (data) => {
-      if (data.draft && !process.env.BUILD_DRAFTS) {
-        return true
-      } else {
-        return data.eleventyExcludeFromCollections
-      }
-    }
   })
   eleventyConfig.addTemplate('feed.njk', podcastFeedTemplate, {
     permalink: '/feed/podcast',

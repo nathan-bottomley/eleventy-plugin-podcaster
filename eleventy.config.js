@@ -1,8 +1,7 @@
 import { readFile } from 'node:fs/promises'
+import path from 'node:path'
 import { DateTime } from 'luxon'
 import rssPlugin from '@11ty/eleventy-plugin-rss'
-
-const podcastData = JSON.parse(await readFile('./src/_data/podcast.json'))
 
 const podcastFeedTemplate = `
 <?xml version="1.0" encoding="utf-8"?>
@@ -68,6 +67,9 @@ const podcastFeedTemplate = `
 </rss>
 `
 export default async function (eleventyConfig) {
+  const podcastDataFile = path.join(eleventyConfig.directories.data, 'podcast.json')
+  const podcastData = JSON.parse(await readFile(podcastDataFile))
+  
   await eleventyConfig.addPlugin(rssPlugin, {
     posthtmlRenderOptions: {
       closingSingleTag: 'default' // opt-out of <img/>-style XHTML single tags

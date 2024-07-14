@@ -14,8 +14,8 @@ const podcastFeedTemplate = `
     <title>{{ podcast.title }}</title>
     <itunes:subtitle>{{ podcast.subtitle }}</itunes:subtitle>
     <description>{{ podcast.description }}</description>
-    <link>{{ site.url }}</link>
-    <atom:link href="{{ permalink | htmlBaseUrl(site.url) }}" rel="self" type="application/rss+xml" />
+    <link>{{ podcast.siteUrl }}</link>
+    <atom:link href="{{ permalink | htmlBaseUrl(podcast.siteUrl) }}" rel="self" type="application/rss+xml" />
     <itunes:owner>
       <itunes:name>{{ podcast.owner.name }}</itunes:name>
       <itunes:email>{{ podcast.owner.email }}</itunes:email>
@@ -24,20 +24,20 @@ const podcastFeedTemplate = `
     <itunes:category text="{{ podcast.category }}">
       <itunes:category text="{{ podcast.subcategory }}" />
     </itunes:category>
-    <itunes:image href="{{ podcast.imagePath | htmlBaseUrl(site.url) }}"></itunes:image>
+    <itunes:image href="{{ podcast.imagePath | htmlBaseUrl(podcast.siteUrl) }}"></itunes:image>
     <itunes:explicit>{{ podcast.explicit }}</itunes:explicit>
     {% if podcast.type %}
     <itunes:type>{{ podcast.type }}</itunes:type>
     {% endif %}
     <language>{{ podcast.language }}</language>
-    <copyright>{% copyright %}</copyright>
+    <copyright>{{ podcast.copyrightNotice }}</copyright>
     <pubDate>{{ collections.post | getNewestCollectionItemDate | dateToRfc3339 }}</pubDate>
     <lastBuildDate>{% feedLastBuildDate %}</lastBuildDate>
     <generator>{{ eleventy.generator }}</generator>
     {% asyncEach post in collections.post | reverse %}
     <item>
       <title>{{ post.data.title }}</title>
-      <link>{{ post.url | htmlBaseUrl(site.url) }}</link>
+      <link>{{ post.url | htmlBaseUrl(podcast.siteUrl) }}</link>
       <pubDate>{{ post.date | dateToRfc3339 }}</pubDate>
       {% if post.data.seasonNumber -%}
       <itunes:season>{{ post.data.seasonNumber }}</itunes:season>
@@ -48,12 +48,12 @@ const podcastFeedTemplate = `
       <content:encoded>
         <![CDATA[{% include "feed-episode.njk" -%}]]>
       </content:encoded>
-      <enclosure url="{% episodeUrl post.data.episodeFile %}" length="{{ post.data.episodeSize }}" type="audio/mp3"></enclosure>
+      <enclosure url="{{ post.data.episodeUrl }}" length="{{ post.data.episodeSize }}" type="audio/mp3"></enclosure>
       <itunes:duration>{{ post.data.episodeDuration }}</itunes:duration>
       {%- if post.data.guid != undefined %}
       <guid isPermalink="false">{{ post.data.guid }}</guid>
       {% else %}
-      <guid isPermalink="true">{{ post.url | htmlBaseUrl(site.url) }}</guid>
+      <guid isPermalink="true">{{ post.url | htmlBaseUrl(podcast.siteUrl) }}</guid>
       {% endif -%}
       {%- if post.data.explicit != undefined %}
       <itunes:explicit>{{ post.data.explicit }}</itunes:explicit>
@@ -66,30 +66,33 @@ const podcastFeedTemplate = `
   </channel>
 </rss>
 `
-export default async function (eleventyConfig) {
-  const podcastDataFile = path.join(eleventyConfig.directories.data, 'podcast.json')
-  const podcastData = JSON.parse(await readFile(podcastDataFile))
-
-  await eleventyConfig.addPlugin(rssPlugin, {
+export default function (eleventyConfig) {
+  eleventyConfig.addPlugin(rssPlugin, {
     posthtmlRenderOptions: {
       closingSingleTag: 'default' // opt-out of <img/>-style XHTML single tags
     }
   })
-  eleventyConfig.addShortcode('copyright', () => {
-    const startingYear = podcastData.startingYear
-    const currentYear = DateTime.now().year
-    if (startingYear === currentYear) {
-      return `© ${startingYear} ${podcastData.copyright}`
-    } else {
-      return `© ${startingYear}–${currentYear} ${podcastData.copyright}`
+  eleventyConfig.addGlobalData('eleventyComputed.podcast.copyrightNotice', () => {
+    return data => {
+      const thisYear = DateTime.now().year
+      let yearRange
+      if (!data.podcast.startingYear || data.podcast.startingYear === thisYear) {
+        yearRange = thisYear
+      } else {
+        yearRange = `${data.podcast.startingYear}–${thisYear}`
+      }
+      return `© ${yearRange} ${data.podcast.copyright}`
     }
   })
+
   eleventyConfig.addShortcode('feedLastBuildDate', () =>
     DateTime.now().toRFC2822()
   )
-  eleventyConfig.addShortcode('episodeUrl', function (filename) {
-    const episodePrefix = podcastData.episodePrefix
-    return encodeURI(`${episodePrefix}${filename}`)
+  eleventyConfig.addGlobalData('eleventyComputed.episodeUrl', function (filename) {
+    return data => {
+      const episodePrefix = data.podcast.episodePrefix
+      return encodeURI(`${episodePrefix}${data.episodeFilename}`)
+    }
   })
   eleventyConfig.addShortcode('year', () => DateTime.now().year)
   eleventyConfig.addFilter('readableDate', function (date) {

@@ -1,5 +1,3 @@
-import { readFile } from 'node:fs/promises'
-import path from 'node:path'
 import { DateTime } from 'luxon'
 import rssPlugin from '@11ty/eleventy-plugin-rss'
 
@@ -25,10 +23,10 @@ const podcastFeedTemplate = `
       <itunes:category text="{{ podcast.subcategory }}" />
     </itunes:category>
     <itunes:image href="{{ podcast.imagePath | htmlBaseUrl(podcast.siteUrl) }}"></itunes:image>
-    <itunes:explicit>{{ podcast.explicit }}</itunes:explicit>
-    {% if podcast.type %}
-    <itunes:type>{{ podcast.type }}</itunes:type>
-    {% endif %}
+    <itunes:summary>{{ podcast.summary }}</itunes:summary>
+    <itunes:explicit>{{ podcast.explicit or "no" }}</itunes:explicit>
+    <itunes:type>{{ podcast.type or "episodic" }}</itunes:type>
+    <itunes:complete>{{ podcast.complete or "no" }}</itunes:complete>
     <language>{{ podcast.language }}</language>
     <copyright>{{ podcast.copyrightNotice }}</copyright>
     <pubDate>{{ collections.post | getNewestCollectionItemDate | dateToRfc3339 }}</pubDate>
@@ -67,6 +65,10 @@ const podcastFeedTemplate = `
 </rss>
 `
 export default function (eleventyConfig) {
+  if (!('addTemplate' in eleventyConfig)) {
+    console.log('[eleventy-plugin-podcasting] WARN Eleventy plugin compatibility: Virtual Templates are required for this plugin — please use Eleventy v3.0 or newer.')
+  }
+
   eleventyConfig.addPlugin(rssPlugin, {
     posthtmlRenderOptions: {
       closingSingleTag: 'default' // opt-out of <img/>-style XHTML single tags

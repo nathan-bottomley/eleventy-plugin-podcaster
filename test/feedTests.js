@@ -9,6 +9,7 @@ test('feed tests run', t => {
 
 test('RSS feed template renders', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(podcastingPlugin)
     }
@@ -20,6 +21,7 @@ test('RSS feed template renders', async t => {
 
 test('RSS feed contains correct information', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(podcastingPlugin)
       eleventyConfig.addGlobalData('podcast', {
@@ -45,6 +47,7 @@ test('RSS feed contains correct information', async t => {
 
 test('RSS feed is valid XML', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(podcastingPlugin)
     }
@@ -57,6 +60,7 @@ test('RSS feed is valid XML', async t => {
 
 test('<itunes:type> defaults to episodic', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(podcastingPlugin)
     }
@@ -69,6 +73,7 @@ test('<itunes:type> defaults to episodic', async t => {
 
 test('<itunes:type> can be set to serial', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(podcastingPlugin)
       eleventyConfig.addGlobalData('podcast', { type: 'serial' })
@@ -82,6 +87,7 @@ test('<itunes:type> can be set to serial', async t => {
 
 test('<itunes:explicit> defaults to not existing', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(podcastingPlugin)
     }
@@ -94,6 +100,7 @@ test('<itunes:explicit> defaults to not existing', async t => {
 
 test('<itunes:explicit> can be set to true', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(podcastingPlugin)
       eleventyConfig.addGlobalData('podcast', { explicit: true })
@@ -107,6 +114,7 @@ test('<itunes:explicit> can be set to true', async t => {
 
 test('<itunes:explicit> can be set to false', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(podcastingPlugin)
       eleventyConfig.addGlobalData('podcast', { explicit: false })

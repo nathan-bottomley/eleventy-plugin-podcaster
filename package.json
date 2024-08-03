@@ -2,12 +2,9 @@
   "name": "eleventy-plugin-podcasting",
   "version": "1.0.0",
   "description": "An Eleventy plugin that allows you to create and host a podcast",
-  "main": "eleventy-plugin-podcasting.js",
+  "main": "eleventy.config.js",
   "exports": {
-    ".": {
-      "import": "./eleventy-plugin-podcasting.js",
-      "require": "./eleventy-plugin-podcasting.js"
-    }
+    ".": "./eleventy.config.js"
   },
   "type": "module",
   "scripts": {

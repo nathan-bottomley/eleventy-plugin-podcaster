@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon'
 import rssPlugin from '@11ty/eleventy-plugin-rss'
 import { readFileSync } from 'node:fs'
+import path from 'node:path'
 
 export default function (eleventyConfig) {
   if (!('addTemplate' in eleventyConfig)) {
@@ -48,7 +49,9 @@ export default function (eleventyConfig) {
     return result.setLocale('en-GB').toLocaleString(DateTime.DATE_HUGE)
   })
 
-  eleventyConfig.addTemplate('feed.njk', readFileSync('./src/podcastFeed.njk'), {
+  const podcastFeedPath = path.join(import.meta.dirname, './src/podcastFeed.njk')
+
+  eleventyConfig.addTemplate('feed.njk', readFileSync(podcastFeedPath), {
     permalink: '/feed/podcast',
     eleventyExcludeFromCollections: true,
     eleventyImport: {

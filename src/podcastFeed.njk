@@ -1,3 +1,6 @@
+---
+permalink: "{{ podcast.feedPath or '/feed/podcast.xml' }}"
+---
 <?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0" 
   xmlns:atom="http://www.w3.org/2005/Atom"
@@ -9,7 +12,7 @@
     <itunes:subtitle>{{ podcast.subtitle }}</itunes:subtitle>
     <description>{{ podcast.description }}</description>
     <link>{{ podcast.siteUrl }}</link>
-    <atom:link href="{{ permalink | htmlBaseUrl(podcast.siteUrl) }}" rel="self" type="application/rss+xml" />
+    <atom:link href="{{ podcast.feedPath or '/feed/podcast.xml' | htmlBaseUrl(podcast.siteUrl) }}" rel="self" type="application/rss+xml" />
     <itunes:owner>
       <itunes:name>{{ podcast.owner.name }}</itunes:name>
       <itunes:email>{{ podcast.owner.email }}</itunes:email>
@@ -18,7 +21,7 @@
     <itunes:category text="{{ podcast.category }}">
       <itunes:category text="{{ podcast.subcategory }}" />
     </itunes:category>
-    <itunes:image href="{{ podcast.imagePath | htmlBaseUrl(podcast.siteUrl) }}"></itunes:image>
+    <itunes:image href="{{ podcast.imagePath or '/img/podcast-logo.jpg' | htmlBaseUrl(podcast.siteUrl) }}"></itunes:image>
     <itunes:summary>{{ podcast.summary }}</itunes:summary>
     {% if podcast.explicit !== undefined %}<itunes:explicit>{{ podcast.explicit or "false" }}</itunes:explicit>{% endif -%}
     <itunes:type>{{ podcast.type or "episodic" }}</itunes:type>

@@ -20,12 +20,13 @@ Here's how you provide those things in your site.
 
 ### Providing information about your podcast
 
-The important information about your podcast — the title, the owner, the category, the subcategory and so on — should be made available in a `podcast` object in the data cascade. The easiest way to do this is to put all the information in your data directory in a `podcast.json` file.
+The important information about your podcast — the title, the owner, the category, the subcategory and so on — should be made available as fields in a `podcast` object in the data cascade. The easiest way to do this is to put all the information in your data directory in a `podcast.json` file, like this:
 
-```json
-# podcast.json
+```jsonc
+// podcast.json
 
 {
+  "feedPath": "/podcast.xml",
   "title": "Flight Through Entirety: A Doctor Who Podcast",
   "subtitle": "Flying through the entirety of Doctor Who. Originally with cake,but now with guests.", 
   "description": "Flying through the entirety of Doctor Who. Originally with cake,but now with guests.",
@@ -35,7 +36,7 @@ The important information about your podcast — the title, the owner, the cate
     "email": "nathan.bottomley@example.com"
   },
   "author": "Flight Through Entirety",
-  "category": "TV & Film (# TODO: make sure this works without &amp;)",
+  "category": "TV & Film",
   "subcategory": "TV Reviews",
   "summary": "Flying through the entirety of Doctor Who. Originally with cake,but now with guests.",
   "imagePath": "/assets/images/podcast-logo.jpg",
@@ -43,13 +44,13 @@ The important information about your podcast — the title, the owner, the cate
   "type": "episodic",
   "complete": "no",
   "language": "en-AU",
+  "copyright": "Flight Through Entirety",
   "startingYear": 2014
 }
 ```
 
-> Explanations of all of the fields here can be found on [Apple's page about podcast feed tags](https://help.apple.com/itc/podcasts_connect/#/itcb54353390). A list of podcast categories and subcategories [can be found here](https://podcasters.apple.com/support/1691-apple-podcasts-categories).
-
-You will also need to provide your podcast artwork, which should be a JPEG file 3000 × 3000 pixels in size. `jekyll-podcast` will expect to find this file at `/assets/images/podcast-logo.jpeg`.
+> [!NOTE]
+> You can find more information about what all of this information is and how it means here: [Information about your podcast](podcast-information.md).
 
 ### Providing information about your podcast episodes
 

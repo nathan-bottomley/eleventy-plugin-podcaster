@@ -52,7 +52,6 @@ export default function (eleventyConfig) {
   const podcastFeedPath = path.join(import.meta.dirname, './src/podcastFeed.njk')
 
   eleventyConfig.addTemplate('feed.njk', readFileSync(podcastFeedPath), {
-    permalink: '/feed/podcast',
     eleventyExcludeFromCollections: true,
     eleventyImport: {
       collections: ['post']

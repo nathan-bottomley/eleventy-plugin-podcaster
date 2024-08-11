@@ -30,7 +30,7 @@ To create a podcast feed, you need these three things:
 
 1. Information about your podcast
 2. Information about the individual episodes
-3. The episodes themselves
+3. The episode audio files
 
 Here's how you provide those things in your site.
 
@@ -42,8 +42,8 @@ The important information about your podcast — the title, the owner, the cate
 {
   "feedPath": "/podcast.xml",
   "title": "Flight Through Entirety: A Doctor Who Podcast",
-  "subtitle": "Flying through the entirety of Doctor Who. Originally with cake,but now with guests.", 
-  "description": "Flying through the entirety of Doctor Who. Originally with cake,but now with guests.",
+  "subtitle": "Flying through the entirety of Doctor Who. Originally with cake, but now with guests.", 
+  "description": "Flying through the entirety of Doctor Who. Originally with cake, but now with guests.",
   "siteUrl": "https://flightthroughentirety.com",
   "owner": {
     "name": "Nathan Bottomley",

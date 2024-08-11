@@ -14,6 +14,20 @@ export default function (eleventyConfig) {
     }
   })
 
+  // feed defaults
+
+  eleventyConfig.addGlobalData('eleventyComputed.podcast.feedPath', () => {
+    return data => data.podcast.feedPath || '/feed/podcast.xml'
+  })
+
+  eleventyConfig.addGlobalData('eleventyComputed.podcast.imagePath', () => {
+    return data => data.podcast.imagePath || '/img/podcast-logo.jpg'
+  })
+
+  eleventyConfig.addGlobalData('eleventyComputed.podcast.type', () => {
+    return data => data.podcast.type || 'episodic'
+  })
+
   eleventyConfig.addGlobalData('eleventyComputed.podcast.copyrightNotice', () => {
     return data => {
       const thisYear = DateTime.now().year

@@ -1,24 +1,24 @@
-# eleventy-plugin-podcasting 🕚⚡️🎈🐀🎤📲
+# eleventy-plugin-podcaster 🕚⚡️🎈🐀🎤📲
 
-`eleventy-plugin-podcasting` converts an Eleventy blog into a podcast site. It provides you with all the functionality you need to make your podcast fully accessible from your site, and it creates a podcast feed which you can submit to Apple Podcasts, Spotify or any other podcast directory.
+`eleventy-plugin-podcaster` converts an Eleventy blog into a podcast site. It provides you with all the functionality you need to make your podcast fully accessible from your site, and it creates a podcast feed which you can submit to Apple Podcasts, Spotify or any other podcast directory.
 
 ## Installation
 
 To install the npm package, type this at the command-line:
 
 ```shell
-npm install eleventy-plugin-podcasting
+npm install eleventy-plugin-podcaster
 ```
 
 And then include the plugin in your Eleventy configuration file.
 
 ```js
-import podcastingPlugin from 'eleventy-plugin-podcasting'
+import podcasterPlugin from 'eleventy-plugin-podcaster'
 
 export default function (eleventyConfig) {
   .
   .
-  eleventyConfig.addPlugin(podcastingPlugin)
+  eleventyConfig.addPlugin(podcasterPlugin)
   .
   .
 }

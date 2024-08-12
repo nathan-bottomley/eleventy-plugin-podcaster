@@ -1,5 +1,5 @@
 {
-  "name": "eleventy-plugin-podcasting",
+  "name": "eleventy-plugin-podcaster",
   "version": "1.0.0",
   "description": "An Eleventy plugin that allows you to create and host a podcast",
   "main": "eleventy.config.js",
@@ -24,7 +24,7 @@
     "luxon": "^3.4.4"
   },
   "devDependencies": {
-    "@11ty/eleventy": "^3.0.0-alpha.16",
+    "@11ty/eleventy": "^3.0.0-beta.1",
     "ava": "^6.1.3",
     "eslint": "^8.57.0",
     "eslint-config-standard": "^17.1.0",

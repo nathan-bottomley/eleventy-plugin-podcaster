@@ -30,7 +30,7 @@ Here's a detailed description of the data you need to provide here.
 | `episode.seasonNumber` | no | The optional season number. (Most podcasts don't group their episodes into seasons.) |
 | `episode.episodeNumber` | yes | The episode number. Needn't be unique, but the combination of `seasonNumber` and `episodeNumber` should be unique. |
 | `episode.size` | yes | The size of the episode's audio file in bytes. |
-| `episode.duration` | yes | The duration of the episode in `mm:ss` or `h:mm:ss` format. (Apple Podcasts recommends that the duration should be specified in seconds, but as far as I can tell, no one actually does this.)
+| `episode.duration` | yes | The duration of the episode in `mm:ss` or `h:mm:ss` format. (Apple Podcasts recommends that the duration should be specified in seconds, but as far as I can tell, no one actually does this.) |
 | `episode.explicit` | no |  Warns listeners that this episode contains explicit language. Optional. <!--- TODO: Find out how Apple Podcast behaves here --> |
  | `episode.type` | no | An optional type for your episode. Can be `full` (the default if omitted), meaning a full episode of your podcast. Other valid types are `trailer` and `bonus`. |
 

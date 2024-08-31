@@ -2,9 +2,9 @@
 permalink: "{{ podcast.feedPath or '/feed/podcast.xml' }}"
 ---
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" 
+<rss version="2.0"
   xmlns:atom="http://www.w3.org/2005/Atom"
-  xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" 
+  xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd"
   xmlns:content="http://purl.org/rss/1.0/modules/content/"
   >
   <channel>
@@ -13,10 +13,12 @@ permalink: "{{ podcast.feedPath or '/feed/podcast.xml' }}"
     <description>{{ podcast.description }}</description>
     <link>{{ podcast.siteUrl }}</link>
     <atom:link href="{{ podcast.feedPath | htmlBaseUrl(podcast.siteUrl) }}" rel="self" type="application/rss+xml" />
+    {%- if podcast.owner %}
     <itunes:owner>
       <itunes:name>{{ podcast.owner.name }}</itunes:name>
       <itunes:email>{{ podcast.owner.email }}</itunes:email>
     </itunes:owner>
+    {%- endif %}
     <itunes:author>{{ podcast.author }}</itunes:author>
     <itunes:category text="{{ podcast.category }}">
       <itunes:category text="{{ podcast.subcategory }}" />
@@ -28,10 +30,10 @@ permalink: "{{ podcast.feedPath or '/feed/podcast.xml' }}"
     <itunes:complete>{{ podcast.complete or "no" }}</itunes:complete>
     <language>{{ podcast.language }}</language>
     <copyright>{{ podcast.copyrightNotice }}</copyright>
-    <pubDate>{{ collections.post | getNewestCollectionItemDate | dateToRfc3339 }}</pubDate>
+    <pubDate>{{ collections.podcastEpisode | getNewestCollectionItemDate | dateToRfc3339 }}</pubDate>
     <lastBuildDate>{% feedLastBuildDate %}</lastBuildDate>
     <generator>{{ eleventy.generator }}</generator>
-    {% asyncEach post in collections.post | reverse %}
+    {% asyncEach post in collections.podcastEpisode | reverse %}
     <item>
       <title>{{ post.data.title }}</title>
       <link>{{ post.url | htmlBaseUrl(podcast.siteUrl) }}</link>
@@ -55,7 +57,7 @@ permalink: "{{ podcast.feedPath or '/feed/podcast.xml' }}"
       {%- if post.data.explicit != undefined %}
       <itunes:explicit>{{ post.data.explicit }}</itunes:explicit>
       {% endif -%}
-      {%- if post.data.episodeType != undefined %}
+      {%- if post.data.type != undefined %}
       <itunes:episodeType>{{ post.data.episodeType }}</itunes:episodeType>
       {% endif -%}
     </item>

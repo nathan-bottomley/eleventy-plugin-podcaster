@@ -18,6 +18,7 @@ The important information about your podcast — the title, the owner, the cate
   "subcategory": "TV Reviews",
   "summary": "Flying through the entirety of Doctor Who. Originally with cake,but now with guests.",
   "imagePath": "/assets/images/podcast-logo.jpg",
+  "episodeUrlPrefix": "https://example.fte-cdn.com/",
   "explicit": false,
   "type": "episodic",
   "complete": "no",
@@ -35,16 +36,21 @@ Here's a detailed description of the data you need to provide here.
 | `title` | The title of your podcast. |
 | `subtitle` | A short description of your podcast. The most popular podcast applications don't display this information, so it's probably safe to make this the same as the `description` field. |
 | `description` | A short description of your podcast. The most popular podcast applications prominently display this information. |
-| `siteUrl` | The URL of your podcast website. The most popular podcast applications use this to provide a link to your website. It's also used by the plugin to convert relative links to absolute links in your feed. |
+| `siteUrl` | The URL of your podcast website. The most popular podcast applications use this to provide a link to your website. It's also used by this plugin to convert relative links to absolute links in your feed. |
 | `owner.name` | The person responsible for the podcast. Required by podcasting directories. |
 | `owner.email` | An email address where the `owner` can be contacted. Also required by podcasting directories. |
 | `author` | The creator or creators of the podcast. The most popular podcast applications prominently display this information. |
-| `category` and `subcategory` | The topical category and subcategory for the podcast. These are described in detail in [this Apple support document](https://podcasters.apple.com/support/1691-apple-podcasts-categories). Used by podcast directories to help listeners find the podcast. |
+| `category` and `subcategory` | The category and subcategory for the podcast. These are described in detail in [this Apple support document](https://podcasters.apple.com/support/1691-apple-podcasts-categories). Used by podcast directories to help listeners find the podcast. |
 | `summary` | A short description of your podcast. The most popular podcast applications don't display this information, so it's probably safe to make this the same as the `description` field. |
 | `imagePath` | The path to your podcast logo, which should be a JPEG or PNG file 3000 × 3000 pixels in size. (You can find more detailed specifications in [this Apple support document](https://podcasters.apple.com/support/896-artwork-requirements#shows)). Defaults to `/img/podcast-logo.jpg`. |
-| `explicit` | Warns listeners that your podcast contains explicit language. In Apple Podcasts, if you include this with the value `true`, your podcast and its episodes will be badged with an 🄴 to indicate that they use explicit language. Many of the most popular podcast applications ignore this field. |
+| `explicit` | Warns listeners that your podcast contains explicit language. In Apple Podcasts, if you include this with the value `true`, your podcast and its episodes will be badged with an 🄴 to indicate that they use explicit language. Some of the most popular podcast applications ignore this field. |
 | `type` | Two possible values: `episodic` and `serial`. Defaults to `episodic`, which means that the podcast can be listened to in no particular order. Narrative podcasts (like _Serial_) should be marked as `serial`. |
 | `complete` | Indicates that a podcast is complete and that no new episodes should be expected, in which case it should have the value `true`. Should be omitted otherwise. |
+| `language` | A code that specifies the language of the feed (rather than the podcast). You can find [a list of permissible codes][lang] at the RSS Advisory Board's website. |
+| `copyright` | An optional field specifying who has the copyright on the podcast. If omitted, the value supplied for `author` is used instead. |
+| `startingYear` | The year your podcast started. Used to express the copyright date as a range (_"© 2014–2024 Flight Through Entirety"_). It's optional: if it's omitted, the copyright date will just be the current year. |
+
+[lang]: https://www.rssboard.org/rss-language-codes
 
 ## Using podcast data in your templates
 

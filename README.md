@@ -93,7 +93,7 @@ episode:
 The episodes themselves will be audio files — MP3s, usually — contained in an  `/episodes` folder at the top level of your project.
 
 > [!WARNING]
-> Podcast episode files tend to be large, too large to commit to your repository. This isn't an insurmountable problem. You find out how to solve it here: [The episodes themselves](episodes.md).
+> Podcast episode files tend to be large, too large to commit to your repository. This isn't an insurmountable problem. You find out how to deal with it here: [The episodes themselves](episodes.md).
 
 ### `eleventy-plugin-podcast` in action
 

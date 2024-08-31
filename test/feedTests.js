@@ -1,6 +1,6 @@
 import test from 'ava'
 import Eleventy from '@11ty/eleventy'
-import podcastingPlugin from 'eleventy-plugin-podcasting'
+import podcasterPlugin from 'eleventy-plugin-podcaster'
 import { XMLParser, XMLValidator } from 'fast-xml-parser'
 
 test('feed tests run', t => {
@@ -11,7 +11,7 @@ test('RSS feed template renders', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcastingPlugin)
+      eleventyConfig.addPlugin(podcasterPlugin)
     }
   })
   const build = await eleventy.toJSON()
@@ -23,7 +23,7 @@ test('RSS feed is valid XML', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcastingPlugin)
+      eleventyConfig.addPlugin(podcasterPlugin)
     }
   })
   const build = await eleventy.toJSON()
@@ -36,7 +36,7 @@ test('feed renders at /feed/podcast.xml by default', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcastingPlugin)
+      eleventyConfig.addPlugin(podcasterPlugin)
     }
   })
   const build = await eleventy.toJSON()
@@ -47,7 +47,7 @@ test('feed renders at podcast.feedPath if set', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcastingPlugin)
+      eleventyConfig.addPlugin(podcasterPlugin)
       eleventyConfig.addGlobalData('podcast', { feedPath: '/feed.xml' })
     }
   })
@@ -59,7 +59,7 @@ test('RSS feed contains correct information', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcastingPlugin)
+      eleventyConfig.addPlugin(podcasterPlugin)
       eleventyConfig.addGlobalData('podcast', {
         title: 'Test Podcast',
         subtitle: 'A test podcast. With cake.',
@@ -79,7 +79,6 @@ test('RSS feed contains correct information', async t => {
   })
   const build = await eleventy.toJSON()
   const parser = new XMLParser({ ignoreAttributes: false })
-  console.log(build[0].content)
   const feedData = parser.parse(build[0].content)
   t.like(feedData, {
     rss: {
@@ -116,7 +115,7 @@ test('<itunes:type> defaults to episodic', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcastingPlugin)
+      eleventyConfig.addPlugin(podcasterPlugin)
     }
   })
   const build = await eleventy.toJSON()
@@ -129,7 +128,7 @@ test('<itunes:type> can be set to serial', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcastingPlugin)
+      eleventyConfig.addPlugin(podcasterPlugin)
       eleventyConfig.addGlobalData('podcast', { type: 'serial' })
     }
   })
@@ -143,7 +142,7 @@ test('<itunes:explicit> defaults to not existing', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcastingPlugin)
+      eleventyConfig.addPlugin(podcasterPlugin)
     }
   })
   const build = await eleventy.toJSON()
@@ -156,7 +155,7 @@ test('<itunes:explicit> can be set to true', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcastingPlugin)
+      eleventyConfig.addPlugin(podcasterPlugin)
       eleventyConfig.addGlobalData('podcast', { explicit: true })
     }
   })
@@ -170,7 +169,7 @@ test('<itunes:explicit> can be set to false', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcastingPlugin)
+      eleventyConfig.addPlugin(podcasterPlugin)
       eleventyConfig.addGlobalData('podcast', { explicit: false })
     }
   })
@@ -178,4 +177,64 @@ test('<itunes:explicit> can be set to false', async t => {
   const parser = new XMLParser()
   const feedData = parser.parse(build[0].content)
   t.like(feedData, { rss: { channel: { 'itunes:explicit': false } } })
+})
+
+test('copyright defaults to author name', async t => {
+  const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
+    config (eleventyConfig) {
+      eleventyConfig.addPlugin(podcasterPlugin)
+      eleventyConfig.addGlobalData('podcast', { author: 'Test Author' })
+    }
+  })
+  const build = await eleventy.toJSON()
+  const parser = new XMLParser()
+  const year = new Date().getFullYear()
+  const feedData = parser.parse(build[0].content)
+  t.like(feedData, { rss: { channel: { copyright: `© ${year} Test Author` } } })
+})
+
+test('copyright can be set to a range with startingYear', async t => {
+  const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
+    config (eleventyConfig) {
+      eleventyConfig.addPlugin(podcasterPlugin)
+      eleventyConfig.addGlobalData('podcast', { copyright: 'Test Copyright', startingYear: 2020 })
+    }
+  })
+  const build = await eleventy.toJSON()
+  const parser = new XMLParser()
+  const year = new Date().getFullYear()
+  const feedData = parser.parse(build[0].content)
+  t.like(feedData, { rss: { channel: { copyright: `© 2020–${year} Test Copyright` } } })
+})
+
+test("copyright isn't expressed as a range when startingYear is this year", async t => {
+  const year = new Date().getFullYear()
+  const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
+    config (eleventyConfig) {
+      eleventyConfig.addPlugin(podcasterPlugin)
+      eleventyConfig.addGlobalData('podcast', { copyright: 'Test Copyright', startingYear: year })
+    }
+  })
+  const build = await eleventy.toJSON()
+  const parser = new XMLParser()
+  const feedData = parser.parse(build[0].content)
+  t.like(feedData, { rss: { channel: { copyright: `© ${year} Test Copyright` } } })
+})
+
+test('feedLastBuildDate is set to the current date and time in RFC2822 format', async t => {
+  const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
+    config (eleventyConfig) {
+      eleventyConfig.addPlugin(podcasterPlugin)
+    }
+  })
+  const build = await eleventy.toJSON()
+  const parser = new XMLParser()
+  const feedData = parser.parse(build[0].content)
+  const lastBuildDate = new Date(feedData.rss.channel.lastBuildDate)
+  t.true(lastBuildDate instanceof Date)
+  t.true(!isNaN(lastBuildDate))
 })

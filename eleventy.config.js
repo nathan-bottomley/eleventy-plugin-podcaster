@@ -37,7 +37,7 @@ export default function (eleventyConfig) {
       } else {
         yearRange = `${data.podcast.startingYear}–${thisYear}`
       }
-      return `© ${yearRange} ${data.podcast.copyright}`
+      return `© ${yearRange} ${data.podcast.copyright || data.podcast.author}`
     }
   })
 

@@ -111,6 +111,29 @@ test('RSS feed contains correct information', async t => {
   })
 })
 
+test('<itunes:category> works if no subcategory is set', async t => {
+  const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
+    config (eleventyConfig) {
+      eleventyConfig.addPlugin(podcasterPlugin)
+      eleventyConfig.addGlobalData('podcast', {
+        category: 'TV & Film'
+      })
+    }
+  })
+  const build = await eleventy.toJSON()
+  const parser = new XMLParser({ ignoreAttributes: false })
+  t.like(parser.parse(build[0].content), {
+    rss: {
+      channel: {
+        'itunes:category': {
+          '@_text': 'TV & Film'
+        }
+      }
+    }
+  })
+})
+
 test('<itunes:type> defaults to episodic', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,

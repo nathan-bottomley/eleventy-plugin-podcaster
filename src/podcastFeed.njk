@@ -20,9 +20,13 @@ permalink: "{{ podcast.feedPath or '/feed/podcast.xml' }}"
     </itunes:owner>
     {%- endif %}
     <itunes:author>{{ podcast.author }}</itunes:author>
+    {%- if podcast.subcategory %}
     <itunes:category text="{{ podcast.category }}">
       <itunes:category text="{{ podcast.subcategory }}" />
     </itunes:category>
+    {%- else %}
+    <itunes:category text="{{ podcast.category }}" />
+    {%- endif %}
     <itunes:image href="{{ podcast.imagePath | htmlBaseUrl(podcast.siteUrl) }}"></itunes:image>
     <itunes:summary>{{ podcast.summary }}</itunes:summary>
     {% if podcast.explicit !== undefined %}<itunes:explicit>{{ podcast.explicit or "false" }}</itunes:explicit>{% endif -%}

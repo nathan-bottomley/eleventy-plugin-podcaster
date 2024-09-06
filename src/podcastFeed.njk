@@ -9,7 +9,7 @@ permalink: "{{ podcast.feedPath or '/feed/podcast.xml' }}"
   >
   <channel>
     <title>{{ podcast.title }}</title>
-    <itunes:subtitle>{{ podcast.subtitle }}</itunes:subtitle>
+    <itunes:subtitle>{{ podcast.subtitle or podcast.description }}</itunes:subtitle>
     <description>{{ podcast.description }}</description>
     <link>{{ podcast.siteUrl }}</link>
     <atom:link href="{{ podcast.feedPath | htmlBaseUrl(podcast.siteUrl) }}" rel="self" type="application/rss+xml" />
@@ -28,16 +28,20 @@ permalink: "{{ podcast.feedPath or '/feed/podcast.xml' }}"
     <itunes:category text="{{ podcast.category }}" />
     {%- endif %}
     <itunes:image href="{{ podcast.imagePath | htmlBaseUrl(podcast.siteUrl) }}"></itunes:image>
-    <itunes:summary>{{ podcast.summary }}</itunes:summary>
+    <itunes:summary>{{ podcast.summary or podcast.description }}</itunes:summary>
     {% if podcast.explicit !== undefined %}<itunes:explicit>{{ podcast.explicit or "false" }}</itunes:explicit>{% endif -%}
+    {%- if podcast.type %}
     <itunes:type>{{ podcast.type }}</itunes:type>
-    <itunes:complete>{{ podcast.complete or "no" }}</itunes:complete>
+    {%- endif %}
+    {%- if podcast.complete %}
+    <itunes:complete>yes</itunes:complete>
+    {%- endif %}
     <language>{{ podcast.language }}</language>
     <copyright>{{ podcast.copyrightNotice }}</copyright>
     <pubDate>{{ collections.podcastEpisode | getNewestCollectionItemDate | dateToRfc3339 }}</pubDate>
     <lastBuildDate>{% feedLastBuildDate %}</lastBuildDate>
     <generator>{{ eleventy.generator }}</generator>
-    {% asyncEach post in collections.podcastEpisode | reverse %}
+    {% for post in collections.podcastEpisode | reverse %}
     <item>
       <title>{{ post.data.title }}</title>
       <link>{{ post.url | htmlBaseUrl(podcast.siteUrl) }}</link>
@@ -48,9 +52,18 @@ permalink: "{{ podcast.feedPath or '/feed/podcast.xml' }}"
       <itunes:episode>{{ post.data.episodeNumber }}</itunes:episode>
       <itunes:summary>{{ post.content | striptags(true) | truncate(800) }}</itunes:summary>
       <description>{{ post.content | striptags(true) | truncate(800) }}</description>
+      {%- if podcast.feedEpisodeContentTemplate %}
+      {%- set episodeContent -%}
+        {% include "feed-episode.njk" %}
+      {%- endset -%}
       <content:encoded>
-        <![CDATA[{% include "feed-episode.njk" -%}]]>
+        <![CDATA[{{ episodeContent | renderTransforms(post.url, site.url) | safe | trim }}]]>
       </content:encoded>
+      {%- else -%}
+      <content:encoded>
+        <![CDATA[{{ post.content | safe }}]]>
+      </content:encoded>
+      {% endif -%}
       <enclosure url="{{ post.data.episodeUrl }}" length="{{ post.data.episodeSize }}" type="audio/mp3"></enclosure>
       <itunes:duration>{{ post.data.episodeDuration }}</itunes:duration>
       {%- if post.data.guid != undefined %}
@@ -65,6 +78,6 @@ permalink: "{{ podcast.feedPath or '/feed/podcast.xml' }}"
       <itunes:episodeType>{{ post.data.episodeType }}</itunes:episodeType>
       {% endif -%}
     </item>
-    {% endeach -%}
+    {% endfor -%}
   </channel>
 </rss>

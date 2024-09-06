@@ -3,7 +3,7 @@ import Eleventy from '@11ty/eleventy'
 import podcasterPlugin from 'eleventy-plugin-podcaster'
 import { XMLParser, XMLValidator } from 'fast-xml-parser'
 
-test('feed tests run', t => {
+test('podcast data tests run', t => {
   t.pass()
 })
 
@@ -111,6 +111,50 @@ test('RSS feed contains correct information', async t => {
   })
 })
 
+test('if no summary is set, the description is used as the summary', async t => {
+  const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
+    config (eleventyConfig) {
+      eleventyConfig.addPlugin(podcasterPlugin)
+      eleventyConfig.addGlobalData('podcast', {
+        description: 'A test podcast with excellent content. With cake.'
+      })
+    }
+  })
+  const build = await eleventy.toJSON()
+  const parser = new XMLParser({ ignoreAttributes: false })
+  const feedData = parser.parse(build[0].content)
+  t.like(feedData, {
+    rss: {
+      channel: {
+        'itunes:summary': 'A test podcast with excellent content. With cake.'
+      }
+    }
+  })
+})
+
+test('if no subtitle is set, the description is used as the summary', async t => {
+  const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
+    config (eleventyConfig) {
+      eleventyConfig.addPlugin(podcasterPlugin)
+      eleventyConfig.addGlobalData('podcast', {
+        description: 'A test podcast with excellent content. With cake.'
+      })
+    }
+  })
+  const build = await eleventy.toJSON()
+  const parser = new XMLParser({ ignoreAttributes: false })
+  const feedData = parser.parse(build[0].content)
+  t.like(feedData, {
+    rss: {
+      channel: {
+        'itunes:subtitle': 'A test podcast with excellent content. With cake.'
+      }
+    }
+  })
+})
+
 test('<itunes:category> works if no subcategory is set', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
@@ -134,11 +178,12 @@ test('<itunes:category> works if no subcategory is set', async t => {
   })
 })
 
-test('<itunes:type> defaults to episodic', async t => {
+test('<itunes:type> can be set to episodic', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(podcasterPlugin)
+      eleventyConfig.addGlobalData('podcast', { type: 'episodic' })
     }
   })
   const build = await eleventy.toJSON()

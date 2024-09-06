@@ -24,10 +24,6 @@ export default function (eleventyConfig) {
     return data => data.podcast.imagePath || '/img/podcast-logo.jpg'
   })
 
-  eleventyConfig.addGlobalData('eleventyComputed.podcast.type', () => {
-    return data => data.podcast.type || 'episodic'
-  })
-
   eleventyConfig.addGlobalData('eleventyComputed.podcast.copyrightNotice', () => {
     return data => {
       const thisYear = DateTime.now().year
@@ -68,7 +64,7 @@ export default function (eleventyConfig) {
   eleventyConfig.addTemplate('feed.njk', readFileSync(podcastFeedPath), {
     eleventyExcludeFromCollections: true,
     eleventyImport: {
-      collections: ['post']
+      collections: ['podcastEpisode']
     }
   })
 }

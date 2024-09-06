@@ -1,6 +1,6 @@
 # eleventy-plugin-podcaster 🕚⚡️🎈🐀🎤📲
 
-`eleventy-plugin-podcaster` converts an Eleventy blog into a podcast site. It  creates a podcast feed for you to submit to Apple Podcasts, Spotify or any other podcast directory. And it provides your templates with data about your podcast and its episodes, data you can use to create a home page for your podcast, as well as pages for individual episodes, guests, topics or anything else you like.
+`eleventy-plugin-podcaster` lets you convert an Eleventy blog into a podcast site. It creates the podcast feed for you to submit to Apple Podcasts, Spotify or any other podcast directory. And it provides your templates with data about your podcast and its episodes  data you can use to create a home page for your podcast, as well as pages for individual episodes, guests, topics or anything else you like.
 
 ## Installation
 
@@ -26,9 +26,9 @@ export default function (eleventyConfig) {
 }
 ```
 
-## Usage
+## Creating the feed
 
-To create a podcast site, you need these three things:
+To create a podcast feed, you need these three things:
 
 1. Information about your podcast
 2. Information about the individual episodes
@@ -44,9 +44,13 @@ You can find out more about what this information is, what it looks like, and wh
 
 ### Information about the individual episodes
 
-Each podcast episode will have a corresponding post with the tag `podcastEpisode`. The front matter of that post should contain information about the podcast episode. The `content` of the post will be the shownotes — whether a single paragraph, a list of links or a full-scale blog entry.
+Each podcast episode will have a corresponding post with the tag `podcastEpisode`. The front matter of that post should contain information about the podcast episode.
 
 You can find out more about this information here: [Information about your episodes](episode-information.md).
+
+The `content` of each episode's post will be the shownotes — whether a single paragraph, a list of links or a full-scale blog entry.
+
+You can find out more about podcast shownotes here: [Your episodes' shownotes](shownotes.md).
 
 ### The episodes themselves
 
@@ -54,7 +58,9 @@ The episodes themselves will be audio files — MP3s, usually — contained in 
 
 Podcast episode files tend to be too large to commit to a remote repository. This isn't an insurmountable problem. You find out how to deal with it here: [The episodes themselves](episodes.md).
 
-### `eleventy-plugin-podcaster` in action
+## Using podcast data on your site
+
+## `eleventy-plugin-podcaster` in action
 
 I've been using the technology used to create  `jekyll-podcast` to create podcast websites since the middle of 2021, after hosting podcasts with WordPress for a number of years. It has allowed me to take more control of my podcast sites, and to spend my time writing HTML and Sass (and Ruby, I guess) instead of wrestling with WordPress plugins and PHP.
 

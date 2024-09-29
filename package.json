@@ -21,7 +21,10 @@
   "license": "ISC",
   "dependencies": {
     "@11ty/eleventy-plugin-rss": "^2.0.1",
-    "luxon": "^3.4.4"
+    "dom-serializer": "^2.0.0",
+    "htmlparser2": "^9.1.0",
+    "luxon": "^3.4.4",
+    "markdown-it": "^14.1.0"
   },
   "devDependencies": {
     "@11ty/eleventy": "^3.0.0-beta.1",

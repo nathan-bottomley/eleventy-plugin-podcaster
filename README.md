@@ -1,6 +1,16 @@
 # eleventy-plugin-podcaster 🕚⚡️🎈🐀🎤📲
 
-`eleventy-plugin-podcaster` — from now on referred to as **Podcaster** — lets you convert an Eleventy blog into a podcast website. It creates the podcast feed for you to submit to Apple Podcasts, Spotify or any other podcast directory. And it provides your templates with data about your podcast and its episodes — data you can use to create a home page for your podcast, as well as pages for individual episodes, guests, topics or anything else you like.
+`eleventy-plugin-podcaster` — or **Podcaster**, as we will call it from now on — lets you use Eleventy to create a podcast. **Podcaster** creates the podcast feed that you submit to Apple Podcasts, Spotify or any other podcast directory. And by providing information about podcasts to your templates, **Podcaster** helps you to create a home page for your podcast, with pages for individual episodes, guests, topics, seasons or anything else at all.
+
+Plenty of services exist that will host your podcast online — [Spotify][], [Acast][], [Podbean][], [Buzzsprout][], [Blubrry][]. But none of these will allow you to own your podcast's presence on the web, and none of them will give you the freedom to create a site that presents your podcast in a way that reflects its tone, its philosophy and its concerns.
+
+But **Podcaster** will.
+
+[Spotify]: https://podcasters.spotify.com
+[Acast]: https://www.acast.com
+[Podbean]: https://www.podbean.com
+[Buzzsprout]: https://www.buzzsprout.com
+[Blubrry]: https://blubrry.com
 
 ## Installation
 
@@ -26,29 +36,32 @@ export default function (eleventyConfig) {
 }
 ```
 
-## Creating the feed
+## About your podcast
 
-To create a podcast feed, you need these three things:
+Once you've installed **Podcaster** in your Eleventy project, the next step is to provide it with information about your podcast — the title, the owner, the category, the subcategory and so on. The easiest way to do this is to put all the information in your data directory in a `podcast.json` file.
 
-1. Information about your podcast
-2. Information about the individual episodes
-3. The episode audio files
+Here's a simple example.
 
-Here's how you provide those things to your site.
+```json
+{
+  "title": "Flight Through Entirety: A Doctor Who Podcast",
+  "description": "Flying through the entirety of Doctor Who. Originally with cake, but now with guests.",
+  "siteUrl": "https://flightthroughentirety.com",
+  "author": "Flight Through Entirety",
+  "category": "TV & Film",
+  "language": "en-AU",
+}
+```
 
-### Information about your podcast
+## About the episodes
 
-The important information about your podcast — the title, the owner, the category, the subcategory and so on — should be made available as fields in a `podcast` object in the data cascade. The easiest way to do this is to put all the information in your data directory in a `podcast.json` file.
+For each podcast episode you create, you will also create a Eleventy template containing the information about the episode — the title, the release date, the episode number, the filename and so on. This template will have the tag `podcastEpisode`; its front matter will contain all of the information about the episode, and its content will contain the episode's shownotes.
 
-You can find out more about what this information is, what it looks like, and what it means here: [Information about your podcast](/docs/podcast-information.md).
+## The podcast episodes themselves
 
-### Information about the individual episodes
+These will be audio files — MP3s, usually — and you will store them in an `/episodes` folder at the top level of your project.
 
-Each podcast episode will have a corresponding post with the tag `podcastEpisode`. The front matter of that post should contain information about the podcast episode.
-
-You can find out more about this information here: [Information about your episodes](/docs/episode-information.md).
-
-### The episodes themselves
+## Your podcast feed
 
 The episodes themselves will be audio files — MP3s, usually — contained in an  `/episodes` folder at the top level of your project.
 
@@ -80,6 +93,6 @@ Here's a list of them:
 - [Maximum Power](https://maximumpowerpodcast.com), a podcast about _Blakes 7_, a less lavish but more ridiculous British scifi show from the 1970s.
 - [Bondfinger](https://bondfinger.com), a James Bond commentary podcast that soon ran out of James Bond films and ended up spending its time drinking and watching terrible TV shows from the 1960s.
 
-## License
+## Licence
 
-This plugin is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+This plugin is available as open source under the terms of the [ISC License](https://opensource.org/licenses/ISC).

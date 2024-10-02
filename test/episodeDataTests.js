@@ -12,8 +12,8 @@ test('podcastEpisode template produces <item> tag in feed', async t => {
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(podcasterPlugin)
-      eleventyConfig.addTemplate('episode-1.md', '# Episode 1', { tags: ['podcastEpisode'], date: '2020-01-01', title: 'Episode 1', permalink: '/1' })
-      eleventyConfig.addTemplate('episode-2.md', '# Episode 2', { tags: ['podcastEpisode'], date: '2020-01-02', title: 'Episode 2', permalink: '/2' })
+      eleventyConfig.addTemplate('episode-1.md', '# Episode 1', { tags: ['podcastEpisode'], date: '2020-01-01', title: 'Episode 1', permalink: '/1/' })
+      eleventyConfig.addTemplate('episode-2.md', '# Episode 2', { tags: ['podcastEpisode'], date: '2020-01-02', title: 'Episode 2', permalink: '/2/' })
     }
   })
   const build = await eleventy.toJSON()

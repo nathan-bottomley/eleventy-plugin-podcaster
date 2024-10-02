@@ -11,7 +11,7 @@ test('excerpt is the child <p> of the content not in a <blockquote>', async t =>
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(podcasterPlugin)
-      eleventyConfig.addTemplate('episode-1.md', '# Episode 1\n\n> blockquote paragraph\n\nnon-blockquote paragraph', { tags: ['podcastEpisode'], date: '2020-01-01', title: 'Episode 1', permalink: '/1' })
+      eleventyConfig.addTemplate('episode-1.md', '# Episode 1\n\n> blockquote paragraph\n\nnon-blockquote paragraph', { tags: ['podcastEpisode'], date: '2020-01-01', title: 'Episode 1', permalink: '/1/' })
       eleventyConfig.addTemplate('index.md', '# Excerpts\n\n{% for post in  collections.podcastEpisode %}Excerpt is {{ post.data.excerpt }}{% endfor %}', { date: '2020-01-01', title: 'Excerpts', permalink: '/excerpts/' })
     }
   })
@@ -25,7 +25,7 @@ test('if front matter excerpt is set, it is used as raw HTML', async t => {
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(podcasterPlugin)
-      eleventyConfig.addTemplate('episode-1.md', '# Episode 1\n\n> blockquote paragraph\n\nnon-blockquote paragraph', { tags: ['podcastEpisode'], date: '2020-01-01', title: 'Episode 1', permalink: '/1', excerpt: 'front matter **excerpt**' })
+      eleventyConfig.addTemplate('episode-1.md', '# Episode 1\n\n> blockquote paragraph\n\nnon-blockquote paragraph', { tags: ['podcastEpisode'], date: '2020-01-01', title: 'Episode 1', permalink: '/1/', excerpt: 'front matter **excerpt**' })
       eleventyConfig.addTemplate('index.md', '# Excerpts\n\n{% for post in collections.podcastEpisode %}Excerpt is {{ post.data.excerpt }}{% endfor %}', { date: '2020-01-01', title: 'Excerpts', permalink: '/excerpts/' })
     }
   })

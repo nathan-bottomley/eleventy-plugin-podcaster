@@ -140,19 +140,30 @@ If you upload your output directory to a web host, you might be able to host you
 
 If you link your GitHub repository to a Jamstack provider, or if you don't want to host your podcast episode files as part of your site, you need to host them somewhere where they each get assigned a public URL. And if your podcast has a large international audience, it should also be somewhere where they can be served by a content delivery network.
 
-This might be the most complicated part of setting up a podcast website. [Read on for information about hosting your podcast.](docs/hosting.md)
+[Read more about hosting your podcast.](docs/hosting.md)
 
 ## Optional features
 
 **Podcaster** also implements some optional features which are useful for creating podcast websites — **drafts** and **excerpts**.
 
+These are not fundamental features of a podcast website, and you might want to implement them yourself, and so they are opt in. You activate them by passing options to the `addPlugin` method in your configuration file.
+
+```js
+    eleventyConfig.addPlugin(podcaster, {
+      handleDrafts: true,
+      handleExcerpts: true
+    })
+```
+
+[Read more about optional features.](docs/optional-features.md)
+
 ## Podcaster in action
 
 I started podcasting and creating podcasting websites in 2014. At first I used Squarespace, then WordPress, then Jekyll, before finally settling on Eleventy late in 2022.
 
-I now have seven podcast websites powered by Eleventy, and **Podcaster** was derived from the code I used to create them and is now being used to support them all.
+I now have seven podcast websites powered by Eleventy, and **Podcaster** was derived from the code I used to create them and is now being used to support all but one of them.
 
-Here's a list of them:
+Here's a list:
 
 - [Flight Through Entirety](https://flightthroughentirety.com), a _Doctor Who_ podcast flying through the entirety of the show's 60-something-year history.
 - [Untitled Star Trek Project](https://untitledstartrekproject.com), a _Star Trek_ commentary podcast, where two friends watch _Star Trek_ episodes from across the franchise, chosen (nearly) at random using [a page on the podcast website](https://untitledstartrekproject.com/randomiser).

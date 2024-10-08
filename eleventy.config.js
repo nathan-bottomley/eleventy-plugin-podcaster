@@ -44,10 +44,13 @@ export default function (eleventyConfig) {
     DateTime.now().toRFC2822()
   )
 
-  eleventyConfig.addGlobalData('eleventyComputed.episodeUrl', function (filename) {
+  eleventyConfig.addGlobalData('eleventyComputed.episode.url', () => {
     return data => {
-      const episodePrefix = data.podcast.episodePrefix
-      return encodeURI(`${episodePrefix}${data.episodeFilename}`)
+      if (!data.tags?.includes('podcastEpisode')) return
+
+      const episodeUrlBase = data.podcast.episodeUrlBase
+      const filename = data.episode.filename
+      return encodeURI(new URL(filename, episodeUrlBase).toString())
     }
   })
 

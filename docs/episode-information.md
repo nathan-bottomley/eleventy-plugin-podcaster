@@ -1,6 +1,10 @@
 # Episode information
 
-The important information about each of your podcast episodes — the title, the date, the filename, the episode number, the size, the duration — should be made available in an `episode` object in the frontmatter of a post with an `episode` tag, like this:
+Each episode of your podcast should have an associated Eleventy template, with a `podcastEpisode` tag. The front matter of this template will contain the necessary information about the episode, and the content of the template will be the show notes.
+
+## Front matter
+
+The important information about each of your podcast episodes — the title, the date, the filename, the episode number, the size, the duration — should be made available in an `episode` object in the front matter of a post with an `podcastEpisode` tag, like this:
 
 ```yaml
 ---
@@ -34,11 +38,13 @@ Here's a detailed description of the data you need to provide here.
 | `tags` | Every episode post must have the tag `podcastEpisode` included in the `tags` array. Other tags are also permitted. | yes |
 | `episode.filename` | The filename of the episode's audio file. | yes |
 | `episode.seasonNumber` | The  season number. (Most podcasts don't group their episodes into seasons.) | no |
-| `episode.episodeNumber` | The episode number. Needn't be unique, but the combination of `seasonNumber` and `episodeNumber` should be unique. | yes |
+| `episode.episodeNumber` | The episode number. Needn't be unique, but the combination of `seasonNumber` and `episodeNumber` must be unique. | yes |
 | `episode.size` | The size of the episode's audio file in bytes. | yes |
-| `episode.duration` | The duration of the episode in `mm:ss` or `h:mm:ss` format, or as a number of seconds. (Apple Podcasts recommends that the duration should be specified in seconds, but the other formats work perfectly well too.) | yes |
-| `episode.explicit` | Warns listeners that this episode contains explicit language. Should be used for a single episode in a podcast that isn't marked as explicit. | no |
+| `episode.duration` | The duration of the episode in `mm:ss` or `h:mm:ss` format, or as a number of seconds. (Apple Podcasts recommends specifying the duration in seconds, but the other format works just as well.) | yes |
+| `episode.explicit` | Warns listeners that this episode contains explicit language. Should be used for a single episode in a podcast that isn't itself marked as explicit. | no |
 | `episode.type` | The type of episode. Defaults to `full`, meaning a full episode of the podcast. Other valid types are `trailer` and `bonus`. | no |
-| `excerpt` | A shorter version of the content of the post, written in Markdown.  If it exists, this is used as the content of the `itunes:summary` and `description` tags for the episode. | no |
+| `excerpt` | A shorter version of the content of the post, written in Markdown. For use in lists of episodes where the show notes are long. | no |
 
 It's possible for **Podcaster** to automatically create an `excerpt` for each episode. To find out how, take a look at the [Optional Features page](/docs/optional-features.md).
+
+## Show notes

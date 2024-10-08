@@ -41,8 +41,7 @@ However, `eleventy-plugin-podcast` is quite customisable. He's another `podcast.
   "startingYear": 2014,
   "episodeUrlBase": "https://example.fte-cdn.com/",
   "feedEpisodeContentTemplate": "feed-episode-content.njk",
-  "feedEpisodeDescriptionTemplate": "feed-episode-description.njk",
-  "useExcerptFor
+  "feedEpisodeDescriptionTemplate": "feed-episode-description.njk"
 }
 ```
 
@@ -58,7 +57,7 @@ And here's a detailed description of all of this information.
 | `siteUrl` | The URL of your podcast website. The most popular podcast applications use this to provide a link to your website. It's also used by this plugin to convert relative links to absolute links in your feed. | yes |
 | `owner` | An optional object in the form `{ name, email }` You might want to omit this: Apple Podcasts has deprecated it, and an email in a podcast feed will attract some spam. However, some podcast directories, like Castbox, will use the email address to identify you when you try to claim ownership of a podcast in their directory. | no |
 | `author` | The creator or creators of the podcast. The most popular podcast applications prominently display this information. | yes |
-| `category` | The category for the podcast. Describes the kind of show it is. Valid categories are listed in [this Apple support document][categories]. Used by podcast directories to help listeners find the podcast. | yes |
+| `category` | The category for the podcast. Describes he kind of show it is. Valid categories are listed in [this Apple support document][categories]. Used by podcast directories to help listeners find the podcast. | yes |
 | `subcategory` | The subcategory for the podcast. Valid subcategories are also listed in [the Apple support document][categories]. | no |
 | `imagePath` | The path to your podcast logo, which should be a JPEG or PNG file 3000 × 3000 pixels in size. (You can find more detailed specifications in [this Apple support document](https://podcasters.apple.com/support/896-artwork-requirements#shows)). Defaults to `/img/podcast-logo.jpg`. | yes |
 | `explicit` | Warns listeners that your podcast contains explicit language. In Apple Podcasts, if you include this with the value `true`, your podcast and its episodes will be badged with an 🄴 to indicate that they use explicit language. Some of the most popular podcast applications ignore this field. | no |
@@ -68,8 +67,8 @@ And here's a detailed description of all of this information.
 | `copyright` | The copyright owner of the podcast. If omitted, the value supplied for `author` is used instead. | no |
 | `startingYear` | The year your podcast started. Used to express the copyright date as a range (_"© 2014–2024 Flight Through Entirety"_). If this is omitted, the copyright date will just be the current year. | no |
 | `episodeUrlBase` | If you store your podcast episodes on a CDN, or if you use a podcast analytics service, this is where you specify the base URL for them. If you don't specify this, it defaults to `https://{{ podcast.siteUrl }}/episodes/` | no |
-| `feedEpisodeContentTemplate` | The name of an include template that will be used to create the shownotes of each episode, which are included in the feed as HTML. If it's omitted, the shownotes will just be the `content` of the episode's post. | no |
-| `feedEpisodeDescriptionTemplate` | The name of an include template that will be used to create the description of each episode. If it's omitted, the description will just be an abbreviated text version of the `content` of the episode's post. | no |
+| `feedEpisodeContentTemplate` | The name of an include template that will be used to create the show notes of each episode, as displayed in your listeners' podcast players. The content of this template should be HTML. You only need to include this if you want the show notes in podcast players to be different from the show notes on the website. | no |
+| `feedEpisodeDescriptionTemplate` | The name of an include template that will be used to create the description of each episode. The content of this template should be plain text. If it's omitted, the description will just be an abbreviated text version of the `content` of the episode's post. | no |
 
 [categories]: https://podcasters.apple.com/support/1691-apple-podcasts-categories
 [lang]: https://www.rssboard.org/rss-language-codes

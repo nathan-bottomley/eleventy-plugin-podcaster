@@ -46,10 +46,10 @@ permalink: "{{ podcast.feedPath or '/feed/podcast.xml' }}"
       <title>{{ post.data.title }}</title>
       <link>{{ post.url | htmlBaseUrl(podcast.siteUrl) }}</link>
       <pubDate>{{ post.date | dateToRfc3339 }}</pubDate>
-      {% if post.data.seasonNumber -%}
-      <itunes:season>{{ post.data.seasonNumber }}</itunes:season>
+      {% if post.data.episode.seasonNumber -%}
+      <itunes:season>{{ post.data.episode.seasonNumber }}</itunes:season>
       {%- endif %}
-      <itunes:episode>{{ post.data.episodeNumber }}</itunes:episode>
+      <itunes:episode>{{ post.data.episode.episodeNumber }}</itunes:episode>
       <itunes:summary>{{ post.content | striptags(true) | truncate(800) }}</itunes:summary>
       <description>{{ post.content | striptags(true) | truncate(800) }}</description>
       {%- if podcast.feedEpisodeContentTemplate %}
@@ -64,10 +64,10 @@ permalink: "{{ podcast.feedPath or '/feed/podcast.xml' }}"
         <![CDATA[{{ post.content | safe }}]]>
       </content:encoded>
       {% endif -%}
-      <enclosure url="{{ post.data.episodeUrl }}" length="{{ post.data.episodeSize }}" type="audio/mp3"></enclosure>
-      <itunes:duration>{{ post.data.episodeDuration }}</itunes:duration>
+      <enclosure url="{{ post.data.episode.url }}" length="{{ post.data.episode.size }}" type="audio/mp3"></enclosure>
+      <itunes:duration>{{ post.data.episode.duration }}</itunes:duration>
       {%- if post.data.guid != undefined %}
-      <guid isPermalink="false">{{ post.data.guid }}</guid>
+      <guid isPermalink="false">{{ post.data.episode.guid }}</guid>
       {% else %}
       <guid isPermalink="true">{{ post.url | htmlBaseUrl(podcast.siteUrl) }}</guid>
       {% endif -%}

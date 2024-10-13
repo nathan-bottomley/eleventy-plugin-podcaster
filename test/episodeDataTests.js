@@ -57,3 +57,30 @@ test('episode.url consists of the episode prefix plus the episode filename', asy
   const item = build.find(item => item.url === '/1/')
   t.true(item.content.includes('https://example.com/episode-1.mp3'))
 })
+
+test('a local link in podcast episode content is converted to an absolute URL', async t => {
+  const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
+    config (eleventyConfig) {
+      eleventyConfig.addPlugin(podcasterPlugin)
+      eleventyConfig.addGlobalData(
+        'podcast.episodeUrlBase',
+        'https://example.com/'
+      )
+      eleventyConfig.addGlobalData(
+        'podcast.siteUrl',
+        'https://example.com/'
+      )
+      eleventyConfig.addTemplate('episode-1.md', '[Episode 1](/episode-1.mp3)', {
+        tags: ['podcastEpisode'],
+        date: '2020-01-01',
+        title: 'Episode 1',
+        permalink: '/1/',
+        episode: { filename: 'episode-1.mp3' }
+      })
+    }
+  })
+  const build = await eleventy.toJSON()
+  const item = build.find(item => item.url === '/feed/podcast.xml')
+  t.true(item.content.includes('https://example.com/episode-1.mp3'))
+})

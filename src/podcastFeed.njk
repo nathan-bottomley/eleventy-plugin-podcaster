@@ -1,5 +1,6 @@
 ---
 permalink: "{{ podcast.feedPath or '/feed/podcast.xml' }}"
+eleventyAllowMissingExtension: true
 ---
 <?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0"
@@ -39,7 +40,7 @@ permalink: "{{ podcast.feedPath or '/feed/podcast.xml' }}"
     <language>{{ podcast.language }}</language>
     <copyright>{{ podcast.copyrightNotice }}</copyright>
     <pubDate>{{ collections.podcastEpisode | getNewestCollectionItemDate | dateToRfc3339 }}</pubDate>
-    <lastBuildDate>{% feedLastBuildDate %}</lastBuildDate>
+    <lastBuildDate>{{ podcast.feedLastBuildDate }}</lastBuildDate>
     <generator>{{ eleventy.generator }}</generator>
     {% for post in collections.podcastEpisode | reverse %}
     <item>
@@ -54,14 +55,14 @@ permalink: "{{ podcast.feedPath or '/feed/podcast.xml' }}"
       <description>{{ post.content | striptags(true) | truncate(800) }}</description>
       {%- if podcast.feedEpisodeContentTemplate %}
       {%- set episodeContent -%}
-        {% include "feed-episode.njk" %}
+      {% include podcast.feedEpisodeContentTemplate %}
       {%- endset -%}
       <content:encoded>
-        <![CDATA[{{ episodeContent | renderTransforms(post.url, site.url) | safe | trim }}]]>
+        <![CDATA[{{ episodeContent | renderTransforms(post.data.page, podcast.siteUrl) | safe | trim }}]]>
       </content:encoded>
       {%- else -%}
       <content:encoded>
-        <![CDATA[{{ post.content | safe }}]]>
+        <![CDATA[{{ post.content | renderTransforms(post.data.page, podcast.siteUrl) | safe | trim }}]]>
       </content:encoded>
       {% endif -%}
       <enclosure url="{{ post.data.episode.url }}" length="{{ post.data.episode.size }}" type="audio/mp3"></enclosure>

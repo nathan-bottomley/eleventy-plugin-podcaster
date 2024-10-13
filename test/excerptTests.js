@@ -6,7 +6,7 @@ test('excerpt is the first child <p> of the content not in a <blockquote>', asyn
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcasterPlugin)
+      eleventyConfig.addPlugin(podcasterPlugin, { handleExcerpts: true })
       eleventyConfig.addGlobalData(
         'podcast.episodeUrlBase',
         'https://example.com/'
@@ -30,7 +30,7 @@ test('if front matter excerpt is set, it is used after being converted to raw HT
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcasterPlugin)
+      eleventyConfig.addPlugin(podcasterPlugin, { handleExcerpts: true })
       eleventyConfig.addGlobalData('podcast.episodeUrlBase', 'https://example.com/')
       eleventyConfig.addTemplate('episode-1.md', '# Episode 1\n\n> blockquote paragraph\n\nnon-blockquote paragraph', {
         tags: ['podcastEpisode'],

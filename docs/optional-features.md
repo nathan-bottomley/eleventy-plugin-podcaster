@@ -21,7 +21,7 @@ export default function (eleventyConfig) {
 
 ## Drafts
 
-If `handleDrafts` is set to `true`, the plugin will allow you to designate posts as drafts by including `draft: true` in their front matter (or elsewhere in the data cascade). By default, drafts will be included in the build when Eleventy is running in `serve` or `watch` mode, but will be excluded otherwise. You can override the default behaviour by setting the `BUILD_DRAFTS` environment variable to `true` or `false`.
+If `handleDrafts` is set to `true`, the plugin will allow you to designate posts as drafts by including `draft: true` in their front matter (or elsewhere in the data cascade). By default, drafts will be included in the build when Eleventy is running in `serve` or `watch` mode, but will be excluded in `build` mode. You can override this default behaviour by setting the `BUILD_DRAFTS` environment variable to `true` or `false`.
 
 ## Excerpts
 

@@ -71,7 +71,6 @@ test.serial('drafts are not built if BUILD_DRAFTS is absent and ELEVENTY_RUN_MOD
   t.true(item === undefined)
 })
 
-
 test.serial('drafts are not built if plugin added with handleDrafts option and BUILD_DRAFTS is false', async t => {
   process.env.BUILD_DRAFTS = 'false'
   const eleventy = new Eleventy('./test', './test/_site', {

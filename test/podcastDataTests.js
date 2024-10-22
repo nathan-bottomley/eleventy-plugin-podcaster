@@ -3,10 +3,6 @@ import Eleventy from '@11ty/eleventy'
 import podcasterPlugin from 'eleventy-plugin-podcaster'
 import { XMLParser, XMLValidator } from 'fast-xml-parser'
 
-test('failing test', t => {
-  t.fail()
-})
-
 test('RSS feed template renders', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,

@@ -58,6 +58,29 @@ test('episode.url consists of the episode prefix plus the episode filename', asy
   t.true(item.content.includes('https://example.com/episode-1.mp3'))
 })
 
+test('episode.url is percent encoded', async t => {
+  const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
+    config (eleventyConfig) {
+      eleventyConfig.addPlugin(podcasterPlugin)
+      eleventyConfig.addGlobalData(
+        'podcast.episodeUrlBase',
+        'https://example.com/'
+      )
+      eleventyConfig.addTemplate('episode-1.md', '{{ episode.url }}', {
+        tags: ['podcastEpisode'],
+        date: '2020-01-01',
+        title: 'Episode 1',
+        permalink: '/1/',
+        episode: { filename: 'episode 1.mp3' }
+      })
+    }
+  })
+  const build = await eleventy.toJSON()
+  const item = build.find(item => item.url === '/1/')
+  t.true(item.content.includes('https://example.com/episode%201.mp3'), item.content)
+})
+
 test('a local link in podcast episode content is converted to an absolute URL', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,

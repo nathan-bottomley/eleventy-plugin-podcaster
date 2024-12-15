@@ -6,9 +6,6 @@ import mp3Duration from 'mp3-duration'
 import hr from '@tsmx/human-readable'
 import chalk from 'chalk'
 
-const convertSecondsToDuration = seconds =>
-  Duration.fromMillis(seconds * 1000).toFormat('h:mm:ss')
-
 const convertSecondsToReadableDuration = seconds =>
   Duration.fromMillis(seconds * 1000)
     .toFormat("d 'd' h 'h' m 'm' s.SSS 's'")
@@ -41,7 +38,7 @@ export default function (eleventyConfig, options = {}) {
       totalDuration += episodeDuration
       episodesData[episode] = {
         size: episodeSize,
-        duration: convertSecondsToDuration(episodeDuration)
+        duration: episodeDuration
       }
     }
 

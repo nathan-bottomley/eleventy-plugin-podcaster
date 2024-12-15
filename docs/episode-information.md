@@ -17,7 +17,7 @@ episode:
   seasonNumber: 1
   episodeNumber: 1
   size: 61231442
-  duration: "0:54:43"
+  duration: 3283
   explicit: no
   episodeType: full
 excerpt: >-
@@ -40,11 +40,13 @@ Here's a detailed description of the data you need to provide here.
 | `episode.seasonNumber` | The  season number. (Most podcasts don't group their episodes into seasons.) | no |
 | `episode.episodeNumber` | The episode number. Needn't be unique, but the combination of `seasonNumber` and `episodeNumber` must be unique. | yes |
 | `episode.size` | The size of the episode's audio file in bytes. | yes |
-| `episode.duration` | The duration of the episode in `mm:ss` or `h:mm:ss` format, or as a number of seconds. (Apple Podcasts recommends specifying the duration in seconds, but the other format works just as well.) | yes |
+| `episode.duration` | The duration of the episode as a number of seconds. You can convert this to `h:mm:ss` format using Podcaster's `readableDuration` filter. | yes |
 | `episode.explicit` | Warns listeners that this episode contains explicit language. Should be used for a single episode in a podcast that isn't itself marked as explicit. | no |
 | `episode.type` | The type of episode. Defaults to `full`, meaning a full episode of the podcast. Other valid types are `trailer` and `bonus`. | no |
 | `excerpt` | A shorter version of the content of the post, written in Markdown. For use in lists of episodes where the show notes are long. | no |
 
-It's possible for **Podcaster** to automatically create an `excerpt` for each episode. To find out how, take a look at the [Optional Features page](/docs/optional-features.md).
+> [!TIP]
+> It's possible for **Podcaster** to calculate the size and duration for each episode if it has access to your episode audio files. [Read more to find out how](docs/size-and-duration.md).
 
-## Show notes
+> [!TIP]
+> It's also possible for **Podcaster** to automatically create an `excerpt` for each episode. [Read more to find out how](/docs/optional-features.md#excerpts).

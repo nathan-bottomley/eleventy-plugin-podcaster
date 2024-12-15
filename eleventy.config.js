@@ -1,4 +1,5 @@
-import { DateTime } from 'luxon'
+import { DateTime, Duration } from 'luxon'
+import hr from '@tsmx/human-readable'
 import rssPlugin from '@11ty/eleventy-plugin-rss'
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
@@ -66,6 +67,14 @@ export default function (eleventyConfig, options = {}) {
     })
     return result.setLocale('en-GB').toLocaleString(DateTime.DATE_HUGE)
   })
+
+  eleventyConfig.addFilter('readableDuration', seconds =>
+    Duration.fromMillis(seconds * 1000).toFormat('h:mm:ss')
+  )
+
+  eleventyConfig.addFilter('readableSize', bytes =>
+    hr.fromBytes(bytes)
+  )
 
   const podcastFeedPath = path.join(import.meta.dirname, './src/podcastFeed.njk')
 

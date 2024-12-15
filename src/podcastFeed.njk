@@ -53,7 +53,7 @@ eleventyAllowMissingExtension: true
       <itunes:episode>{{ post.data.episode.episodeNumber }}</itunes:episode>
       <itunes:summary>{{ post.content | striptags(true) | truncate(800) }}</itunes:summary>
       <description>{{ post.content | striptags(true) | truncate(800) }}</description>
-      {%- if podcast.feedEpisodeContentTemplate %}
+      {% if podcast.feedEpisodeContentTemplate %}
       {%- set episodeContent -%}
       {% include podcast.feedEpisodeContentTemplate %}
       {%- endset -%}
@@ -64,9 +64,9 @@ eleventyAllowMissingExtension: true
       <content:encoded>
         <![CDATA[{{ post.content | renderTransforms(post.data.page, podcast.siteUrl) | safe | trim }}]]>
       </content:encoded>
-      {% endif -%}
+      {% endif %}
       <enclosure url="{{ post.data.episode.url }}" length="{{ post.data.episode.size }}" type="audio/mp3"></enclosure>
-      <itunes:duration>{{ post.data.episode.duration }}</itunes:duration>
+      <itunes:duration>{{ post.data.episode.duration | readableDuration }}</itunes:duration>
       {%- if post.data.guid != undefined %}
       <guid isPermalink="false">{{ post.data.episode.guid }}</guid>
       {% else %}

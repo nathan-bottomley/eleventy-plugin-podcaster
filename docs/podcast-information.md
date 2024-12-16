@@ -54,7 +54,7 @@ And here's a detailed description of all of this information.
 | `subtitle` | A short description of your podcast. If you omit this the `description` field will be used instead. | no |
 | `summary` | A description of your podcast. If you omit this the `description` field will be used instead. | no |
 | `description` | A short description of your podcast. The most popular podcast applications prominently display this information. | yes |
-| `siteUrl` | The URL of your podcast website. The most popular podcast applications use this to provide a link to your website. It's also used by this plugin to convert relative links to absolute links in your feed. | yes |
+| `siteUrl` | The URL of your podcast website. The most popular podcast applications use this to provide a link to your website. It's also used by this plugin to convert relative links to absolute links in your feed. (If `podcast.siteUrl` isn't provided, the feed template will use `site.url` instead.) | yes |
 | `owner` | An optional object in the form `{ name, email }` You might want to omit this: Apple Podcasts has deprecated it, and an email in a podcast feed will attract some spam. However, some podcast directories, like Castbox, will use the email address to identify you when you try to claim ownership of a podcast in their directory. | no |
 | `author` | The creator or creators of the podcast. The most popular podcast applications prominently display this information. | yes |
 | `category` | The category for the podcast. Describes he kind of show it is. Valid categories are listed in [this Apple support document][categories]. Used by podcast directories to help listeners find the podcast. | yes |

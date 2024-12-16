@@ -2,6 +2,7 @@
 permalink: "{{ podcast.feedPath or '/feed/podcast.xml' }}"
 eleventyAllowMissingExtension: true
 ---
+{%- set siteUrl %}{{ podcast.siteUrl or site.url }}{% endset -%}
 <?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0"
   xmlns:atom="http://www.w3.org/2005/Atom"
@@ -12,8 +13,8 @@ eleventyAllowMissingExtension: true
     <title>{{ podcast.title }}</title>
     <itunes:subtitle>{{ podcast.subtitle or podcast.description }}</itunes:subtitle>
     <description>{{ podcast.description }}</description>
-    <link>{{ podcast.siteUrl }}</link>
-    <atom:link href="{{ podcast.feedPath | htmlBaseUrl(podcast.siteUrl) }}" rel="self" type="application/rss+xml" />
+    <link>{{ siteUrl }}</link>
+    <atom:link href="{{ podcast.feedPath | htmlBaseUrl(siteUrl) }}" rel="self" type="application/rss+xml" />
     {%- if podcast.owner %}
     <itunes:owner>
       <itunes:name>{{ podcast.owner.name }}</itunes:name>

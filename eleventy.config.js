@@ -68,9 +68,11 @@ export default function (eleventyConfig, options = {}) {
     return result.setLocale('en-GB').toLocaleString(DateTime.DATE_HUGE)
   })
 
-  eleventyConfig.addFilter('readableDuration', seconds =>
-    Duration.fromMillis(seconds * 1000).toFormat('h:mm:ss')
-  )
+  eleventyConfig.addFilter('readableDuration', function (seconds) {
+    if (!seconds) return '0:00:00'
+
+    return Duration.fromMillis(seconds * 1000).toFormat('h:mm:ss')
+  })
 
   eleventyConfig.addFilter('readableSize', bytes =>
     hr.fromBytes(bytes)

@@ -103,7 +103,7 @@ Here's how you could use this information to describe a single podcast episode i
   <audio controls src="{{ episode.url }}" preload="none">
   <p class="audio-details">
     Episode {{ episode.episodeNumber }}: {{ title }}
-    | Recorded on {{ recording_date | date: "%A %-e %B %Y" }}
+    | Recorded on {{ recordingDate | date: "%A %-e %B %Y" }}
     | Duration {{ episode.duration }}
     | <a download href="{{ episode.url }}">Download</a>
   </p>
@@ -117,15 +117,26 @@ All podcast episode templates belong to the `collections.podcastEpisode` collect
 
 [Read more about podcast and episode information in templates.](docs/templates.md)
 
-## Hosting your episode files
+## Hosting
 
-**Podcaster** assumes that all your episode audio files are stored in an `/episodes` directory at the top level of your project.
+You can host your podcast site — along with its feed — [the same way you would host any Eleventy site][hosting], using [a Jamstack provider][] linked to your source control repository or using [a classic web host][] which will allow you to upload the contents of your output directory.
 
-But it works equally well if they aren't. In fact, you probably won't want to host your episode audio files alongside your podcast website. The files will be too big to fit in your repository, for one thing. And they will probably be quicker for your listeners to download if they are stored on some kind of CDN or on some kind of dedicated storage.
+[hosting]: https://www.11ty.dev/docs/deployment/
+[a Jamstack provider]: https://www.11ty.dev/docs/deployment/#jamstack-providers
+[a classic web host]: https://www.11ty.dev/docs/deployment/#classic-web-hosts
 
-To find out how to set this up and how to make this work with **Podcaster**, [read more about hosting your episode files][hosting].
+However, your podcast episode files should probably be hosted somewhere else, preferably on a Content Delivery Network (CDN), which will let your listeners download your episodes promptly and quickly.
 
-[hosting]: doc
+There are many options available, including [Digital Ocean Spaces][], [Linode Object Storage][], [Backblaze B2 Cloud Storage][] and [Cloudflare R2][].
+
+[Digital Ocean Spaces]: https://www.digitalocean.com/products/spaces
+[Linode Object Storage]: https://www.linode.com/products/object-storage/
+[Backblaze B2 Cloud Storage]: https://www.backblaze.com/cloud-storage
+[Cloudflare R2]: https://developers.cloudflare.com/r2/
+
+To find out how to set this up and how to make this work with **Podcaster**, [read more about hosting your podcast episode files][episode-file-hosting].
+
+[episode-file-hosting]: docs/hosting.md
 
 ## Optional features
 
@@ -144,9 +155,9 @@ These are not fundamental features of a podcast website, which is why they are o
 
 ## Podcaster in action
 
-I started podcasting and creating podcasting websites in 2014. At first I used Squarespace, then WordPress, then Jekyll, before finally settling on Eleventy late in 2022.
+I started podcasting and creating podcasting websites in 2014. At first I used Squarespace, then WordPress, and then Jekyll, before finally settling on Eleventy late in 2022.
 
-I now have seven podcast websites powered by Eleventy, and **Podcaster** was derived from the code I used to create them and is now being used to support all but one of them.
+I now have seven podcast websites powered by Eleventy, and **Podcaster** was derived from the code I used to create them.
 
 Here's a list:
 

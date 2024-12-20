@@ -18,6 +18,9 @@
     "rss"
   ],
   "author": "Nathan Bottomley",
+  "engines": {
+    "node": ">=20"
+  },
   "license": "ISC",
   "dependencies": {
     "@11ty/eleventy": "^3.0.0",

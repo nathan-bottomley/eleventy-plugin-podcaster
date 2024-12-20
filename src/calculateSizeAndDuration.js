@@ -13,11 +13,11 @@ const convertSecondsToReadableDuration = seconds =>
 export default function (eleventyConfig, options = {}) {
   let firstRun = true
   eleventyConfig.on('eleventy.before', async ({ dir, directories }) => {
-    // don't keep recalculating episode data
+    // don't keep recalculating episode data in serve mode
     if (!firstRun || process.env.SKIP_EPISODE_CALCULATIONS === 'true') return
     firstRun = false
 
-    const episodesDir = path.join(process.cwd(), 'episodes')
+    const episodesDir = path.join(process.cwd(), options.episodesDir || 'episodes')
     if (!existsSync(episodesDir)) return
 
     const episodes = await readdir(episodesDir)

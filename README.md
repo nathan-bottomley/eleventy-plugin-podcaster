@@ -72,7 +72,7 @@ episode:
   seasonNumber: 1
   episodeNumber: 1
   size: 61231442 # bytes
-  duration: "1:02:58"
+  duration: 3778.482 # seconds
 ---
 A big week for beginnings this week, with a new Doctor, a new origin story for the Daleks, and a whole new approach to defeating the bad guys. Oh, and a new podcast to discuss them all on. So let's welcome Patrick Troughton to the studio floor, as we discuss _The Power of the Daleks_.
 
@@ -88,7 +88,7 @@ By default, your podcast feed will be located at `/feed/podcast.xml`, which mean
 
 ## Using podcast information and episode information in templates
 
-All the podcast and episode information you provide are made available to your templates through the data cascade, including `title`, `date` and `excerpt`, as well as fields in the `podcast` and `episode` objects.
+All the podcast and episode information you provide are made available to your templates through the data cascade, including `title` and `date`, as well as fields in the `podcast` and `episode` objects.
 
 Here's how you could use this information to describe a single podcast episode in a Liquid template.
 
@@ -104,7 +104,8 @@ Here's how you could use this information to describe a single podcast episode i
   <p class="audio-details">
     Episode {{ episode.episodeNumber }}: {{ title }}
     | Recorded on {{ recordingDate | date: "%A %-e %B %Y" }}
-    | Duration {{ episode.duration }}
+    | {{ episode.size | readableSize }}
+    | Duration {{ episode.duration | readableDuration }}
     | <a download href="{{ episode.url }}">Download</a>
   </p>
 </article>
@@ -115,7 +116,11 @@ All podcast episode templates belong to the `collections.podcastEpisode` collect
 [pagination]: https://www.11ty.dev/docs/pagination/
 [item]: https://www.11ty.dev/docs/collections/#collection-item-data-structure
 
-[Read more about podcast and episode information in templates.](docs/templates.md)
+> [!TIP]
+> `episode.size` gives you the podcast's size in bytes and `episode.duration`
+> gives you the duration in seconds. To include size and duration
+> in your templates in a human-readable format, use **Podcaster**’s filters
+> `readableSize` and `readableDuration`.
 
 ## Hosting
 

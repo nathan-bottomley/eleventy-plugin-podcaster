@@ -87,7 +87,7 @@ export default function (eleventyConfig, options = {}) {
     }
   })
 
-  eleventyConfig.addPlugin(calculateSizeAndDuration)
+  eleventyConfig.addPlugin(calculateSizeAndDuration, options)
   eleventyConfig.addPlugin(excerpts, options)
   eleventyConfig.addPlugin(drafts, options)
 }

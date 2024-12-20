@@ -95,8 +95,8 @@ Here's how you could use this information to describe a single podcast episode i
 ```liquid
 <article>
   <h1>{{ title }}</h1>
-  <div class="episode-number">Episode {{ episode.episodeNumber }}</div>
-  <div class="release-date">{{ date | date: "%A %-e %B %Y" }}</div>
+  <p class="episode-number">Episode {{ episode.episodeNumber }}</p>
+  <p class="release-date">{{ date | date: "%A %-e %B %Y" }}</p>
   <section class="content">
     {{ content }}
   </section>

@@ -72,7 +72,3 @@ And here's a detailed description of all of this information.
 
 [categories]: https://podcasters.apple.com/support/1691-apple-podcasts-categories
 [lang]: https://www.rssboard.org/rss-language-codes
-
-## Using podcast data in your templates
-
-<https://help.apple.com/itc/podcasts_connect/>

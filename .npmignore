@@ -3,3 +3,7 @@ test
 .vscode
 .github
 .nova
+.zed
+.editorconfig
+.markdownlint.jsonc
+.eslint.config.js

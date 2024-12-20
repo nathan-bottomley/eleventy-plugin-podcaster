@@ -21,11 +21,11 @@ episode:
   explicit: no
   episodeType: full
 excerpt: >-
-    A big week for beginnings this week, with a new Doctor, 
-    a new origin story for the Daleks, and a whole new approach 
-    to defeating the bad guys. Oh, and a new podcast to discuss 
-    them all on. So let’s welcome Patrick Troughton to the studio
-    floor, as we discuss _The Power of the Daleks_.
+  A big week for beginnings this week, with a new Doctor, 
+  a new origin story for the Daleks, and a whole new approach 
+  to defeating the bad guys. Oh, and a new podcast to discuss 
+  them all on. So let’s welcome Patrick Troughton to the studio
+  floor, as we discuss _The Power of the Daleks_.
 ---
 ```
 
@@ -43,7 +43,9 @@ Here's a detailed description of the data you need to provide here.
 | `episode.duration` | The duration of the episode as a number of seconds. You can convert this to `h:mm:ss` format using Podcaster's `readableDuration` filter. | yes |
 | `episode.explicit` | Warns listeners that this episode contains explicit language. Should be used for a single episode in a podcast that isn't itself marked as explicit. | no |
 | `episode.type` | The type of episode. Defaults to `full`, meaning a full episode of the podcast. Other valid types are `trailer` and `bonus`. | no |
-| `excerpt` | A shorter version of the content of the post, written in Markdown. For use in lists of episodes where the show notes are long. | no |
+| `excerpt` | A shorter version of the content of the post, written in Markdown. For use in lists of episodes where the show notes are long. For other ways of providing excerpts to **Podcaster**, check out its [optional excerpts feature][excerpts]. | no |
+
+[excerpts]: /docs/optional-features.md#excerpts
 
 > [!TIP]
 > It's possible for **Podcaster** to calculate the size and duration for each episode if it has access to your episode audio files. [Read more to find out how](docs/size-and-duration.md).

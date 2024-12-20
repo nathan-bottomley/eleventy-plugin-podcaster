@@ -6,4 +6,4 @@ test
 .zed
 .editorconfig
 .markdownlint.jsonc
-.eslint.config.js
+eslint.config.js

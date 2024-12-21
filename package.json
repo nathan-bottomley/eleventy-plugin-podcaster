@@ -1,11 +1,16 @@
 {
   "name": "eleventy-plugin-podcaster",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "An Eleventy plugin that allows you to create a podcast and its accompanying website",
   "main": "eleventy.config.js",
   "exports": {
     ".": "./eleventy.config.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nathan-bottomley/eleventy-plugin-podcaster.git"
+  },
+  "homepage": "https://github.com/nathan-bottomley/eleventy-plugin-podcaster/tree/main/docs",
   "type": "module",
   "scripts": {
     "test": "ava"

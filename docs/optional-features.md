@@ -12,7 +12,8 @@ export default function (eleventyConfig) {
   .
   eleventyConfig.addPlugin(podcasterPlugin, {
     handleDrafts: true,
-    handleExcerpts: true
+    handleExcerpts: true,
+    readableDateLocale: 'en-GB'
   })
   .
   .
@@ -34,3 +35,9 @@ Excerpts are available in a template as `{{ excerpt }}`, but you will probably a
 1. As an `excerpt` field in the post's front matter. This should be written in Markdown.
 2. The part of the post between the excerpt delimiters `<!---excerpt-->` and `<!---endexcerpt-->` .
 3. The first paragraph in the post which is not nested inside another tag. (This is so that a blockquote at the beginning of a post isn't included in the excerpt.)
+
+## `readableDate` filter
+
+**Podcaster** optionally provides a `readableDate` filter, to match `readableDuration` and `readableSize`. It transforms a date into a localised string, which usually includes weekday, day of month, month and year.
+
+To make **Podcaster** provide this filter, pass a locale string as one of the options when you're adding the plugin to your config file. In English, the two most common locale strings are `'en-GB'` and `'en-US'`.

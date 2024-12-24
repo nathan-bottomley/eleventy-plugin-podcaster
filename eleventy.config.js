@@ -56,15 +56,17 @@ export default function (eleventyConfig, options = {}) {
 
   eleventyConfig.addShortcode('year', () => DateTime.now().year)
 
-  eleventyConfig.addFilter('readableDate', function (date) {
-    if (date instanceof Date) {
-      date = date.toISOString()
-    }
-    const result = DateTime.fromISO(date, {
-      zone: 'UTC'
+  if (options.readableDateLocale) {
+    eleventyConfig.addFilter('readableDate', function (date) {
+      if (date instanceof Date) {
+        date = date.toISOString()
+      }
+      const result = DateTime.fromISO(date, {
+        zone: 'UTC'
+      })
+      return result.setLocale(options.readableDateLocale).toLocaleString(DateTime.DATE_HUGE)
     })
-    return result.setLocale('en-GB').toLocaleString(DateTime.DATE_HUGE)
-  })
+  }
 
   eleventyConfig.addFilter('readableDuration', function (seconds) {
     if (!seconds) return '0:00:00'

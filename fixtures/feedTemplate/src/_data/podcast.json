@@ -1,0 +1,6 @@
+{
+  "siteUrl": "https://example.com/",
+  "episodeUrlBase": "https://example.com/",
+  "feedEpisodeContentTemplate": "feed-episode-content.njk",
+  "feedEpisodeDescriptionTemplate": "feed-episode-description.njk"
+}

@@ -29,7 +29,7 @@ eleventyAllowMissingExtension: true
     {%- else %}
     <itunes:category text="{{ podcast.category }}" />
     {%- endif %}
-    <itunes:image href="{{ podcast.imagePath | htmlBaseUrl(podcast.siteUrl) }}"></itunes:image>
+    <itunes:image href="{{ podcast.imagePath | htmlBaseUrl(siteUrl) }}"></itunes:image>
     <itunes:summary>{{ podcast.summary or podcast.description }}</itunes:summary>
     {% if podcast.explicit !== undefined %}<itunes:explicit>{{ podcast.explicit or "false" }}</itunes:explicit>{% endif -%}
     {%- if podcast.type %}
@@ -46,24 +46,35 @@ eleventyAllowMissingExtension: true
     {% for post in collections.podcastEpisode | reverse %}
     <item>
       <title>{{ post.data.title }}</title>
-      <link>{{ post.url | htmlBaseUrl(podcast.siteUrl) }}</link>
+      <link>{{ post.url | htmlBaseUrl(siteUrl) }}</link>
       <pubDate>{{ post.date | dateToRfc3339 }}</pubDate>
       {% if post.data.episode.seasonNumber -%}
       <itunes:season>{{ post.data.episode.seasonNumber }}</itunes:season>
       {%- endif %}
       <itunes:episode>{{ post.data.episode.episodeNumber }}</itunes:episode>
-      <itunes:summary>{{ post.content | striptags(true) | truncate(800) }}</itunes:summary>
-      <description>{{ post.content | striptags(true) | truncate(800) }}</description>
+      {% if podcast.feedEpisodeDescriptionTemplate %}
+      {%- set episodeDescription -%}
+      {% include podcast.feedEpisodeDescriptionTemplate %}
+      {%- endset -%}
+      {% else %}
+      {%- set episodeDescription = post.content | striptags(true) | truncate(800) -%}
+      {%- endif %}
+      <itunes:summary>{{ episodeDescription }}</itunes:summary>
+      <description>{{ episodeDescription }}</description>
       {% if podcast.feedEpisodeContentTemplate %}
       {%- set episodeContent -%}
       {% include podcast.feedEpisodeContentTemplate %}
       {%- endset -%}
+      {% else %}
+      {%- set episodeContent = post.content -%}
+      {% endif %}
+      {%- if post.data.page -%}
       <content:encoded>
-        <![CDATA[{{ episodeContent | renderTransforms(post.data.page, podcast.siteUrl) | safe | trim }}]]>
+        <![CDATA[{{ episodeContent | renderTransforms(post.data.page, siteUrl) | safe | trim }}]]>
       </content:encoded>
       {%- else -%}
       <content:encoded>
-        <![CDATA[{{ post.content | renderTransforms(post.data.page, podcast.siteUrl) | safe | trim }}]]>
+        <![CDATA[{{ post.content | renderTransforms(post.data.page, siteUrl) | safe | trim }}]]>
       </content:encoded>
       {% endif %}
       <enclosure url="{{ post.data.episode.url }}" length="{{ post.data.episode.size }}" type="audio/mp3"></enclosure>
@@ -71,7 +82,7 @@ eleventyAllowMissingExtension: true
       {%- if post.data.guid != undefined %}
       <guid isPermalink="false">{{ post.data.episode.guid }}</guid>
       {% else %}
-      <guid isPermalink="true">{{ post.url | htmlBaseUrl(podcast.siteUrl) }}</guid>
+      <guid isPermalink="true">{{ post.url | htmlBaseUrl(siteUrl) }}</guid>
       {% endif -%}
       {%- if post.data.explicit != undefined %}
       <itunes:explicit>{{ post.data.explicit }}</itunes:explicit>

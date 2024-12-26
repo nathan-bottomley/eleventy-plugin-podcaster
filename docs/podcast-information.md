@@ -42,6 +42,7 @@ However, `eleventy-plugin-podcast` is quite customisable. He's another `podcast.
   "episodeUrlBase": "https://example.fte-cdn.com/",
   "feedEpisodeContentTemplate": "feed-episode-content.njk",
   "feedEpisodeDescriptionTemplate": "feed-episode-description.njk"
+  "feedEpisodeSummaryTemplate": "feed-episode-summary.njk"
 }
 ```
 
@@ -67,8 +68,28 @@ And here's a detailed description of all of this information.
 | `copyright` | The copyright owner of the podcast. If omitted, the value supplied for `author` is used instead. | no |
 | `startingYear` | The year your podcast started. Used to express the copyright date as a range (_"© 2014–2024 Flight Through Entirety"_). If this is omitted, the copyright date will just be the current year. | no |
 | `episodeUrlBase` | If you store your podcast episodes on a CDN, or if you use a podcast analytics service, this is where you specify the base URL for them. If you don't specify this, it defaults to `https://{{ podcast.siteUrl }}/episodes/` | no |
-| `feedEpisodeContentTemplate` | The name of an include template that will be used to create the show notes of each episode, as displayed in your listeners' podcast players. The content of this template should be HTML. You only need to include this if you want the show notes in podcast players to be different from the show notes on the website. | no |
-| `feedEpisodeDescriptionTemplate` | The name of an include template that will be used to create the description of each episode. The content of this template should be plain text. If it's omitted, the description will just be an abbreviated text version of the `content` of the episode's post. | no |
 
 [categories]: https://podcasters.apple.com/support/1691-apple-podcasts-categories
 [lang]: https://www.rssboard.org/rss-language-codes
+
+## Feed episode templates
+
+For each episode of the podcast, the feed can contain three textual descriptions — `content`, `description` and `summary`. `content` is HTML and will contain the show notes of an episode. `description` and `summary` are short plain text descriptions of the episode.
+
+By default, **Podcaster** will set the `content` of the feed to the `content` of an episode's post, and will set `summary` and `description` to an abbreviated version of the content (roughly the first 500 characters of the `content`). And this will be perfectly fine for most podcast feeds.
+
+However, if you want to, you can override any or all of these three textual descriptions by providing special templates in the includes directory and adding their names to the `podcast` object.
+
+| field | value | required? |
+| ----- | ----- | --------- |
+| `feedEpisodeContentTemplate` | The name of an include template that will be used to create the show notes of each episode, as displayed in your listeners' podcast players. The content of this template should be HTML. You only need to include this if you want the show notes in podcast players to be different from the show notes on the website. | no |
+| `feedEpisodeDescriptionTemplate` | The name of an include template that will be used to create the description of each episode. The content of this template should be plain text. If it's omitted, the description will just be an abbreviated text version of the `content` of the episode's post. | no |
+| `feedEpisodeSummaryTemplate` | The name of an include template that will be used to create the summary of each episode. The content of this template should be plain text. If it's omitted, the description will just be an abbreviated text version of the `content` of the episode's post. | no |
+
+These templates must be Nunjucks templates, and the post for the episode must be referred to by the variable `post`. Here's a sample content template from one of my podcast websites.
+
+```njk
+<p class="diary-date">{{ post.data.diaryDate | readableDate }}</p>
+<p class="topic">{{ post.data.topic }}</p>
+{{ post.content | safe }}
+```

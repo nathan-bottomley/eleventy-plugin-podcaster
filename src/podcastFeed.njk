@@ -52,6 +52,14 @@ eleventyAllowMissingExtension: true
       <itunes:season>{{ post.data.episode.seasonNumber }}</itunes:season>
       {%- endif %}
       <itunes:episode>{{ post.data.episode.episodeNumber }}</itunes:episode>
+      {% if podcast.feedEpisodeSummaryTemplate %}
+      {%- set episodeSummary -%}
+      {% include podcast.feedEpisodeSummaryTemplate %}
+      {%- endset -%}
+      {% else %}
+      {%- set episodeSummary = post.content | striptags(true) | truncate(500) -%}
+      {%- endif %}
+      <itunes:summary>{{ episodeSummary }}</itunes:summary>
       {% if podcast.feedEpisodeDescriptionTemplate %}
       {%- set episodeDescription -%}
       {% include podcast.feedEpisodeDescriptionTemplate %}
@@ -59,7 +67,6 @@ eleventyAllowMissingExtension: true
       {% else %}
       {%- set episodeDescription = post.content | striptags(true) | truncate(800) -%}
       {%- endif %}
-      <itunes:summary>{{ episodeDescription }}</itunes:summary>
       <description>{{ episodeDescription }}</description>
       {% if podcast.feedEpisodeContentTemplate %}
       {%- set episodeContent -%}
@@ -68,19 +75,13 @@ eleventyAllowMissingExtension: true
       {% else %}
       {%- set episodeContent = post.content -%}
       {% endif %}
-      {%- if post.data.page -%}
       <content:encoded>
         <![CDATA[{{ episodeContent | renderTransforms(post.data.page, siteUrl) | safe | trim }}]]>
       </content:encoded>
-      {%- else -%}
-      <content:encoded>
-        <![CDATA[{{ post.content | renderTransforms(post.data.page, siteUrl) | safe | trim }}]]>
-      </content:encoded>
-      {% endif %}
       <enclosure url="{{ post.data.episode.url }}" length="{{ post.data.episode.size }}" type="audio/mp3"></enclosure>
       <itunes:duration>{{ post.data.episode.duration | readableDuration }}</itunes:duration>
       {%- if post.data.guid != undefined %}
-      <guid isPermalink="false">{{ post.data.episode.guid }}</guid>
+      <guid isPermalink="false">{{ post.data.guid }}</guid>
       {% else %}
       <guid isPermalink="true">{{ post.url | htmlBaseUrl(siteUrl) }}</guid>
       {% endif -%}

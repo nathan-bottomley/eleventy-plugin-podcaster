@@ -36,6 +36,7 @@ Here's a detailed description of the data you need to provide here.
 | `title` | The title of the episode; this will also be the title of the post on the website. | yes |
 | `date` | The release date of the episode; this will also be the date of the post on the website | yes |
 | `tags` | Every episode post must have the tag `podcastEpisode` included in the `tags` array. Other tags are also permitted. | yes |
+| `guid` | A unique ID for the post. Normally this will be the post's URL, in which case there is no need to provide it here. It's should really only be necessary to provide it if you're importing the podcast from some other system that has assigned a guid to each post.  | no |
 | `episode.filename` | The filename of the episode's audio file. | yes |
 | `episode.seasonNumber` | The  season number. (Most podcasts don't group their episodes into seasons.) | no |
 | `episode.episodeNumber` | The episode number. Needn't be unique, but the combination of `seasonNumber` and `episodeNumber` must be unique. | yes |

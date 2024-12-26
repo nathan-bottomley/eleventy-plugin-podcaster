@@ -138,3 +138,58 @@ test('site.url is used if podcast.siteUrl is absent', async t => {
   const item = build.find(item => item.url === '/feed/podcast.xml')
   t.true(item.content.includes('https://example.com/img/podcast-logo.jpg'))
 })
+
+test("if guid isn't provided, it defaults to the URL", async t => {
+  const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
+    config (eleventyConfig) {
+      eleventyConfig.addPlugin(podcasterPlugin)
+      eleventyConfig.addGlobalData(
+        'site.url',
+        'https://example.com/'
+      )
+      eleventyConfig.addGlobalData(
+        'podcast.episodeUrlBase',
+        'https://example.com/'
+      )
+      eleventyConfig.addTemplate('episode-1.md', '{{ episode.url }}', {
+        tags: ['podcastEpisode'],
+        date: '2020-01-01',
+        title: 'Episode 1',
+        permalink: '/1/',
+        episode: { filename: 'episode 1.mp3' }
+      })
+    }
+  })
+  const build = await eleventy.toJSON()
+  const item = build.find(item => item.url === '/feed/podcast.xml')
+  t.true(item.content.includes('<guid isPermalink="true">https://example.com/1/</guid>', item.content))
+})
+
+test('if guid is provided, it is used and isPermalink is false', async t => {
+  const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
+    config (eleventyConfig) {
+      eleventyConfig.addPlugin(podcasterPlugin)
+      eleventyConfig.addGlobalData(
+        'site.url',
+        'https://example.com/'
+      )
+      eleventyConfig.addGlobalData(
+        'podcast.episodeUrlBase',
+        'https://example.com/'
+      )
+      eleventyConfig.addTemplate('episode-1.md', '{{ episode.url }}', {
+        tags: ['podcastEpisode'],
+        date: '2020-01-01',
+        title: 'Episode 1',
+        permalink: '/1/',
+        episode: { filename: 'episode 1.mp3' },
+        guid: 'https://example.com/?p=12'
+      })
+    }
+  })
+  const build = await eleventy.toJSON()
+  const item = build.find(item => item.url === '/feed/podcast.xml')
+  t.true(item.content.includes('<guid isPermalink="false">https://example.com/?p=12</guid>', item.content))
+})

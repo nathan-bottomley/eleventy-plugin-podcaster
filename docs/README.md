@@ -25,12 +25,12 @@ And then include the plugin in your Eleventy configuration file.
 ```js
 // eleventy.config.js
 
-import podcaster from 'eleventy-plugin-podcaster'
+import Podcaster from 'eleventy-plugin-podcaster'
 
 export default function (eleventyConfig) {
   .
   .
-  eleventyConfig.addPlugin(podcaster)
+  eleventyConfig.addPlugin(Podcaster)
   .
   .
 }
@@ -57,7 +57,7 @@ Here's an example.
 
 ## Episode information
 
-For each podcast episode you create, you will also create a Eleventy template containing the information about it — the title, the release date, the episode number, the filename and so on. This template will have the tag `podcastEpisode`; its front matter will contain all of the information about the episode — title, release date, episode number and so on — and its content will contain the episode's show notes.
+For each podcast episode you create, you will also create a corresponding Eleventy template. This template will have the tag `podcastEpisode`; its front matter will contain the information about the episode — the title, the release date, the episode number, the filename and so on — and its content will contain the episode's show notes.
 
 Here's an example.
 

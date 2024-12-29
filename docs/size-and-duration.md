@@ -26,12 +26,12 @@ During the build, **Podcaster** will use this JSON file behind the scenes to ret
 You can specify another folder for **Podcaster** to use when you include **Podcaster** in your configuration file by specifying a relative or absolute path like this.
 
 ```js
-import podcasterPlugin from 'eleventy-plugin-podcaster'
+import Podcaster from 'eleventy-plugin-podcaster'
 
 export default function (eleventyConfig) {
   .
   .
-  eleventyConfig.addPlugin(podcasterPlugin, {
+  eleventyConfig.addPlugin(Podcaster, {
     episodesDir: '~/episodes'
   })
   .
@@ -45,13 +45,13 @@ When you're building your site locally, you can easily point **Podcaster** at a 
 
 But if you host your site on a Jamstack provider and it's building your site for you, it won't have access to a directory like that. (Your podcast files are too big to store in your repository.)
 
-So you can run your build locally first, and then commit the resulting `episodesData.json` file to your repository. If you do that, the build process on your host will use the information there to work our your episodes' size and duration.
+And so with **Podcaster** you can run your build locally first and then commit the resulting `episodesData.json` file to your repository. If you do that, the build process on your host will use the information in that file to work our the size and duration of your episodes.
 
 ## Skipping the process
 
-**Podcaster** will analyse your MP3 files only once during a `--serve` session. To get it to run the analysis again, you need to restart the web server.
+When Eleventy is running in `--serve` mode,**Podcaster** will analyse your MP3 files only once during a session. To get it to run the analysis again, you need to restart the web server.
 
-If you don't want to run the analysis process during a build, you can just set the environment variable `SKIP_EPISODE_CALCULATIONS` to `true`.
+If you don't want to run the analysis during a build, you can just set the environment variable `SKIP_EPISODE_CALCULATIONS` to `true`.
 
 ```sh
 SKIP_EPISODE_CALCULATIONS=true npx @11ty/eleventy --serve

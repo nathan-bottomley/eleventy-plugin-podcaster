@@ -49,3 +49,19 @@ test('when feedEpisodeSummaryTemplate is provided, it is used to populate the <i
   t.true(episodes.some(episode => episode['itunes:summary'] === 'feed-episode-summary 1'))
   t.true(episodes.some(episode => episode['itunes:summary'] === 'feed-episode-summary 2'))
 })
+
+test('when feedEpisodetitleTemplate is provided, it is used to populate the <title> tag', async (t) => {
+  const eleventy = new Eleventy(
+    './fixtures/feedTemplate/src',
+    './fixtures/feedTemplate/_site',
+    {
+      configPath: './fixtures/feedTemplate/eleventy.config.js'
+    })
+  const build = await eleventy.toJSON()
+  const parser = new XMLParser()
+  const item = build.find(item => item.url === '/feed/podcast.xml')
+  const feedData = parser.parse(item.content)
+  const episodes = feedData.rss.channel.item
+  t.true(episodes.some(episode => episode['title'] === 'feed-episode-title 1'))
+  t.true(episodes.some(episode => episode['title'] === 'feed-episode-title 2'))
+})

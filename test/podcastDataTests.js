@@ -1,13 +1,13 @@
 import test from 'ava'
 import Eleventy from '@11ty/eleventy'
-import podcasterPlugin from 'eleventy-plugin-podcaster'
+import Podcaster from 'eleventy-plugin-podcaster'
 import { XMLParser, XMLValidator } from 'fast-xml-parser'
 
 test('RSS feed template renders', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcasterPlugin)
+      eleventyConfig.addPlugin(Podcaster)
     }
   })
   const build = await eleventy.toJSON()
@@ -19,7 +19,7 @@ test('RSS feed is valid XML', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcasterPlugin)
+      eleventyConfig.addPlugin(Podcaster)
     }
   })
   const build = await eleventy.toJSON()
@@ -32,7 +32,7 @@ test('feed renders at /feed/podcast.xml by default', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcasterPlugin)
+      eleventyConfig.addPlugin(Podcaster)
     }
   })
   const build = await eleventy.toJSON()
@@ -43,7 +43,7 @@ test('feed renders at podcast.feedPath if set', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcasterPlugin)
+      eleventyConfig.addPlugin(Podcaster)
       eleventyConfig.addGlobalData('podcast', { feedPath: '/feed.xml' })
     }
   })
@@ -55,7 +55,7 @@ test('RSS feed contains correct information', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcasterPlugin)
+      eleventyConfig.addPlugin(Podcaster)
       eleventyConfig.addGlobalData('podcast', {
         title: 'Test Podcast',
         subtitle: 'A test podcast. With cake.',
@@ -111,7 +111,7 @@ test('if no summary is set, the description is used as the summary', async t => 
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcasterPlugin)
+      eleventyConfig.addPlugin(Podcaster)
       eleventyConfig.addGlobalData('podcast', {
         description: 'A test podcast with excellent content. With cake.'
       })
@@ -133,7 +133,7 @@ test('if no subtitle is set, the description is used as the summary', async t =>
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcasterPlugin)
+      eleventyConfig.addPlugin(Podcaster)
       eleventyConfig.addGlobalData('podcast', {
         description: 'A test podcast with excellent content. With cake.'
       })
@@ -155,7 +155,7 @@ test('<itunes:category> works if no subcategory is set', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcasterPlugin)
+      eleventyConfig.addPlugin(Podcaster)
       eleventyConfig.addGlobalData('podcast', {
         category: 'TV & Film'
       })
@@ -178,7 +178,7 @@ test('<itunes:type> can be set to episodic', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcasterPlugin)
+      eleventyConfig.addPlugin(Podcaster)
       eleventyConfig.addGlobalData('podcast', { type: 'episodic' })
     }
   })
@@ -192,7 +192,7 @@ test('<itunes:type> can be set to serial', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcasterPlugin)
+      eleventyConfig.addPlugin(Podcaster)
       eleventyConfig.addGlobalData('podcast', { type: 'serial' })
     }
   })
@@ -206,7 +206,7 @@ test('<itunes:explicit> defaults to not existing', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcasterPlugin)
+      eleventyConfig.addPlugin(Podcaster)
     }
   })
   const build = await eleventy.toJSON()
@@ -219,7 +219,7 @@ test('<itunes:explicit> can be set to true', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcasterPlugin)
+      eleventyConfig.addPlugin(Podcaster)
       eleventyConfig.addGlobalData('podcast', { explicit: true })
     }
   })
@@ -233,7 +233,7 @@ test('<itunes:explicit> can be set to false', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcasterPlugin)
+      eleventyConfig.addPlugin(Podcaster)
       eleventyConfig.addGlobalData('podcast', { explicit: false })
     }
   })
@@ -247,7 +247,7 @@ test('copyright defaults to author name', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcasterPlugin)
+      eleventyConfig.addPlugin(Podcaster)
       eleventyConfig.addGlobalData('podcast', { author: 'Test Author' })
     }
   })
@@ -262,7 +262,7 @@ test('copyright can be set to a range with startingYear', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcasterPlugin)
+      eleventyConfig.addPlugin(Podcaster)
       eleventyConfig.addGlobalData('podcast', { copyright: 'Test Copyright', startingYear: 2020 })
     }
   })
@@ -278,7 +278,7 @@ test("copyright isn't expressed as a range when startingYear is this year", asyn
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcasterPlugin)
+      eleventyConfig.addPlugin(Podcaster)
       eleventyConfig.addGlobalData('podcast', { copyright: 'Test Copyright', startingYear: year })
     }
   })
@@ -292,7 +292,7 @@ test('feedLastBuildDate is set to the current date and time in RFC2822 format', 
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcasterPlugin)
+      eleventyConfig.addPlugin(Podcaster)
     }
   })
   const build = await eleventy.toJSON()

@@ -1,12 +1,12 @@
 import test from 'ava'
 import Eleventy from '@11ty/eleventy'
-import podcasterPlugin from 'eleventy-plugin-podcaster'
+import Podcaster from 'eleventy-plugin-podcaster'
 
 test('readableDate filter does not exist by default', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcasterPlugin)
+      eleventyConfig.addPlugin(Podcaster)
       eleventyConfig.addTemplate('index.md', '{{ date | readableDate }}', {
         date: '2020-01-01',
         title: 'Readable Date test',
@@ -24,7 +24,7 @@ test('readableDate filter exists when readableDateLocale is provided', async t =
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcasterPlugin, { readableDateLocale: 'en-GB' })
+      eleventyConfig.addPlugin(Podcaster, { readableDateLocale: 'en-GB' })
       eleventyConfig.addTemplate('index.md', '{{ date | readableDate }}', {
         date: '2020-01-01',
         title: 'Readable Date test',

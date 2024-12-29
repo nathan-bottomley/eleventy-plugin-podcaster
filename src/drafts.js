@@ -4,9 +4,9 @@ export default (eleventyConfig, options = {}) => {
   let hasLoggedAboutDrafts = false
   eleventyConfig.addPreprocessor('drafts', 'md', (data, _content) => {
     let shouldIncludeDrafts = false
-    if (process.env.BUILD_DRAFTS === 'true') {
+    if (process.env.INCLUDE_DRAFTS === 'true') {
       shouldIncludeDrafts = true
-    } else if (process.env.BUILD_DRAFTS === 'false') {
+    } else if (process.env.INCLUDE_DRAFTS === 'false') {
       shouldIncludeDrafts = false
     } else {
       shouldIncludeDrafts = (process.env.ELEVENTY_RUN_MODE !== 'build')

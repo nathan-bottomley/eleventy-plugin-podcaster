@@ -43,6 +43,7 @@ However, `eleventy-plugin-podcast` is quite customisable. He's another `podcast.
   "feedEpisodeContentTemplate": "feed-episode-content.njk",
   "feedEpisodeDescriptionTemplate": "feed-episode-description.njk"
   "feedEpisodeSummaryTemplate": "feed-episode-summary.njk"
+  "feedEpisodeTitleTemplate": "feed-episode-title.njk"
 }
 ```
 
@@ -85,6 +86,7 @@ However, if you want to, you can override any or all of these three textual desc
 | `feedEpisodeContentTemplate` | The name of an include template that will be used to create the show notes of each episode, as displayed in your listeners' podcast players. The content of this template should be HTML. You only need to include this if you want the show notes in podcast players to be different from the show notes on the website. | no |
 | `feedEpisodeDescriptionTemplate` | The name of an include template that will be used to create the description of each episode. The content of this template should be plain text. If it's omitted, the description will just be an abbreviated text version of the `content` of the episode's post. | no |
 | `feedEpisodeSummaryTemplate` | The name of an include template that will be used to create the summary of each episode. The content of this template should be plain text. If it's omitted, the description will just be an abbreviated text version of the `content` of the episode's post. | no |
+| `feedEpisodeTitleTemplate` | The name of an title template that will be used to create the title of each episode. The content of this template should be plain text. If it's omitted, the `title` of the episode's post will be used. | no |
 
 These templates must be Nunjucks templates, and the post for the episode must be referred to by the variable `post`. Here's a sample content template from one of my podcast websites.
 

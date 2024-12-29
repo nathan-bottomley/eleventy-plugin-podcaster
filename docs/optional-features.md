@@ -1,16 +1,16 @@
 # Optional features
 
-**Podcaster** includes some optional features which you might find useful for your podcasting website. These features are turned off by default, in case you want to implement them some other way. You can enable one or both of them when you include the plugin in your eleventy configuration file, like this:
+**Podcaster** includes some optional features which you might find useful for your podcasting website. These features are turned off by default, in case you want to implement them some other way. You can enable some or all of them when you include the plugin in your eleventy configuration file, like this:
 
 ```js
 // eleventy.config.js
 
-import podcasterPlugin from 'eleventy-plugin-podcaster'
+import Podcaster from 'eleventy-plugin-podcaster'
 
 export default function (eleventyConfig) {
   .
   .
-  eleventyConfig.addPlugin(podcasterPlugin, {
+  eleventyConfig.addPlugin(Podcaster, {
     handleDrafts: true,
     handleExcerpts: true,
     readableDateLocale: 'en-GB'
@@ -22,7 +22,7 @@ export default function (eleventyConfig) {
 
 ## Drafts
 
-If `handleDrafts` is set to `true`, the plugin will allow you to designate posts as drafts by including `draft: true` in their front matter (or elsewhere in the data cascade). By default, drafts will be included in the build when Eleventy is running in `serve` or `watch` mode, but will be excluded in `build` mode. You can override this default behaviour by setting the `BUILD_DRAFTS` environment variable to `true` or `false`.
+If `handleDrafts` is set to `true`, the plugin will allow you to designate posts as drafts by including `draft: true` in their front matter (or elsewhere in the data cascade). By default, drafts will be included in the build when Eleventy is running in `serve` or `watch` mode, but will be excluded in `build` mode. You can override this default behaviour by setting the `INCLUDE_DRAFTS` environment variable to `true` or `false`.
 
 ## Excerpts
 

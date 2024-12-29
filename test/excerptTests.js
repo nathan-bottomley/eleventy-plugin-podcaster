@@ -1,12 +1,12 @@
 import test from 'ava'
 import Eleventy from '@11ty/eleventy'
-import podcasterPlugin from 'eleventy-plugin-podcaster'
+import Podcaster from 'eleventy-plugin-podcaster'
 
 test('excerpt is the first child <p> of the content not in a <blockquote>', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcasterPlugin, { handleExcerpts: true })
+      eleventyConfig.addPlugin(Podcaster, { handleExcerpts: true })
       eleventyConfig.addGlobalData(
         'podcast.episodeUrlBase',
         'https://example.com/'
@@ -30,7 +30,7 @@ test('if front matter excerpt is set, it is used after being converted to raw HT
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcasterPlugin, { handleExcerpts: true })
+      eleventyConfig.addPlugin(Podcaster, { handleExcerpts: true })
       eleventyConfig.addGlobalData('podcast.episodeUrlBase', 'https://example.com/')
       eleventyConfig.addTemplate('episode-1.md', '# Episode 1\n\n> blockquote paragraph\n\nnon-blockquote paragraph', {
         tags: ['podcastEpisode'],
@@ -52,7 +52,7 @@ test('if excerpt is set using comment delimiters, it is used after being convert
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcasterPlugin, { handleExcerpts: true })
+      eleventyConfig.addPlugin(Podcaster, { handleExcerpts: true })
       eleventyConfig.addGlobalData('podcast.episodeUrlBase', 'https://example.com/')
       eleventyConfig.addTemplate('episode-1.md', '# Episode 1\n\nfirst paragraph\n<!---excerpt-->\nsecond *paragraph*\n<!---endexcerpt-->\nthird paragraph\n', {
         tags: ['podcastEpisode'],

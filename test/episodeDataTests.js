@@ -1,13 +1,13 @@
 import test from 'ava'
 import Eleventy from '@11ty/eleventy'
-import podcasterPlugin from 'eleventy-plugin-podcaster'
+import Podcaster from 'eleventy-plugin-podcaster'
 import { XMLParser } from 'fast-xml-parser'
 
 test('podcastEpisode template produces <item> tag in feed', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcasterPlugin)
+      eleventyConfig.addPlugin(Podcaster)
       eleventyConfig.addGlobalData(
         'podcast.episodeUrlBase',
         'https://example.com/'
@@ -39,7 +39,7 @@ test('episode.url consists of the episode prefix plus the episode filename', asy
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcasterPlugin)
+      eleventyConfig.addPlugin(Podcaster)
       eleventyConfig.addGlobalData(
         'podcast.episodeUrlBase',
         'https://example.com/'
@@ -62,7 +62,7 @@ test('episode.url is percent encoded', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcasterPlugin)
+      eleventyConfig.addPlugin(Podcaster)
       eleventyConfig.addGlobalData(
         'podcast.episodeUrlBase',
         'https://example.com/'
@@ -85,7 +85,7 @@ test('a local link in podcast episode content is converted to an absolute URL', 
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcasterPlugin)
+      eleventyConfig.addPlugin(Podcaster)
       eleventyConfig.addGlobalData(
         'podcast.episodeUrlBase',
         'https://example.com/'
@@ -112,7 +112,7 @@ test('site.url is used if podcast.siteUrl is absent', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcasterPlugin)
+      eleventyConfig.addPlugin(Podcaster)
       eleventyConfig.addGlobalData(
         'podcast.episodeUrlBase',
         'https://example.com/'
@@ -143,7 +143,7 @@ test("if guid isn't provided, it defaults to the URL", async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcasterPlugin)
+      eleventyConfig.addPlugin(Podcaster)
       eleventyConfig.addGlobalData(
         'site.url',
         'https://example.com/'
@@ -170,7 +170,7 @@ test('if guid is provided, it is used and isPermalink is false', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(podcasterPlugin)
+      eleventyConfig.addPlugin(Podcaster)
       eleventyConfig.addGlobalData(
         'site.url',
         'https://example.com/'

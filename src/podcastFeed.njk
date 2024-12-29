@@ -45,7 +45,14 @@ eleventyAllowMissingExtension: true
     <generator>{{ eleventy.generator }}</generator>
     {% for post in collections.podcastEpisode | reverse %}
     <item>
-      <title>{{ post.data.title }}</title>
+      {% if podcast.feedEpisodeTitleTemplate %}
+      {%- set episodeTitle -%}
+      {% include podcast.feedEpisodeTitleTemplate %}
+      {%- endset -%}
+      {% else %}
+      {%- set episodeTitle = post.data.title -%}
+      {%- endif %}
+      <title>{{ episodeTitle }}</title>
       <link>{{ post.url | htmlBaseUrl(siteUrl) }}</link>
       <pubDate>{{ post.date | dateToRfc3339 }}</pubDate>
       {% if post.data.episode.seasonNumber -%}

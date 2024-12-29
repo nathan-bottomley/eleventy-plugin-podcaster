@@ -15,12 +15,12 @@ And then include the plugin in your Eleventy configuration file.
 ```js
 // eleventy.config.js
 
-import podcaster from 'eleventy-plugin-podcaster'
+import Podcaster from 'eleventy-plugin-podcaster'
 
 export default function (eleventyConfig) {
   .
   .
-  eleventyConfig.addPlugin(podcaster)
+  eleventyConfig.addPlugin(Podcaster)
   .
   .
 }

@@ -25,5 +25,7 @@ test('readableDate filter exists when readableDateLocale is provided', async t =
   })
   const build = await eleventy.toJSON()
   const item = build.find(item => item.url === '/1/')
-  t.regex(item.content, /Wednesday 1 January 2020/)
+
+  // the comma appears in some JS runtime environments, but not others
+  t.regex(item.content, /Wednesday,? 1 January 2020/)
 })

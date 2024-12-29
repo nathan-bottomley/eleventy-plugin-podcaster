@@ -24,5 +24,6 @@ test('readableDate filter exists when readableDateLocale is provided', async t =
     }
   })
   const build = await eleventy.toJSON()
-  t.regex(build[0].content, /Wednesday 1 January 2020/)
+  const item = build.find(item => item.url === '/1/')
+  t.regex(item.content, /Wednesday 1 January 2020/)
 })

@@ -26,11 +26,11 @@ export default function (eleventyConfig) {
 }
 ```
 
-## ➡ [Documentation and usage][docs]
+## ➡ [Documentation and usage][Podcaster]
 
-On GitHub, you can find [detailed documentation][docs] about how to provide **Podcaster** with the information it needs to create your podcast feed and about how to use that information when creating the templates for your Eleventy site.
+On [the `eleventy-plugin-podcaster` website][Podcaster], you can find detailed documentation about how to provide **Podcaster** with the information it needs to create your podcast feed and about how to use that information when creating the templates for your Eleventy site.
 
-[docs]: https://github.com/nathan-bottomley/eleventy-plugin-podcaster/tree/main/docs
+[Podcaster]: https://eleventy-plugin-podcaster.com/docs
 
 As well as creating your feed and providing information to your templates, **Podcaster** can optionally calculate the size and duration of your podcast MP3 files, as well as offering functionality for drafts and excerpts.
 

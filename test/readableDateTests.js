@@ -9,7 +9,21 @@ import Podcaster from 'eleventy-plugin-podcaster'
   which prevents CI from passing. I'm going to skip this test for now.
 */
 
-test.todo('readableDate filter does not exist when readableDateLocale is not provided')
+test.skip('readableDate filter does not exist when readableDateLocale is not provided', async t => {
+  const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
+    config (eleventyConfig) {
+      eleventyConfig.addPlugin(Podcaster)
+      eleventyConfig.addTemplate('index.md', '{{ date | readableDate }}', {
+        date: '2020-01-01',
+        title: 'Readable Date test',
+        permalink: '/1/'
+      })
+    }
+  })
+  const error = await t.throwsAsync(() => eleventy.toJSON())
+  t.is(error.message, 'readableDate filter is not available.') // or something like that
+})
 
 test('readableDate filter exists when readableDateLocale is provided', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {

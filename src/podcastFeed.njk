@@ -1,5 +1,6 @@
 ---
-permalink: "{{ podcast.feedPath or '/feed/podcast.xml' }}"
+eleventyComputed:
+  permalink: "{{ podcast.feedPath }}"
 eleventyAllowMissingExtension: true
 ---
 {%- set siteUrl %}{{ podcast.siteUrl or site.url }}{% endset -%}
@@ -8,20 +9,17 @@ eleventyAllowMissingExtension: true
   xmlns:atom="http://www.w3.org/2005/Atom"
   xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd"
   xmlns:content="http://purl.org/rss/1.0/modules/content/"
-  >
+  xmlns:podcast="https://podcastindex.org/namespace/1.0">
   <channel>
     <title>{{ podcast.title }}</title>
-    <itunes:subtitle>{{ podcast.subtitle or podcast.description }}</itunes:subtitle>
-    <description>{{ podcast.description }}</description>
     <link>{{ siteUrl }}</link>
-    <atom:link href="{{ podcast.feedPath | htmlBaseUrl(siteUrl) }}" rel="self" type="application/rss+xml" />
-    {%- if podcast.owner %}
-    <itunes:owner>
-      <itunes:name>{{ podcast.owner.name }}</itunes:name>
-      <itunes:email>{{ podcast.owner.email }}</itunes:email>
-    </itunes:owner>
-    {%- endif %}
-    <itunes:author>{{ podcast.author }}</itunes:author>
+    <atom:link href="{{ permalink | htmlBaseUrl(siteUrl) }}" rel="self" type="application/rss+xml" />
+    <description>{{ podcast.description }}</description>
+    <language>{{ podcast.language }}</language>
+    <copyright>{{ podcast.copyrightNotice }}</copyright>
+    <pubDate>{{ collections.podcastEpisode | getNewestCollectionItemDate | dateToRfc3339 }}</pubDate>
+    <lastBuildDate>{{ podcast.feedLastBuildDate }}</lastBuildDate>
+    <itunes:image href="{{ podcast.imagePath | htmlBaseUrl(siteUrl) }}"></itunes:image>
     {%- if podcast.subcategory %}
     <itunes:category text="{{ podcast.category }}">
       <itunes:category text="{{ podcast.subcategory }}" />
@@ -29,55 +27,50 @@ eleventyAllowMissingExtension: true
     {%- else %}
     <itunes:category text="{{ podcast.category }}" />
     {%- endif %}
-    <itunes:image href="{{ podcast.imagePath | htmlBaseUrl(siteUrl) }}"></itunes:image>
-    <itunes:summary>{{ podcast.summary or podcast.description }}</itunes:summary>
-    {% if podcast.explicit !== undefined %}<itunes:explicit>{{ podcast.explicit or "false" }}</itunes:explicit>{% endif -%}
+    {% if podcast.explicit !== undefined %}
+    <itunes:explicit>{{ podcast.explicit }}</itunes:explicit>
+    {% endif -%}
+    <itunes:author>{{ podcast.author }}</itunes:author>
     {%- if podcast.type %}
     <itunes:type>{{ podcast.type }}</itunes:type>
     {%- endif %}
     {%- if podcast.complete %}
     <itunes:complete>yes</itunes:complete>
     {%- endif %}
-    <language>{{ podcast.language }}</language>
-    <copyright>{{ podcast.copyrightNotice }}</copyright>
-    <pubDate>{{ collections.podcastEpisode | getNewestCollectionItemDate | dateToRfc3339 }}</pubDate>
-    <lastBuildDate>{{ podcast.feedLastBuildDate }}</lastBuildDate>
-    <generator>{{ eleventy.generator }}</generator>
+    {%- if podcast.block %}
+    <itunes:block>yes</itunes:block>
+    {%- endif %}
+    {%- if podcast.owner %}
+    <itunes:owner>
+      <itunes:name>{{ podcast.owner.name }}</itunes:name>
+      <itunes:email>{{ podcast.owner.email }}</itunes:email>
+    </itunes:owner>
+    {%- endif %}
+
     {% for post in collections.podcastEpisode | reverse %}
     <item>
-      {% if podcast.feedEpisodeTitleTemplate %}
-      {%- set episodeTitle -%}
-      {% include podcast.feedEpisodeTitleTemplate %}
-      {%- endset -%}
-      {% else %}
-      {%- set episodeTitle = post.data.title -%}
-      {%- endif %}
-      <title>{{ episodeTitle | trim }}</title>
+      <title>{{ post.data.episode.title or post.data.title }}</title>
       <link>{{ post.url | htmlBaseUrl(siteUrl) }}</link>
-      <pubDate>{{ post.date | dateToRfc3339 }}</pubDate>
-      {% if post.data.episode.seasonNumber -%}
-      <itunes:season>{{ post.data.episode.seasonNumber }}</itunes:season>
-      {%- endif %}
-      <itunes:episode>{{ post.data.episode.episodeNumber }}</itunes:episode>
-      {% if podcast.feedEpisodeSummaryTemplate %}
-      {%- set episodeSummary -%}
-      {% include podcast.feedEpisodeSummaryTemplate %}
-      {%- endset -%}
+      {%- if post.data.guid != undefined %}
+      <guid isPermalink="false">{{ post.data.guid }}</guid>
       {% else %}
-      {%- set episodeSummary = post.content | striptags(true) | truncate(500) -%}
-      {%- endif %}
-      <itunes:summary>{{ episodeSummary | trim }}</itunes:summary>
-      {% if podcast.feedEpisodeDescriptionTemplate %}
+      <guid isPermalink="true">{{ post.url | htmlBaseUrl(siteUrl) }}</guid>
+      {% endif -%}
+      <pubDate>{{ post.date | dateToRfc3339 }}</pubDate>
+      {% if podcast.episodeDescriptionTemplate %}
       {%- set episodeDescription -%}
-      {% include podcast.feedEpisodeDescriptionTemplate %}
+      {% include podcast.episodeDescriptionTemplate %}
       {%- endset -%}
+      {% elif post.data.episode.description %}
+      {%- set episodeDescription = post.data.episode.description -%}
       {% else %}
       {%- set episodeDescription = post.content | striptags(true) | truncate(800) -%}
       {%- endif %}
       <description>{{ episodeDescription | trim }}</description>
-      {% if podcast.feedEpisodeContentTemplate %}
+      <itunes:summary>{{ episodeDescription | trim }}</itunes:summary>
+      {% if podcast.episodeContentTemplate %}
       {%- set episodeContent -%}
-      {% include podcast.feedEpisodeContentTemplate %}
+      {% include podcast.episodeContentTemplate %}
       {%- endset -%}
       {% else %}
       {%- set episodeContent = post.content -%}
@@ -85,16 +78,24 @@ eleventyAllowMissingExtension: true
       <content:encoded><![CDATA[{{ episodeContent | renderTransforms(post.data.page, siteUrl) | safe | trim }}]]></content:encoded>
       <enclosure url="{{ post.data.episode.url }}" length="{{ post.data.episode.size }}" type="audio/mp3"></enclosure>
       <itunes:duration>{{ post.data.episode.duration | readableDuration }}</itunes:duration>
-      {%- if post.data.guid != undefined %}
-      <guid isPermalink="false">{{ post.data.guid }}</guid>
-      {% else %}
-      <guid isPermalink="true">{{ post.url | htmlBaseUrl(siteUrl) }}</guid>
+      <itunes:episode>{{ post.data.episode.episodeNumber }}</itunes:episode>
+      {% if post.data.episode.seasonNumber -%}
+      <itunes:season>{{ post.data.episode.seasonNumber }}</itunes:season>
+      {%- endif %}
+      {%- if post.data.episode.image %}
+      <itunes:image href="{{ post.data.episode.image | htmlBaseUrl(siteUrl) }}"></itunes:image>
       {% endif -%}
-      {%- if post.data.explicit != undefined %}
-      <itunes:explicit>{{ post.data.explicit }}</itunes:explicit>
+      {%- if post.data.episode.explicit != undefined %}
+      <itunes:explicit>{{ post.data.episode.explicit }}</itunes:explicit>
       {% endif -%}
-      {%- if post.data.type != undefined %}
-      <itunes:episodeType>{{ post.data.episodeType }}</itunes:episodeType>
+      {%- if post.data.episode.type %}
+      <itunes:episodeType>{{ post.data.episode.type }}</itunes:episodeType>
+      {% endif -%}
+      {%- if post.data.episode.transcript %}
+      <podcast:transcript url="{{ post.data.episode.transcript | htmlBaseUrl(siteUrl) }}"></podcast:transcript>
+      {%- endif %}
+      {%- if post.data.episode.block === true %}
+      <itunes:block>Yes</itunes:block>
       {% endif -%}
     </item>
     {% endfor -%}

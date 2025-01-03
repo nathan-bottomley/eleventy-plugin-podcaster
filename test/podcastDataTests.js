@@ -58,192 +58,52 @@ test('RSS feed contains correct information', async t => {
       eleventyConfig.addPlugin(Podcaster)
       eleventyConfig.addGlobalData('podcast', {
         title: 'Test Podcast',
-        subtitle: 'A test podcast. With cake.',
-        description: 'A test podcast with excellent content. With cake.',
         siteUrl: 'https://example.com',
+        description: 'A test podcast with excellent content. With cake.',
+        language: 'en-AU',
+        category: 'TV & Film',
+        subcategory: 'TV Reviews',
+        author: 'Test Author',
         owner: {
           name: 'Test Owner',
           email: 'test@example.com'
-        },
-        author: 'Test Author',
-        category: 'TV & Film',
-        subcategory: 'TV Reviews',
-        summary: 'A test podcast with no other details.',
-        language: 'en-AU'
-      })
-    }
-  })
-  const build = await eleventy.toJSON()
-  const parser = new XMLParser({ ignoreAttributes: false })
-  const feedData = parser.parse(build[0].content)
-  t.like(feedData, {
-    rss: {
-      channel: {
-        title: 'Test Podcast',
-        'itunes:subtitle': 'A test podcast. With cake.',
-        description: 'A test podcast with excellent content. With cake.',
-        link: 'https://example.com',
-        'atom:link': {
-          '@_href': 'https://example.com/feed/podcast.xml',
-          '@_rel': 'self',
-          '@_type': 'application/rss+xml'
-        },
-        'itunes:owner': {
-          'itunes:name': 'Test Owner',
-          'itunes:email': 'test@example.com'
-        },
-        'itunes:author': 'Test Author',
-        'itunes:category': {
-          // XMLparser removes the entity, but it's in the feed
-          '@_text': 'TV & Film',
-          'itunes:category': {
-            '@_text': 'TV Reviews'
-          }
-        },
-        'itunes:summary': 'A test podcast with no other details.',
-        language: 'en-AU'
-      }
-    }
-  })
-})
-
-test('if no summary is set, the description is used as the summary', async t => {
-  const eleventy = new Eleventy('./test', './test/_site', {
-    configPath: null,
-    config (eleventyConfig) {
-      eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData('podcast', {
-        description: 'A test podcast with excellent content. With cake.'
-      })
-    }
-  })
-  const build = await eleventy.toJSON()
-  const parser = new XMLParser({ ignoreAttributes: false })
-  const feedData = parser.parse(build[0].content)
-  t.like(feedData, {
-    rss: {
-      channel: {
-        'itunes:summary': 'A test podcast with excellent content. With cake.'
-      }
-    }
-  })
-})
-
-test('if no subtitle is set, the description is used as the summary', async t => {
-  const eleventy = new Eleventy('./test', './test/_site', {
-    configPath: null,
-    config (eleventyConfig) {
-      eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData('podcast', {
-        description: 'A test podcast with excellent content. With cake.'
-      })
-    }
-  })
-  const build = await eleventy.toJSON()
-  const parser = new XMLParser({ ignoreAttributes: false })
-  const feedData = parser.parse(build[0].content)
-  t.like(feedData, {
-    rss: {
-      channel: {
-        'itunes:subtitle': 'A test podcast with excellent content. With cake.'
-      }
-    }
-  })
-})
-
-test('<itunes:category> works if no subcategory is set', async t => {
-  const eleventy = new Eleventy('./test', './test/_site', {
-    configPath: null,
-    config (eleventyConfig) {
-      eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData('podcast', {
-        category: 'TV & Film'
-      })
-    }
-  })
-  const build = await eleventy.toJSON()
-  const parser = new XMLParser({ ignoreAttributes: false })
-  t.like(parser.parse(build[0].content), {
-    rss: {
-      channel: {
-        'itunes:category': {
-          '@_text': 'TV & Film'
         }
+      })
+    }
+  })
+  const build = await eleventy.toJSON()
+  const parser = new XMLParser({ ignoreAttributes: false })
+  const feedData = parser.parse(build[0].content)
+  t.like(feedData.rss.channel, {
+    title: 'Test Podcast',
+    link: 'https://example.com',
+    'atom:link': {
+      '@_href': 'https://example.com/feed/podcast.xml',
+      '@_rel': 'self',
+      '@_type': 'application/rss+xml'
+    },
+    description: 'A test podcast with excellent content. With cake.',
+    language: 'en-AU',
+    'itunes:category': {
+      // XMLparser removes the entity, but it's in the feed
+      '@_text': 'TV & Film',
+      'itunes:category': {
+        '@_text': 'TV Reviews'
       }
+    },
+    'itunes:author': 'Test Author',
+    'itunes:owner': {
+      'itunes:name': 'Test Owner',
+      'itunes:email': 'test@example.com'
     }
   })
 })
 
-test('<itunes:type> can be set to episodic', async t => {
-  const eleventy = new Eleventy('./test', './test/_site', {
-    configPath: null,
-    config (eleventyConfig) {
-      eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData('podcast', { type: 'episodic' })
-    }
-  })
-  const build = await eleventy.toJSON()
-  const parser = new XMLParser()
-  const feedData = parser.parse(build[0].content)
-  t.like(feedData, { rss: { channel: { 'itunes:type': 'episodic' } } })
-})
+// CALCULATED OR SPECIAL PROPERTIES
 
-test('<itunes:type> can be set to serial', async t => {
-  const eleventy = new Eleventy('./test', './test/_site', {
-    configPath: null,
-    config (eleventyConfig) {
-      eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData('podcast', { type: 'serial' })
-    }
-  })
-  const build = await eleventy.toJSON()
-  const parser = new XMLParser()
-  const feedData = parser.parse(build[0].content)
-  t.like(feedData, { rss: { channel: { 'itunes:type': 'serial' } } })
-})
+// copyright
 
-test('<itunes:explicit> defaults to not existing', async t => {
-  const eleventy = new Eleventy('./test', './test/_site', {
-    configPath: null,
-    config (eleventyConfig) {
-      eleventyConfig.addPlugin(Podcaster)
-    }
-  })
-  const build = await eleventy.toJSON()
-  const parser = new XMLParser()
-  const feedData = parser.parse(build[0].content)
-  t.false('itunes:explicit' in feedData.rss.channel)
-})
-
-test('<itunes:explicit> can be set to true', async t => {
-  const eleventy = new Eleventy('./test', './test/_site', {
-    configPath: null,
-    config (eleventyConfig) {
-      eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData('podcast', { explicit: true })
-    }
-  })
-  const build = await eleventy.toJSON()
-  const parser = new XMLParser()
-  const feedData = parser.parse(build[0].content)
-  t.like(feedData, { rss: { channel: { 'itunes:explicit': true } } })
-})
-
-test('<itunes:explicit> can be set to false', async t => {
-  const eleventy = new Eleventy('./test', './test/_site', {
-    configPath: null,
-    config (eleventyConfig) {
-      eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData('podcast', { explicit: false })
-    }
-  })
-  const build = await eleventy.toJSON()
-  const parser = new XMLParser()
-  const feedData = parser.parse(build[0].content)
-  t.like(feedData, { rss: { channel: { 'itunes:explicit': false } } })
-})
-
-test('copyright defaults to author name', async t => {
+test('copyright defaults to year and author name', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
@@ -270,7 +130,7 @@ test('copyright can be set to a range with startingYear', async t => {
   const parser = new XMLParser()
   const year = new Date().getFullYear()
   const feedData = parser.parse(build[0].content)
-  t.like(feedData, { rss: { channel: { copyright: `© 2020–${year} Test Copyright` } } })
+  t.is(feedData.rss.channel.copyright, `© 2020–${year} Test Copyright`)
 })
 
 test("copyright isn't expressed as a range when startingYear is this year", async t => {
@@ -285,10 +145,14 @@ test("copyright isn't expressed as a range when startingYear is this year", asyn
   const build = await eleventy.toJSON()
   const parser = new XMLParser()
   const feedData = parser.parse(build[0].content)
-  t.like(feedData, { rss: { channel: { copyright: `© ${year} Test Copyright` } } })
+  t.is(feedData.rss.channel.copyright, `© ${year} Test Copyright`)
 })
 
-test('feedLastBuildDate is set to the current date and time in RFC2822 format', async t => {
+// pubDate
+
+// lastBuildDate
+
+test('lastBuildDate is set to the current date and time in RFC2822 format', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
@@ -301,4 +165,213 @@ test('feedLastBuildDate is set to the current date and time in RFC2822 format', 
   const lastBuildDate = new Date(feedData.rss.channel.lastBuildDate)
   t.true(lastBuildDate instanceof Date)
   t.true(!isNaN(lastBuildDate))
+})
+
+// image
+
+test('image path defaults to "/img/podcast-logo.jpg"', async t => {
+  const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
+    config (eleventyConfig) {
+      eleventyConfig.addGlobalData('podcast', {
+        siteUrl: 'https://example.com'
+      })
+      eleventyConfig.addPlugin(Podcaster)
+    }
+  })
+  const build = await eleventy.toJSON()
+  const parser = new XMLParser({ ignoreAttributes: false })
+  const feedData = parser.parse(build[0].content)
+  const itunesImage = feedData.rss.channel['itunes:image']['@_href']
+  t.is(itunesImage, 'https://example.com/img/podcast-logo.jpg')
+})
+
+// categories
+
+test('<itunes:category> works if no subcategory is set', async t => {
+  const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
+    config (eleventyConfig) {
+      eleventyConfig.addPlugin(Podcaster)
+      eleventyConfig.addGlobalData('podcast', {
+        category: 'TV & Film'
+      })
+    }
+  })
+  const build = await eleventy.toJSON()
+  const parser = new XMLParser({ ignoreAttributes: false })
+  const feedData = parser.parse(build[0].content)
+  t.is(feedData.rss.channel['itunes:category']['@_text'], 'TV & Film')
+})
+
+// explicit
+
+test('<itunes:explicit> defaults to not existing', async t => {
+  const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
+    config (eleventyConfig) {
+      eleventyConfig.addPlugin(Podcaster)
+    }
+  })
+  const build = await eleventy.toJSON()
+  const parser = new XMLParser()
+  const feedData = parser.parse(build[0].content)
+  t.false('itunes:explicit' in feedData.rss.channel)
+})
+
+test('<itunes:explicit> can be set to true', async t => {
+  const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
+    config (eleventyConfig) {
+      eleventyConfig.addPlugin(Podcaster)
+      eleventyConfig.addGlobalData('podcast', { explicit: true })
+    }
+  })
+  const build = await eleventy.toJSON()
+  const parser = new XMLParser()
+  const feedData = parser.parse(build[0].content)
+  t.true(feedData.rss.channel['itunes:explicit'])
+})
+
+test('<itunes:explicit> can be set to false', async t => {
+  const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
+    config (eleventyConfig) {
+      eleventyConfig.addPlugin(Podcaster)
+      eleventyConfig.addGlobalData('podcast', { explicit: false })
+    }
+  })
+  const build = await eleventy.toJSON()
+  const parser = new XMLParser()
+  const feedData = parser.parse(build[0].content)
+  t.false(feedData.rss.channel['itunes:explicit'])
+})
+
+// type
+
+test('<itunes:type> defaults to not existing', async t => {
+  const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
+    config (eleventyConfig) {
+      eleventyConfig.addPlugin(Podcaster)
+    }
+  })
+  const build = await eleventy.toJSON()
+  const parser = new XMLParser()
+  const feedData = parser.parse(build[0].content)
+  t.false('itunes:type' in feedData.rss.channel)
+})
+
+test('<itunes:type> can be set to episodic', async t => {
+  const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
+    config (eleventyConfig) {
+      eleventyConfig.addPlugin(Podcaster)
+      eleventyConfig.addGlobalData('podcast', { type: 'episodic' })
+    }
+  })
+  const build = await eleventy.toJSON()
+  const parser = new XMLParser()
+  const feedData = parser.parse(build[0].content)
+  t.is(feedData.rss.channel['itunes:type'], 'episodic')
+})
+
+test('<itunes:type> can be set to serial', async t => {
+  const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
+    config (eleventyConfig) {
+      eleventyConfig.addPlugin(Podcaster)
+      eleventyConfig.addGlobalData('podcast', { type: 'serial' })
+    }
+  })
+  const build = await eleventy.toJSON()
+  const parser = new XMLParser()
+  const feedData = parser.parse(build[0].content)
+  t.is(feedData.rss.channel['itunes:type'], 'serial')
+})
+
+// complete
+
+test('<itunes:complete> defaults to not existing', async t => {
+  const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
+    config (eleventyConfig) {
+      eleventyConfig.addPlugin(Podcaster)
+    }
+  })
+  const build = await eleventy.toJSON()
+  const parser = new XMLParser()
+  const feedData = parser.parse(build[0].content)
+  t.false('itunes:complete' in feedData.rss.channel)
+})
+
+test('<itunes:complete> can be set to true', async t => {
+  const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
+    config (eleventyConfig) {
+      eleventyConfig.addPlugin(Podcaster)
+      eleventyConfig.addGlobalData('podcast', { complete: true })
+    }
+  })
+  const build = await eleventy.toJSON()
+  const parser = new XMLParser()
+  const feedData = parser.parse(build[0].content)
+  t.is(feedData.rss.channel['itunes:complete'], 'yes')
+})
+
+test("<itunes:complete> doesn't exist when set to false", async t => {
+  const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
+    config (eleventyConfig) {
+      eleventyConfig.addPlugin(Podcaster)
+      eleventyConfig.addGlobalData('podcast', { complete: false })
+    }
+  })
+  const build = await eleventy.toJSON()
+  const parser = new XMLParser()
+  const feedData = parser.parse(build[0].content)
+  t.false('itunes:complete' in feedData.rss.channel)
+})
+
+// block
+
+test('<itunes:block> defaults to not existing', async t => {
+  const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
+    config (eleventyConfig) {
+      eleventyConfig.addPlugin(Podcaster)
+    }
+  })
+  const build = await eleventy.toJSON()
+  const parser = new XMLParser()
+  const feedData = parser.parse(build[0].content)
+  t.false('itunes:block' in feedData.rss.channel)
+})
+
+test('<itunes:block> can be set to true', async t => {
+  const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
+    config (eleventyConfig) {
+      eleventyConfig.addPlugin(Podcaster)
+      eleventyConfig.addGlobalData('podcast', { block: true })
+    }
+  })
+  const build = await eleventy.toJSON()
+  const parser = new XMLParser()
+  const feedData = parser.parse(build[0].content)
+  t.is(feedData.rss.channel['itunes:block'], 'yes')
+})
+
+test("<itunes:block> doesn't exist when set to false", async t => {
+  const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
+    config (eleventyConfig) {
+      eleventyConfig.addPlugin(Podcaster)
+      eleventyConfig.addGlobalData('podcast', { block: false })
+    }
+  })
+  const build = await eleventy.toJSON()
+  const parser = new XMLParser()
+  const feedData = parser.parse(build[0].content)
+  t.false('itunes:block' in feedData.rss.channel)
 })

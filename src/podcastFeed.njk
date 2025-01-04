@@ -66,8 +66,8 @@ eleventyAllowMissingExtension: true
       {% else %}
       {%- set episodeDescription = post.content | striptags(true) | truncate(800) -%}
       {%- endif %}
-      <description><![CDATA[{{ episodeDescription | trim }}]]></description>
-      <itunes:summary><![CDATA[{{ episodeDescription | trim }}]]></itunes:summary>
+      <description>{{ episodeDescription | trim }}</description>
+      <itunes:summary>{{ episodeDescription | trim }}</itunes:summary>
       {% if podcast.episodeContentTemplate %}
       {%- set episodeContent -%}
       {% include podcast.episodeContentTemplate %}

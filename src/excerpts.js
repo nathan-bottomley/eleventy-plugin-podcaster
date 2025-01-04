@@ -9,7 +9,10 @@ export default function (eleventyConfig, options = {}) {
     return (data) => {
       if (!data.tags?.includes('podcastEpisode')) return
 
-      const md = markdownIt()
+      const md = markdownIt({
+        html: true,
+        typographer: true
+      })
 
       // If an excerpt is set in front matter, use it
       if (data.excerpt) {
@@ -36,7 +39,8 @@ export default function (eleventyConfig, options = {}) {
       const dom = htmlparser2.parseDocument(htmlContent)
       const paragraph = dom.children.find(item => item.type === 'tag' && item.name === 'p')
       if (paragraph) {
-        return render(paragraph)
+        const result = render(paragraph, { encodeEntities: false })
+        return result
       }
     }
   })

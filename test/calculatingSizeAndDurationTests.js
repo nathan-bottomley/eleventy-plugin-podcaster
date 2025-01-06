@@ -19,7 +19,6 @@ test('the generated `episodesData.json` file is used to calculate size and durat
   const item = build.find(item => item.url === '/feed/podcast.xml')
   const feedData = parser.parse(item.content)
   const episodes = feedData.rss.channel.item
-  console.log(JSON.stringify(episodes, null, 2))
   t.true(episodes.some(episode => episode.description === 'size: 28683178. duration: 1587.905'))
   t.true(episodes.some(episode => episode.description === 'size: 32004399. duration: 1947.481'))
 })

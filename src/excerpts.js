@@ -23,7 +23,7 @@ export default function (eleventyConfig, options = {}) {
       const contentIsMarkdown = data.page.templateSyntax.includes('md')
 
       // If an excerpt is set using comment delimiters, use it
-      const excerptPattern = /<!---excerpt-->\s*(.*?)\s*<!---endexcerpt-->/
+      const excerptPattern = /<!---excerpt-->\s*(.*?)\s*<!---endexcerpt-->/s
       const match = excerptPattern.exec(content)
       if (match && contentIsMarkdown) {
         return md.render(match[1])
@@ -40,7 +40,6 @@ export default function (eleventyConfig, options = {}) {
       const paragraph = dom.children.find(item => item.type === 'tag' && item.name === 'p')
       if (paragraph) {
         const result = render(paragraph, { encodeEntities: 'utf8' })
-        console.log(result)
         return result
       }
     }

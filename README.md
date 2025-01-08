@@ -45,3 +45,6 @@ Detailed and specific information about how to install and use **Podcaster** can
 **Podcaster** is an Eleventy plugin. You install it in your config file in the usual way. You usually provide it with information about your podcast — like its title, description and category — by creating a `podcast.json` file in the data directory. For each episode, you create a template with information in the front matter about that episode — its name, release date, filename, duration and so on.
 
 Once you do this, **Podcaster** can create the RSS feed for your podcast. You can also create templates for various pages on your website and include on those pages the information you have provided about the podcast and its episodes.
+
+> [!WARNING]
+> **Podcaster** only works with Node 20 and later.

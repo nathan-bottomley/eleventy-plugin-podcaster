@@ -64,6 +64,7 @@ eleventyAllowMissingExtension: true
       {%- set episodeDescription -%}
       {% include podcast.episodeDescriptionTemplate %}
       {%- endset -%}
+      {%- set episodeDescription = episodeDescription | replace('&amp;', '&') %}
       {% elif post.data.episode.description %}
       {%- set episodeDescription = post.data.episode.description -%}
       {% else %}

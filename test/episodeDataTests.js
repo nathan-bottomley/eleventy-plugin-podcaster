@@ -65,6 +65,61 @@ test('if podcast.title is provided, it is used instead of the post title', async
   t.is(feedData.rss.channel.item.title, 'Podcast Episode 1')
 })
 
+// itunes Title
+
+test('itunes:title tag is omitted if episode.itunesTitle is absent', async t => {
+  const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
+    config (eleventyConfig) {
+      eleventyConfig.addPlugin(Podcaster)
+      eleventyConfig.addGlobalData(
+        'podcast.episodeUrlBase',
+        'https://example.com/'
+      )
+      eleventyConfig.addTemplate('episode-1.md', '# Episode 1', {
+        tags: ['podcastEpisode'],
+        date: '2020-01-01',
+        title: 'Episode 1',
+        permalink: '/1/',
+        episode: { filename: 'episode-1.mp3' }
+      })
+    }
+  })
+  const build = await eleventy.toJSON()
+  const parser = new XMLParser()
+  const item = build.find(item => item.url === '/feed/podcast.xml')
+  const feedData = parser.parse(item.content)
+  t.false('itunes:title' in feedData.rss.channel.item)
+})
+
+test('itunes:title tag exists if episode.itunesTitle is provided', async t => {
+  const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
+    config (eleventyConfig) {
+      eleventyConfig.addPlugin(Podcaster)
+      eleventyConfig.addGlobalData(
+        'podcast.episodeUrlBase',
+        'https://example.com/'
+      )
+      eleventyConfig.addTemplate('episode-1.md', '# Episode 1', {
+        tags: ['podcastEpisode'],
+        date: '2020-01-01',
+        title: 'Episode 1',
+        permalink: '/1/',
+        episode: {
+          filename: 'episode-1.mp3',
+          itunesTitle: 'iTunes Title'
+        }
+      })
+    }
+  })
+  const build = await eleventy.toJSON()
+  const parser = new XMLParser()
+  const item = build.find(item => item.url === '/feed/podcast.xml')
+  const feedData = parser.parse(item.content)
+  t.is(feedData.rss.channel.item['itunes:title'], 'iTunes Title')
+})
+
 // link
 
 test('site.url is used if podcast.siteUrl is absent', async t => {

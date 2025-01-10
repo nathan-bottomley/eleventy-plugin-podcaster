@@ -50,6 +50,9 @@ eleventyAllowMissingExtension: true
     {% for post in collections.podcastEpisode | reverse %}
     <item>
       <title>{{ post.data.episode.title or post.data.title }}</title>
+      {% if post.data.episode.itunesTitle %}
+      <itunes:title>{{ post.data.episode.itunesTitle }}</title>
+      {%- endif %}
       <link>{{ post.url | htmlBaseUrl(siteUrl) }}</link>
       {%- if post.data.guid != undefined %}
       <guid isPermalink="false">{{ post.data.guid }}</guid>

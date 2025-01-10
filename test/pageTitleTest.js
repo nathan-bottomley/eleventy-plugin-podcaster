@@ -26,7 +26,6 @@ test("when there's a page title and site.title is provided, pageTitle is calcula
   })
   const build = await eleventy.toJSON()
   const item = build.find(item => item.url === '/1/')
-  console.log(item)
   t.true(item.content.includes('Episode 1 · Flight Through Entirety'))
 })
 
@@ -54,7 +53,6 @@ test('when a custom separator is provided it gets used', async t => {
   })
   const build = await eleventy.toJSON()
   const item = build.find(item => item.url === '/1/')
-  console.log(item)
   t.true(item.content.includes('Episode 1 | Flight Through Entirety'))
 })
 
@@ -82,7 +80,6 @@ test('when the page title and site.title are the same, pageTitle is calculated c
   })
   const build = await eleventy.toJSON()
   const item = build.find(item => item.url === '/1/')
-  console.log(item)
   t.true(item.content.includes('Flight Through Entirety'))
   t.false(item.content.includes('Flight Through Entirety · Flight Through Entirety'))
 })
@@ -111,6 +108,5 @@ test("when site.title isn't provided, podcast.title is used instead", async t =>
   })
   const build = await eleventy.toJSON()
   const item = build.find(item => item.url === '/1/')
-  console.log(item)
   t.true(item.content.includes('Episode 1 · Flight Through Entirety'))
 })

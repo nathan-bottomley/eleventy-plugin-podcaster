@@ -67,7 +67,7 @@ eleventyAllowMissingExtension: true
       {% elif post.data.episode.description %}
       {%- set episodeDescription = post.data.episode.description -%}
       {% else %}
-      {%- set episodeDescription = post.content | striptags(true) | truncate(800) -%}
+      {%- set episodeDescription = post.content | safe | striptags(true) | truncate(800) -%}
       {%- endif %}
       <description>{{ episodeDescription | trim }}</description>
       <itunes:summary>{{ episodeDescription | trim }}</itunes:summary>

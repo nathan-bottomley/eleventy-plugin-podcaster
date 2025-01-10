@@ -300,6 +300,33 @@ test("if podcast.description isn't provided, the feed's description and itunes:s
   t.is(feedData.rss.channel.item['itunes:summary'], "This is the post's content")
 })
 
+test('An ampersand in the episode content ends up encoded as &amp; in the description in the feed', async t => {
+  const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
+    config (eleventyConfig) {
+      eleventyConfig.addPlugin(Podcaster)
+      eleventyConfig.addGlobalData(
+        'podcast.episodeUrlBase',
+        'https://example.com/'
+      )
+      eleventyConfig.addTemplate('episode-1.md', 'A game of Bat’leths & BiHnuchs takes a surprising turn', {
+        tags: ['podcastEpisode'],
+        date: '2020-01-01',
+        title: 'Episode 1',
+        permalink: '/1/',
+        episode: { filename: 'episode 1.mp3' }
+      })
+    }
+  })
+  const build = await eleventy.toJSON()
+  const item = build.find(item => item.url === '/feed/podcast.xml')
+  console.log(item)
+  const parser = new XMLParser({ processEntities: false })
+  const feedData = parser.parse(item.content)
+  t.is(feedData.rss.channel.item.description, 'A game of Bat’leths &amp; BiHnuchs takes a surprising turn')
+  t.is(feedData.rss.channel.item['itunes:summary'], 'A game of Bat’leths &amp; BiHnuchs takes a surprising turn')
+})
+
 // content
 
 test('a local link in podcast episode content is converted to an absolute URL', async t => {

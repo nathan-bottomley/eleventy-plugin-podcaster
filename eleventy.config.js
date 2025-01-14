@@ -3,7 +3,7 @@ import hr from '@tsmx/human-readable'
 import rssPlugin from '@11ty/eleventy-plugin-rss'
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
-import calculateSizeAndDuration from './src/calculateSizeAndDuration.js'
+import calculateFilenameSizeAndDuration from './src/calculateFilenameSizeAndDuration.js'
 import excerpts from './src/excerpts.js'
 import drafts from './src/drafts.js'
 
@@ -112,7 +112,7 @@ export default function (eleventyConfig, options = {}) {
     }
   })
 
-  eleventyConfig.addPlugin(calculateSizeAndDuration, options)
+  eleventyConfig.addPlugin(calculateFilenameSizeAndDuration, options)
   eleventyConfig.addPlugin(excerpts, options)
   eleventyConfig.addPlugin(drafts, options)
 }

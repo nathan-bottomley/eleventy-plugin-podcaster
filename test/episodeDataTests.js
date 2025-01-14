@@ -320,7 +320,6 @@ test('An ampersand in the episode content ends up encoded as &amp; in the descri
   })
   const build = await eleventy.toJSON()
   const item = build.find(item => item.url === '/feed/podcast.xml')
-  console.log(item)
   const parser = new XMLParser({ processEntities: false })
   const feedData = parser.parse(item.content)
   t.is(feedData.rss.channel.item.description, 'A game of Bat’leths &amp; BiHnuchs takes a surprising turn')

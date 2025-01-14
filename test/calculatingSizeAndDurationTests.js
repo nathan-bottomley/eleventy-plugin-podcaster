@@ -2,11 +2,6 @@ import test from 'ava'
 import Eleventy from '@11ty/eleventy'
 import { XMLParser } from 'fast-xml-parser'
 
-// There should be a test that checks that the `episodesData.json` file is generated correctly, but
-// that would require mocking the file system, which might not even be possible. I'm skip it for now.
-
-test.todo('the `episodesData.json` file is generated correctly')
-
 test('the generated `episodesData.json` file is used to calculate size and duration', async (t) => {
   const eleventy = new Eleventy(
     './fixtures/calculatingSizeAndDuration/src',

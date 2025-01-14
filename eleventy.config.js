@@ -26,7 +26,7 @@ export default function (eleventyConfig, options = {}) {
     return data => data.podcast.imagePath || '/img/podcast-logo.jpg'
   })
 
-  eleventyConfig.addGlobalData('eleventyComputed.podcast.copyrightNotice', () => {
+  function calculateCopyrightNotice () {
     return data => {
       const thisYear = DateTime.now().year
       let yearRange
@@ -37,7 +37,17 @@ export default function (eleventyConfig, options = {}) {
       }
       return `© ${yearRange} ${data.podcast.copyright || data.podcast.author}`
     }
-  })
+  }
+
+  eleventyConfig.addGlobalData(
+    'eleventyComputed.podcast.copyrightNotice',
+    calculateCopyrightNotice
+  )
+
+  eleventyConfig.addGlobalData(
+    'eleventyComputed.copyrightNotice',
+    calculateCopyrightNotice
+  )
 
   eleventyConfig.addGlobalData(
     'podcast.feedLastBuildDate',

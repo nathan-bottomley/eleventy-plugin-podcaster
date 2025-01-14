@@ -148,6 +148,23 @@ test("copyright isn't expressed as a range when startingYear is this year", asyn
   t.is(feedData.rss.channel.copyright, `© ${year} Test Copyright`)
 })
 
+test('copyright is also available as {{ copyrightNotice }}', async t => {
+  const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
+    config (eleventyConfig) {
+      eleventyConfig.addPlugin(Podcaster)
+      eleventyConfig.addGlobalData('podcast', { copyright: 'Test Copyright', startingYear: 2020 })
+      eleventyConfig.addTemplate('template-1.md', '{{ copyrightNotice }}', { permalink: '/1/' })
+    }
+  })
+  const build = await eleventy.toJSON()
+  const item = build.find(item => item.url === '/1/')
+  const parser = new XMLParser()
+  const itemData = parser.parse(item.content)
+  const year = new Date().getFullYear()
+  t.deepEqual(itemData, { p: `© 2020–${year} Test Copyright` })
+})
+
 // pubDate
 
 // lastBuildDate

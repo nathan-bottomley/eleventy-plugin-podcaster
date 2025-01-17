@@ -10,7 +10,7 @@ Plenty of services exist that will host your podcast online — [Spotify][], [Ac
 [Buzzsprout]: https://www.buzzsprout.com
 [Blubrry]: https://blubrry.com
 
-But **Podcaster** will.
+But Eleventy and **Podcaster** will.
 
 ## Installation
 

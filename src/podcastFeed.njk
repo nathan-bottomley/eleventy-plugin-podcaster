@@ -55,9 +55,9 @@ eleventyAllowMissingExtension: true
       {%- endif %}
       <link>{{ post.url | htmlBaseUrl(siteUrl) }}</link>
       {%- if post.data.guid != undefined %}
-      <guid isPermalink="false">{{ post.data.guid }}</guid>
+      <guid isPermaLink="false">{{ post.data.guid }}</guid>
       {% else %}
-      <guid isPermalink="true">{{ post.url | htmlBaseUrl(siteUrl) }}</guid>
+      <guid isPermaLink="true">{{ post.url | htmlBaseUrl(siteUrl) }}</guid>
       {% endif -%}
       <pubDate>{{ post.date | dateToRfc3339 }}</pubDate>
       {% if podcast.episodeDescriptionTemplate %}

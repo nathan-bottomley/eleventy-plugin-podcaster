@@ -181,10 +181,10 @@ test("if guid isn't provided, it defaults to the URL", async t => {
   })
   const build = await eleventy.toJSON()
   const item = build.find(item => item.url === '/feed/podcast.xml')
-  t.true(item.content.includes('<guid isPermalink="true">https://example.com/1/</guid>', item.content))
+  t.true(item.content.includes('<guid isPermaLink="true">https://example.com/1/</guid>', item.content))
 })
 
-test('if guid is provided, it is used and isPermalink is false', async t => {
+test('if guid is provided, it is used and isPermaLink is false', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
@@ -209,7 +209,7 @@ test('if guid is provided, it is used and isPermalink is false', async t => {
   })
   const build = await eleventy.toJSON()
   const item = build.find(item => item.url === '/feed/podcast.xml')
-  t.true(item.content.includes('<guid isPermalink="false">https://example.com/?p=12</guid>', item.content))
+  t.true(item.content.includes('<guid isPermaLink="false">https://example.com/?p=12</guid>', item.content))
 })
 
 // pubDate

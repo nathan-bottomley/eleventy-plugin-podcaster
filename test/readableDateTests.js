@@ -29,7 +29,7 @@ test('readableDate filter exists when readableDateLocale is provided', async t =
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(Podcaster, { readableDateLocale: 'en-GB' })
+      eleventyConfig.addPlugin(Podcaster, { readableDateLocale: 'en-AU' })
       eleventyConfig.addTemplate('index.md', '{{ date | readableDate }}', {
         date: '2020-01-01',
         title: 'Readable Date test',
@@ -40,6 +40,5 @@ test('readableDate filter exists when readableDateLocale is provided', async t =
   const build = await eleventy.toJSON()
   const item = build.find(item => item.url === '/1/')
 
-  // the comma appears in some JS runtime environments, but not others
-  t.regex(item.content, /Wednesday,? 1 January 2020/)
+  t.regex(item.content, /Wednesday 1 January 2020/)
 })

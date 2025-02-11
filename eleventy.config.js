@@ -93,14 +93,18 @@ export default function (eleventyConfig, options = {}) {
     })
   }
 
-  eleventyConfig.addFilter('readableDuration', function (seconds) {
+  eleventyConfig.addFilter('readableDuration', (seconds, omitLeadingZero) => {
     if (!seconds) return '0:00:00'
-
+    if (omitLeadingZero && seconds < 3600) {
+      return Duration.fromMillis(seconds * 1000).toFormat('mm:ss')
+    }
     return Duration.fromMillis(seconds * 1000).toFormat('h:mm:ss')
   })
 
-  eleventyConfig.addFilter('readableSize', bytes =>
-    hr.fromBytes(bytes)
+  eleventyConfig.addFilter('readableSize', (bytes, fixedPrecision) =>
+    (fixedPrecision)
+      ? hr.fromBytes(bytes, { fixedPrecision })
+      : hr.fromBytes(bytes)
   )
 
   const podcastFeedPath = path.join(import.meta.dirname, './src/podcastFeed.njk')

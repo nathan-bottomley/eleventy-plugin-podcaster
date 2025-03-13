@@ -8,7 +8,8 @@ import chalk from 'chalk'
 
 const convertSecondsToReadableDuration = seconds =>
   Duration.fromMillis(seconds * 1000)
-    .toFormat("d 'd' h 'h' m 'm' s.SSS 's'")
+    .shiftTo('days', 'hours', 'minutes', 'seconds')
+    .toHuman()
 
 export default function (eleventyConfig, options = {}) {
   let firstRun = true

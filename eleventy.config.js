@@ -116,6 +116,20 @@ export default function (eleventyConfig, options = {}) {
     }
   })
 
+  if (options.handleEpisodePermalinks) {
+    eleventyConfig.addGlobalData('eleventyComputed.permalink', () => {
+      return data => {
+        if (data.tags?.includes('podcastEpisode')) {
+          if (data.episode?.seasonNumber) {
+            return `/s${data.episode.seasonNumber}/e${data.episode.episodeNumber}/`
+          } else {
+            return `/${data.episode.episodeNumber}/`
+          }
+        }
+      }
+    })
+  }
+
   eleventyConfig.addPlugin(calculateFilenameSizeAndDuration, options)
   eleventyConfig.addPlugin(excerpts, options)
   eleventyConfig.addPlugin(drafts, options)

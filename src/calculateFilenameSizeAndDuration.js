@@ -11,14 +11,13 @@ const convertSecondsToReadableDuration = seconds =>
     .shiftTo('days', 'hours', 'minutes', 'seconds')
     .toHuman()
 
-export default function (eleventyConfig, options = {}) {
+export default function (eleventyConfig) {
   let firstRun = true
-  eleventyConfig.on('eleventy.before', async ({ dir, directories }) => {
+  eleventyConfig.on('eleventy.before', async ({ directories }) => {
     // don't keep recalculating episode data in serve mode
     if (!firstRun || process.env.SKIP_EPISODE_CALCULATIONS === 'true') return
     firstRun = false
-
-    const episodesDir = path.join(process.cwd(), options.episodesDir || 'episodes')
+    const episodesDir = path.join(directories.input, 'episodeFiles')
     if (!existsSync(episodesDir)) return
 
     const episodes = await readdir(episodesDir)
@@ -44,40 +43,37 @@ export default function (eleventyConfig, options = {}) {
     }
 
     const dataDir = path.join(process.cwd(), directories.data)
-    await writeFile(path.join(dataDir, 'episodesData.json'), JSON.stringify(episodesData, null, 2))
+    await writeFile(path.join(dataDir, 'episodeData.json'), JSON.stringify(episodesData, null, 2))
 
     console.log(chalk.yellow(`${totalEpisodes} episodes; ${hr.fromBytes(totalSize)}; ${convertSecondsToReadableDuration(totalDuration)}.`))
   })
 
-  if (options.episodeFilenamePattern) {
-    eleventyConfig.addGlobalData('eleventyComputed.episode.filename', () => {
-      return data => {
-        if (data.episode.filename) return data.episode.filename
+  eleventyConfig.addGlobalData('eleventyComputed.episode.filename', () => {
+    return data => {
+      if (data.episode.filename) return data.episode.filename
 
-        if (data.tags?.includes('podcastEpisode') && data.episodesData) {
-          for (const file of Object.keys(data.episodesData)) {
-            const match = file.match(options.episodeFilenamePattern)
-            const matchedSeasonNumber = parseInt(match?.groups.seasonNumber)
-            const matchedEpisodeNumber = parseInt(match?.groups.episodeNumber)
-            if (isNaN(matchedSeasonNumber) && matchedEpisodeNumber ===
-                data.episode.episodeNumber) {
-              return file
-            } else if (matchedSeasonNumber === data.episode.seasonNumber &&
-                       matchedEpisodeNumber === data.episode.episodeNumber) {
-              return file
-            }
+      if (data.page.inputPath.includes('/episodePosts/') && data.episodeData) {
+        for (const file of Object.keys(data.episodeData)) {
+          const match = file.match(/^.*(?<episodeNumber>\d+).*\.mp3/)
+          const matchedSeasonNumber = parseInt(match?.groups.seasonNumber)
+          const matchedEpisodeNumber = parseInt(match?.groups.episodeNumber)
+          if (isNaN(matchedSeasonNumber) && matchedEpisodeNumber ===
+              data.episode.episodeNumber) {
+            return file
+          } else if (matchedSeasonNumber === data.episode.seasonNumber &&
+                     matchedEpisodeNumber === data.episode.episodeNumber) {
+            return file
           }
         }
       }
-    })
-  }
+    }
+  })
 
   eleventyConfig.addGlobalData('eleventyComputed.episode.size', () => {
     return data => {
       if (data.episode.size) return data.episode.size
-
-      if (data.tags?.includes('podcastEpisode') && data.episodesData) {
-        return data.episodesData[data.episode.filename]?.size
+      if (data.page.inputPath.includes('/episodePosts/') && data.episodeData) {
+        return data.episodeData[data.episode.filename]?.size
       }
     }
   })
@@ -86,8 +82,8 @@ export default function (eleventyConfig, options = {}) {
     return data => {
       if (data.episode.duration) return data.episode.duration
 
-      if (data.tags?.includes('podcastEpisode') && data.episodesData) {
-        return data.episodesData[data.episode.filename]?.duration
+      if (data.page.inputPath.includes('/episodePosts/') && data.episodeData) {
+        return data.episodeData[data.episode.filename]?.duration
       }
     }
   })

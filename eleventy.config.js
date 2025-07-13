@@ -1,5 +1,5 @@
 import { DateTime, Duration } from 'luxon'
-// import hr from '@tsmx/human-readable'
+import hr from '@tsmx/human-readable'
 import rssPlugin from '@11ty/eleventy-plugin-rss'
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
@@ -109,18 +109,6 @@ export default function (eleventyConfig) {
 
   // eleventyConfig.addShortcode('year', () => DateTime.now().year)
 
-  // if (options.readableDateLocale) {
-  //   eleventyConfig.addFilter('readableDate', function (date) {
-  //     if (date instanceof Date) {
-  //       date = date.toISOString()
-  //     }
-  //     const result = DateTime.fromISO(date, {
-  //       zone: 'UTC'
-  //     })
-  //     return result.setLocale(options.readableDateLocale).toLocaleString(DateTime.DATE_HUGE)
-  //   })
-  // }
-
   // if (options.calculatePageTitle) {
   //   const separator = options.calculatePageTitle === true ? '&middot;' : options.calculatePageTitle
 
@@ -136,6 +124,18 @@ export default function (eleventyConfig) {
   //   })
   // }
 
+  // Filters
+
+  eleventyConfig.addFilter('readableDate', function (date) {
+    if (date instanceof Date) {
+      date = date.toISOString()
+    }
+    const result = DateTime.fromISO(date, {
+      zone: 'UTC'
+    })
+    return result.setLocale('en-AU').toLocaleString(DateTime.DATE_HUGE)
+  })
+
   eleventyConfig.addFilter('readableDuration', (seconds) => {
     if (!seconds) return '0:00:00'
     if (seconds < 3600) {
@@ -144,11 +144,11 @@ export default function (eleventyConfig) {
     return Duration.fromMillis(seconds * 1000).toFormat('h:mm:ss')
   })
 
-  // eleventyConfig.addFilter('readableSize', (bytes, fixedPrecision) =>
-  //   (fixedPrecision)
-  //     ? hr.fromBytes(bytes, { fixedPrecision })
-  //     : hr.fromBytes(bytes)
-  // )
+  eleventyConfig.addFilter('readableSize', (bytes, fixedPrecision = 1) =>
+    hr.fromBytes(bytes, { fixedPrecision })
+  )
+
+  // Podcast feed template
 
   const podcastFeedPath = path.join(import.meta.dirname, './src/podcastFeed.njk')
 

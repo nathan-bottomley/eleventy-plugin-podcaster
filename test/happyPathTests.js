@@ -143,6 +143,47 @@ test('episode posts have permalinks that match their episode numbers', (t) => {
   t.is(episodePosts[2].url, '/3/')
 })
 
+test('episode posts can display their titles correctly', (t) => {
+  const { episodePosts } = t.context
+  t.true(episodePosts[0].content.includes('<h1>The Star Beast</h1>'))
+  t.true(episodePosts[1].content.includes('<h1>Wild Blue Yonder</h1>'))
+  t.true(episodePosts[2].content.includes('<h1>The Giggle</h1>'))
+})
+
+test('episode posts can display their dates correctly', (t) => {
+  const { episodePosts } = t.context
+  t.true(episodePosts[0].content.includes('Date: Sunday 26 November 2023'))
+  t.true(episodePosts[1].content.includes('Date: Monday 4 December 2023'))
+  t.true(episodePosts[2].content.includes('Date: Monday 11 December 2023'))
+})
+
+test('episode posts can display their sizes correctly', (t) => {
+  const { episodePosts } = t.context
+  t.true(episodePosts[0].content.includes('Size: 32.0 MB'))
+  t.true(episodePosts[1].content.includes('Size: 28.7 MB'))
+  t.true(episodePosts[2].content.includes('Size: 31.5 MB'))
+})
+
+test('episode posts can display their URLs correctly', (t) => {
+  const { episodePosts } = t.context
+  t.true(episodePosts[0].content.includes('URL: https:/thesecondgreatandbountifulhumanempire.com/episodes/TSGABHE 1, The Star Beast.mp3'))
+  t.true(episodePosts[1].content.includes('URL: https:/thesecondgreatandbountifulhumanempire.com/episodes/TSGABHE 2, Wild Blue Yonder.mp3'))
+  t.true(episodePosts[2].content.includes('URL: https:/thesecondgreatandbountifulhumanempire.com/episodes/TSGABHE 3, The Giggle.mp3'))
+})
+
+test('episode posts can display their filenames correctly', (t) => {
+  const { episodePosts } = t.context
+  t.true(episodePosts[0].content.includes('Filename: TSGABHE 1, The Star Beast.mp3'))
+  t.true(episodePosts[1].content.includes('Filename: TSGABHE 2, Wild Blue Yonder.mp3'))
+  t.true(episodePosts[2].content.includes('Filename: TSGABHE 3, The Giggle.mp3'))
+})
+
+test('episode posts can display their durations correctly', (t) => {
+  const { episodePosts } = t.context
+  t.true(episodePosts[0].content.includes('Duration: 32:27'))
+  t.true(episodePosts[1].content.includes('Duration: 26:27'))
+  t.true(episodePosts[2].content.includes('Duration: 29:25'))
+})
 // after
 
 test.after.always(async (t) => {

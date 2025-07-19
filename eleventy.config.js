@@ -41,21 +41,21 @@ export default function (eleventyConfig) {
     }
   })
 
-  eleventyConfig.addGlobalData(
-    'eleventyComputed.podcast.copyrightNotice',
-    () => {
-      return data => {
-        const thisYear = DateTime.now().year
-        let yearRange
-        if (!data.podcast.startingYear || data.podcast.startingYear === thisYear) {
-          yearRange = thisYear
-        } else {
-          yearRange = `${data.podcast.startingYear}–${thisYear}`
-        }
-        return `© ${yearRange} ${data.podcast.copyright || data.podcast.author}`
-      }
-    }
-  )
+  // eleventyConfig.addGlobalData(
+  //   'eleventyComputed.podcast.copyrightNotice',
+  //   () => {
+  //     return data => {
+  //       const thisYear = DateTime.now().year
+  //       let yearRange
+  //       if (!data.podcast.startingYear || data.podcast.startingYear === thisYear) {
+  //         yearRange = thisYear
+  //       } else {
+  //         yearRange = `${data.podcast.startingYear}–${thisYear}`
+  //       }
+  //       return `© ${yearRange} ${data.podcast.copyright || data.podcast.author}`
+  //     }
+  //   }
+  // )
 
   eleventyConfig.addGlobalData(
     'podcast.feedLastBuildDate',

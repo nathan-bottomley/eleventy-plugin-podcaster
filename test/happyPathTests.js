@@ -13,13 +13,15 @@ test.before(async (t) => {
     })
   t.context.build = await eleventy.toJSON()
   console.log(t.context.build)
-  t.context.episodePosts = t.context.build.filter(
-    item => item.inputPath.startsWith('./fixtures/happyPath/episodePosts/')
-  )
   t.context.feed = t.context.build.find(
     item => item.inputPath === './fixtures/happyPath/feed.njk'
   )
+  t.context.episodePosts = t.context.build.filter(
+    item => item.inputPath.startsWith('./fixtures/happyPath/episodePosts/')
+  )
 })
+
+// building the site
 
 test('builds without errors', (t) => {
   const { build } = t.context
@@ -34,6 +36,12 @@ test('feed is generated', (t) => {
   t.true(feed.url === '/feed/podcast.xml')
 })
 
+test('episode posts are generated', (t) => {
+  const { episodePosts } = t.context
+  t.true(Array.isArray(episodePosts))
+  t.true(episodePosts.length === 3)
+})
+
 // podcast data in feed is correct
 
 test('podcast data in feed is correct', (t) => {
@@ -45,7 +53,6 @@ test('podcast data in feed is correct', (t) => {
   t.is(feedData.rss.channel.link, 'https://thesecondgreatandbountifulhumanempire.com')
   t.is(feedData.rss.channel['itunes:author'], 'Flight Through Entirety')
   t.is(feedData.rss.channel.language, 'en')
-  t.is(feedData.rss.channel.copyright, `© ${new Date().getFullYear()} Flight Through Entirety`)
   t.is(feedData.rss.channel['itunes:category']['@_text'], 'TV & Film')
 })
 
@@ -184,10 +191,11 @@ test('episode posts can display their durations correctly', (t) => {
   t.true(episodePosts[1].content.includes('Duration: 26:27'))
   t.true(episodePosts[2].content.includes('Duration: 29:25'))
 })
+
 // after
 
 test.after.always(async (t) => {
-  const episodeDataPath = path.join(process.cwd(), 'fixtures', 'happyPath', '_data', 'episodeData.json')
+  const episodeDataPath = path.join(process.cwd(), 'fixtures/happyPath/_data/episodeData.json')
   try {
     unlinkSync(episodeDataPath)
     console.log(`Deleted ${episodeDataPath}`)

@@ -75,7 +75,7 @@ export default function (eleventyConfig) {
           if (match?.groups?.episodeNumber) {
             return parseInt(match.groups.episodeNumber, 10)
           } else {
-            console.warn(`[eleventy-plugin-podcaster] Unable to determine episode number for ${data.page.inputPath}. Please ensure the file slug contains a number or set the episodeNumber explicitly in the front matter.`)
+            console.warn(`[eleventy-plugin-podcaster] Cannot determine episode number for ${data.page.inputPath}. Please ensure the file slug contains a number or set the episodeNumber explicitly in the front matter.`)
           }
         }
       }

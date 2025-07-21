@@ -54,7 +54,7 @@ export default function (eleventyConfig) {
 
       if (data.page.inputPath.includes('/episodePosts/') && data.episodeData) {
         for (const file of Object.keys(data.episodeData)) {
-          const match = file.match(/^.*(?<episodeNumber>\d+).*\.mp3/)
+          const match = file.match(/^.*?(?<episodeNumber>\b\d+\b).*\.mp3/)
           const matchedSeasonNumber = parseInt(match?.groups.seasonNumber)
           const matchedEpisodeNumber = parseInt(match?.groups.episodeNumber)
           if (isNaN(matchedSeasonNumber) && matchedEpisodeNumber ===

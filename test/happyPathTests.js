@@ -106,9 +106,9 @@ test('episodes in feed have episode urls', (t) => {
   const parser = new XMLParser({ ignoreAttributes: false })
   const feedData = parser.parse(feed.content)
   const episodes = feedData.rss.channel.item
-  t.is(episodes[0].enclosure['@_url'], 'https:/thesecondgreatandbountifulhumanempire.com/episodes/TSGABHE 3, The Giggle.mp3')
-  t.is(episodes[1].enclosure['@_url'], 'https:/thesecondgreatandbountifulhumanempire.com/episodes/TSGABHE 2, Wild Blue Yonder.mp3')
-  t.is(episodes[2].enclosure['@_url'], 'https:/thesecondgreatandbountifulhumanempire.com/episodes/TSGABHE 1, The Star Beast.mp3')
+  t.is(episodes[0].enclosure['@_url'], 'https:/thesecondgreatandbountifulhumanempire.com/episodes/2GAB 3, The Giggle.mp3')
+  t.is(episodes[1].enclosure['@_url'], 'https:/thesecondgreatandbountifulhumanempire.com/episodes/2GAB 2, Wild Blue Yonder.mp3')
+  t.is(episodes[2].enclosure['@_url'], 'https:/thesecondgreatandbountifulhumanempire.com/episodes/2GAB 1, The Star Beast.mp3')
 })
 
 test('episodes in feed have lengths', (t) => {
@@ -173,16 +173,16 @@ test('episode posts can display their sizes correctly', (t) => {
 
 test('episode posts can display their URLs correctly', (t) => {
   const { episodePosts } = t.context
-  t.true(episodePosts[0].content.includes('URL: https:/thesecondgreatandbountifulhumanempire.com/episodes/TSGABHE 1, The Star Beast.mp3'))
-  t.true(episodePosts[1].content.includes('URL: https:/thesecondgreatandbountifulhumanempire.com/episodes/TSGABHE 2, Wild Blue Yonder.mp3'))
-  t.true(episodePosts[2].content.includes('URL: https:/thesecondgreatandbountifulhumanempire.com/episodes/TSGABHE 3, The Giggle.mp3'))
+  t.true(episodePosts[0].content.includes('URL: https:/thesecondgreatandbountifulhumanempire.com/episodes/2GAB 1, The Star Beast.mp3'))
+  t.true(episodePosts[1].content.includes('URL: https:/thesecondgreatandbountifulhumanempire.com/episodes/2GAB 2, Wild Blue Yonder.mp3'))
+  t.true(episodePosts[2].content.includes('URL: https:/thesecondgreatandbountifulhumanempire.com/episodes/2GAB 3, The Giggle.mp3'))
 })
 
 test('episode posts can display their filenames correctly', (t) => {
   const { episodePosts } = t.context
-  t.true(episodePosts[0].content.includes('Filename: TSGABHE 1, The Star Beast.mp3'))
-  t.true(episodePosts[1].content.includes('Filename: TSGABHE 2, Wild Blue Yonder.mp3'))
-  t.true(episodePosts[2].content.includes('Filename: TSGABHE 3, The Giggle.mp3'))
+  t.true(episodePosts[0].content.includes('Filename: 2GAB 1, The Star Beast.mp3'))
+  t.true(episodePosts[1].content.includes('Filename: 2GAB 2, Wild Blue Yonder.mp3'))
+  t.true(episodePosts[2].content.includes('Filename: 2GAB 3, The Giggle.mp3'))
 })
 
 test('episode posts can display their durations correctly', (t) => {

@@ -36,7 +36,7 @@
     "htmlparser2": "^9.1.0",
     "luxon": "^3.4.4",
     "markdown-it": "^14.1.0",
-    "mp3-duration": "^1.1.0"
+    "music-metadata": "^11.7.1"
   },
   "devDependencies": {
     "ava": "^6.1.3",

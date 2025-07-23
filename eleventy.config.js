@@ -94,20 +94,17 @@ export default function (eleventyConfig) {
     }
   })
 
-  eleventyConfig.addGlobalData(
-    'eleventyComputed.permalink',
-    () => {
-      return data => {
-        if (data.permalink) return data.permalink
+  eleventyConfig.addGlobalData('eleventyComputed.permalink', () => {
+    return data => {
+      if (data.permalink) return data.permalink
 
-        if (data.episode?.seasonNumber && data.episode?.episodeNumber) {
-          return `/s${data.episode.seasonNumber}/e${data.episode.episodeNumber}/`
-        } else if (data.episode?.episodeNumber) {
-          return `/${data.episode.episodeNumber}/`
-        }
+      if (data.episode?.seasonNumber && data.episode?.episodeNumber) {
+        return `/s${data.episode.seasonNumber}/e${data.episode.episodeNumber}/`
+      } else if (data.episode?.episodeNumber) {
+        return `/${data.episode.episodeNumber}/`
       }
     }
-  )
+  })
 
   eleventyConfig.addGlobalData('eleventyComputed.episode.url', () => {
     return data => {

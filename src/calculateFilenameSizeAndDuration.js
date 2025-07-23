@@ -1,8 +1,8 @@
 import { Duration } from 'luxon'
 import path from 'node:path'
 import { existsSync } from 'node:fs'
-import { readdir, stat, readFile, writeFile } from 'node:fs/promises'
-import mp3Duration from 'mp3-duration'
+import { readdir, stat, writeFile } from 'node:fs/promises'
+import { parseFile } from 'music-metadata'
 import hr from '@tsmx/human-readable'
 import chalk from 'chalk'
 
@@ -33,8 +33,8 @@ export default function (eleventyConfig) {
       const episodePath = path.join(episodesDir, episode)
       const episodeSize = (await stat(episodePath)).size
       totalSize += episodeSize
-      const buffer = await readFile(episodePath)
-      const episodeDuration = await mp3Duration(buffer)
+      const episodeMetadata = await parseFile(episodePath, { duration: true })
+      const episodeDuration = episodeMetadata.format.duration
       totalDuration += episodeDuration
       episodesData[episode] = {
         size: episodeSize,

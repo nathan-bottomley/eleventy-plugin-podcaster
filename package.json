@@ -10,7 +10,7 @@
     "type": "git",
     "url": "git+https://github.com/nathan-bottomley/eleventy-plugin-podcaster.git"
   },
-  "homepage": "https://github.com/nathan-bottomley/eleventy-plugin-podcaster/tree/main/docs",
+  "homepage": "https://eleventy-plugin-podcaster.com",
   "type": "module",
   "scripts": {
     "test": "ava"

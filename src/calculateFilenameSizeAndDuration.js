@@ -48,21 +48,31 @@ export default function (eleventyConfig) {
     console.log(chalk.yellow(`${totalEpisodes} episodes; ${hr.fromBytes(totalSize)}; ${convertSecondsToReadableDuration(totalDuration)}.`))
   })
 
+  const filenameSeasonAndEpisodePattern =
+    /^.*?\b[sS](?<seasonNumber>\d+)[eE](?<episodeNumber>\d+)\b.*\.mp3$/
+  const filenameEpisodePattern = /^.*?\b(?<episodeNumber>\d+)\b.*\.mp3$/
+
   eleventyConfig.addGlobalData('eleventyComputed.episode.filename', () => {
     return data => {
       if (data.episode.filename) return data.episode.filename
 
       if (data.page.inputPath.includes('/episodePosts/') && data.episodeData) {
         for (const file of Object.keys(data.episodeData)) {
-          const match = file.match(/^.*?(?<episodeNumber>\b\d+\b).*\.mp3/)
-          const matchedSeasonNumber = parseInt(match?.groups.seasonNumber)
-          const matchedEpisodeNumber = parseInt(match?.groups.episodeNumber)
-          if (isNaN(matchedSeasonNumber) && matchedEpisodeNumber ===
-              data.episode.episodeNumber) {
-            return file
-          } else if (matchedSeasonNumber === data.episode.seasonNumber &&
-                     matchedEpisodeNumber === data.episode.episodeNumber) {
-            return file
+          const seasonAndEpisodeMatch = file.match(filenameSeasonAndEpisodePattern)
+          if (seasonAndEpisodeMatch) {
+            const matchedSeasonNumber = parseInt(seasonAndEpisodeMatch.groups.seasonNumber)
+            const matchedEpisodeNumber = parseInt(seasonAndEpisodeMatch.groups.episodeNumber)
+            if (matchedSeasonNumber === data.episode.seasonNumber &&
+                matchedEpisodeNumber === data.episode.episodeNumber) {
+              return file
+            }
+          }
+          const episodeMatch = file.match(filenameEpisodePattern)
+          if (episodeMatch) {
+            const matchedEpisodeNumber = parseInt(episodeMatch.groups.episodeNumber)
+            if (matchedEpisodeNumber === data.episode.episodeNumber) {
+              return file
+            }
           }
         }
       }

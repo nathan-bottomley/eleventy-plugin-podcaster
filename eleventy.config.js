@@ -37,30 +37,24 @@ export default function (eleventyConfig) {
       if (data.podcast.episodeUrlBase) return data.podcast.episodeUrlBase
 
       const siteUrl = data.podcast.siteUrl || data.site.url
-      return path.join(siteUrl, 'episodes')
+      return URL.parse('episodes/', siteUrl)
     }
   })
 
-  // eleventyConfig.addGlobalData(
-  //   'eleventyComputed.podcast.copyrightNotice',
-  //   () => {
-  //     return data => {
-  //       const thisYear = DateTime.now().year
-  //       let yearRange
-  //       if (!data.podcast.startingYear || data.podcast.startingYear === thisYear) {
-  //         yearRange = thisYear
-  //       } else {
-  //         yearRange = `${data.podcast.startingYear}–${thisYear}`
-  //       }
-  //       return `© ${yearRange} ${data.podcast.copyright || data.podcast.author}`
-  //     }
-  //   }
-  // )
+  eleventyConfig.addGlobalData('eleventyComputed.podcast.copyrightNotice', () => {
+    return data => {
+      const thisYear = DateTime.now().year
+      let yearRange
+      if (!data.podcast.startingYear || data.podcast.startingYear === thisYear) {
+        yearRange = thisYear
+      } else {
+        yearRange = `${data.podcast.startingYear}–${thisYear}`
+      }
+      return `© ${yearRange} ${data.podcast.copyright || data.podcast.author}`
+    }
+  })
 
-  eleventyConfig.addGlobalData(
-    'podcast.feedLastBuildDate',
-    DateTime.now().toRFC2822()
-  )
+  eleventyConfig.addGlobalData('podcast.feedLastBuildDate', DateTime.now().toRFC2822())
 
   // Global episode data
 
@@ -68,42 +62,37 @@ export default function (eleventyConfig) {
     /^[sS](?<seasonNumber>\d+)[eE](?<episodeNumber>\d+)/i
   const postFilenameEpisodePattern = /^(?:e|ep|episode-)(?<episodeNumber>\d+)/i
 
-  eleventyConfig.addGlobalData('eleventyComputed.episode.seasonNumber',
-    () => {
-      return data => {
-        if (data.episode?.seasonNumber) return data.episode.seasonNumber
+  eleventyConfig.addGlobalData('eleventyComputed.episode.seasonNumber', () => {
+    return data => {
+      if (data.episode?.seasonNumber) return data.episode.seasonNumber
 
-        if (!data.page.inputPath.includes('/episodePosts/')) return
+      if (!data.page.inputPath.includes('/episodePosts/')) return
 
-        const seasonAndEpisodeMatch = data.page.fileSlug.match(postFilenameSeasonAndEpisodePattern)
-        if (seasonAndEpisodeMatch) {
-          return parseInt(seasonAndEpisodeMatch.groups.seasonNumber, 10)
-        }
+      const seasonAndEpisodeMatch = data.page.fileSlug.match(postFilenameSeasonAndEpisodePattern)
+      if (seasonAndEpisodeMatch) {
+        return parseInt(seasonAndEpisodeMatch.groups.seasonNumber, 10)
       }
     }
-  )
+  })
 
-  eleventyConfig.addGlobalData(
-    'eleventyComputed.episode.episodeNumber',
-    () => {
-      return data => {
-        if (data.episode?.episodeNumber) return data.episode.episodeNumber
+  eleventyConfig.addGlobalData('eleventyComputed.episode.episodeNumber', () => {
+    return data => {
+      if (data.episode?.episodeNumber) return data.episode.episodeNumber
 
-        if (!data.page.inputPath.includes('/episodePosts/')) return
+      if (!data.page.inputPath.includes('/episodePosts/')) return
 
-        const seasonAndEpisodeMatch = data.page.fileSlug.match(postFilenameSeasonAndEpisodePattern)
-        if (seasonAndEpisodeMatch) {
-          return parseInt(seasonAndEpisodeMatch.groups.episodeNumber, 10)
-        }
-        const episodeMatch = data.page.fileSlug.match(postFilenameEpisodePattern)
-        if (episodeMatch) {
-          return parseInt(episodeMatch.groups.episodeNumber, 10)
-        } else {
-          console.warn(`[eleventy-plugin-podcaster] Cannot determine episode number for ${data.page.inputPath}. Please ensure the file slug contains a number or set the episodeNumber explicitly in the front matter.`)
-        }
+      const seasonAndEpisodeMatch = data.page.fileSlug.match(postFilenameSeasonAndEpisodePattern)
+      if (seasonAndEpisodeMatch) {
+        return parseInt(seasonAndEpisodeMatch.groups.episodeNumber, 10)
+      }
+      const episodeMatch = data.page.fileSlug.match(postFilenameEpisodePattern)
+      if (episodeMatch) {
+        return parseInt(episodeMatch.groups.episodeNumber, 10)
+      } else {
+        console.warn(`[eleventy-plugin-podcaster] Cannot determine episode number for ${data.page.inputPath}. Please ensure the file slug contains a number or set the episodeNumber explicitly in the front matter.`)
       }
     }
-  )
+  })
 
   eleventyConfig.addGlobalData(
     'eleventyComputed.permalink',
@@ -125,6 +114,7 @@ export default function (eleventyConfig) {
       if (!data.page.inputPath.includes('/episodePosts/')) return
 
       const episodeUrlBase = data.podcast.episodeUrlBase
+      console.log(`[eleventy-plugin-podcaster] Using episode URL base: ${episodeUrlBase}`)
       const filename = data.episode.filename
       return URL.parse(filename, episodeUrlBase)
     }

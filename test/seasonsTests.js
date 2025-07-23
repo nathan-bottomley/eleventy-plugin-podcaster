@@ -46,10 +46,10 @@ test('episodes in feed have episode urls with season numbers', (t) => {
   const parser = new XMLParser({ ignoreAttributes: false })
   const feedData = parser.parse(feed.content)
   const episodes = feedData.rss.channel.item
-  t.is(episodes[0].enclosure['@_url'], 'https://500yeardiary.com/500YD%20S2E2,%20The%20Show%20as%20We%20Know%20It%20(The%20Moonbase).mp3')
-  t.is(episodes[1].enclosure['@_url'], 'https://500yeardiary.com/500YD%20S2E1,%20Daleks%20Daleks%20(The%20Dalek%20Invasion%20of%20Earth).mp3')
-  t.is(episodes[2].enclosure['@_url'], 'https://500yeardiary.com/500YD%20S1E2,%20The%20Pertwee%20I%20Have%20in%20My%20Head%20(Spearhead%20from%20Space).mp3')
-  t.is(episodes[3].enclosure['@_url'], 'https://500yeardiary.com/500YD%20S1E1,%20Entering%20a%20New%20Phase%20(The%20Power%20of%20the%20Daleks).mp3')
+  t.is(episodes[0].enclosure['@_url'], 'https://500yeardiary.com/episodes/500YD%20S2E2,%20The%20Show%20as%20We%20Know%20It%20(The%20Moonbase).mp3')
+  t.is(episodes[1].enclosure['@_url'], 'https://500yeardiary.com/episodes/500YD%20S2E1,%20Daleks%20Daleks%20(The%20Dalek%20Invasion%20of%20Earth).mp3')
+  t.is(episodes[2].enclosure['@_url'], 'https://500yeardiary.com/episodes/500YD%20S1E2,%20The%20Pertwee%20I%20Have%20in%20My%20Head%20(Spearhead%20from%20Space).mp3')
+  t.is(episodes[3].enclosure['@_url'], 'https://500yeardiary.com/episodes/500YD%20S1E1,%20Entering%20a%20New%20Phase%20(The%20Power%20of%20the%20Daleks).mp3')
 })
 
 test('episodes in feed have season numbers', (t) => {

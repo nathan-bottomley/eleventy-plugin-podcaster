@@ -101,7 +101,7 @@ export default function (eleventyConfig) {
 
       const episodeUrlBase = data.podcast.episodeUrlBase
       const filename = data.episode.filename
-      return path.join(episodeUrlBase, filename)
+      return URL.parse(filename, episodeUrlBase)
     }
   })
 

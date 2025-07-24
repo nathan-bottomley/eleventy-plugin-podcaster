@@ -111,7 +111,6 @@ export default function (eleventyConfig) {
       if (!data.page.inputPath.includes('/episodePosts/')) return
 
       const episodeUrlBase = data.podcast.episodeUrlBase
-      console.log(`[eleventy-plugin-podcaster] Using episode URL base: ${episodeUrlBase}`)
       const filename = data.episode.filename
       return URL.parse(filename, episodeUrlBase)
     }

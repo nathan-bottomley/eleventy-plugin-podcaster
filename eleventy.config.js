@@ -19,10 +19,6 @@ export default function (eleventyConfig, options = {}) {
 
   // Optional features
 
-  options.handleExcerpts = options.handleExcerpts ?? true
-  options.handleDrafts = options.handleDrafts ?? true
-  options.handlePageTitle = options.handlePageTitle ?? true
-
   if (options.handleExcerpts) {
     eleventyConfig.addPlugin(excerpts, options)
   }

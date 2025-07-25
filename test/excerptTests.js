@@ -7,12 +7,8 @@ test('excerpt is the first child <p> of the content not in a <blockquote>', asyn
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster, { handleExcerpts: true })
-      eleventyConfig.addGlobalData(
-        'podcast.episodeUrlBase',
-        'https://example.com/'
-      )
-      eleventyConfig.addTemplate('episode-1.md', '# Episode 1\n\n> blockquote paragraph\n\nnon-blockquote paragraph', {
-        tags: ['podcastEpisode'],
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com/')
+      eleventyConfig.addTemplate('episodePosts/episode-1.md', '# Episode 1\n\n> blockquote paragraph\n\nnon-blockquote paragraph', {
         date: '2020-01-01',
         title: 'Episode 1',
         permalink: '/1/',
@@ -31,9 +27,8 @@ test('if front matter excerpt is set, it is used after being converted to raw HT
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster, { handleExcerpts: true })
-      eleventyConfig.addGlobalData('podcast.episodeUrlBase', 'https://example.com/')
-      eleventyConfig.addTemplate('episode-1.md', '# Episode 1\n\n> blockquote paragraph\n\nnon-blockquote paragraph', {
-        tags: ['podcastEpisode'],
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com/')
+      eleventyConfig.addTemplate('episodePosts/episode-1.md', '# Episode 1\n\n> blockquote paragraph\n\nnon-blockquote paragraph', {
         date: '2020-01-01',
         title: 'Episode 1',
         permalink: '/1/',
@@ -53,8 +48,8 @@ test('if excerpt is set using comment delimiters, it is used after being convert
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster, { handleExcerpts: true })
-      eleventyConfig.addGlobalData('podcast.episodeUrlBase', 'https://example.com/')
-      eleventyConfig.addTemplate('episode-1.md', '# Episode 1\n\nfirst paragraph\n<!---excerpt-->\nsecond *paragraph*\n<!---endexcerpt-->\nthird paragraph\n', {
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com/')
+      eleventyConfig.addTemplate('episodePosts/episode-1.md', '# Episode 1\n\nfirst paragraph\n<!---excerpt-->\nsecond *paragraph*\n<!---endexcerpt-->\nthird paragraph\n', {
         tags: ['podcastEpisode'],
         date: '2020-01-01',
         title: 'Episode 1',
@@ -89,9 +84,8 @@ test('if multiline excerpt is set using comment delimiters, it is used after bei
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster, { handleExcerpts: true })
-      eleventyConfig.addGlobalData('podcast.episodeUrlBase', 'https://example.com/')
-      eleventyConfig.addTemplate('episode-1.md', templateWithMultilineExcerpt, {
-        tags: ['podcastEpisode'],
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com/')
+      eleventyConfig.addTemplate('episodePosts/episode-1.md', templateWithMultilineExcerpt, {
         date: '2020-01-01',
         title: 'Episode 1',
         permalink: '/1/',

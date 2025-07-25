@@ -4,10 +4,8 @@ import markdownIt from 'markdown-it'
 
 export default function (eleventyConfig, options = {}) {
   eleventyConfig.addGlobalData('eleventyComputed.excerpt', () => {
-    if (!options.handleExcerpts) return
-
     return (data) => {
-      if (!data.tags?.includes('podcastEpisode')) return
+      if (!data.page.inputPath.includes('/episodePosts/')) return
 
       const md = markdownIt({
         html: true,

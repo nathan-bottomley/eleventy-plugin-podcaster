@@ -1,5 +1,5 @@
 export default function (eleventyConfig, options = {}) {
-  const separator = (options.handlePageTitle !== true)
+  const separator = (options.handlePageTitle === true)
     ? '&middot;'
     : options.handlePageTitle
 

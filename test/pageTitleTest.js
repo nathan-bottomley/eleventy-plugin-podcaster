@@ -6,15 +6,9 @@ test("when there's a page title and site.title is provided, pageTitle is calcula
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(Podcaster, { calculatePageTitle: true })
-      eleventyConfig.addGlobalData(
-        'podcast.episodeUrlBase',
-        'https://example.com/'
-      )
-      eleventyConfig.addGlobalData(
-        'site.title',
-        'Flight Through Entirety'
-      )
+      eleventyConfig.addPlugin(Podcaster, { handlePageTitle: true })
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com/')
+      eleventyConfig.addGlobalData('site.title', 'Flight Through Entirety')
       eleventyConfig.addTemplate('episode-1.md', '{{ pageTitle }}', {
         tags: ['podcastEpisode'],
         date: '2020-01-01',
@@ -33,15 +27,9 @@ test('when a custom separator is provided it gets used', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(Podcaster, { calculatePageTitle: '|' })
-      eleventyConfig.addGlobalData(
-        'podcast.episodeUrlBase',
-        'https://example.com/'
-      )
-      eleventyConfig.addGlobalData(
-        'site.title',
-        'Flight Through Entirety'
-      )
+      eleventyConfig.addPlugin(Podcaster, { handlePageTitle: '|' })
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com/')
+      eleventyConfig.addGlobalData('site.title', 'Flight Through Entirety')
       eleventyConfig.addTemplate('episode-1.md', '{{ pageTitle }}', {
         tags: ['podcastEpisode'],
         date: '2020-01-01',
@@ -60,15 +48,9 @@ test('when the page title and site.title are the same, pageTitle is calculated c
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(Podcaster, { calculatePageTitle: true })
-      eleventyConfig.addGlobalData(
-        'podcast.episodeUrlBase',
-        'https://example.com/'
-      )
-      eleventyConfig.addGlobalData(
-        'site.title',
-        'Flight Through Entirety'
-      )
+      eleventyConfig.addPlugin(Podcaster, { handlePageTitle: true })
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com/')
+      eleventyConfig.addGlobalData('site.title', 'Flight Through Entirety')
       eleventyConfig.addTemplate('episode-1.md', '{{ pageTitle }}', {
         tags: ['podcastEpisode'],
         date: '2020-01-01',
@@ -88,15 +70,9 @@ test("when site.title isn't provided, podcast.title is used instead", async t =>
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(Podcaster, { calculatePageTitle: true })
-      eleventyConfig.addGlobalData(
-        'podcast.episodeUrlBase',
-        'https://example.com/'
-      )
-      eleventyConfig.addGlobalData(
-        'podcast.title',
-        'Flight Through Entirety'
-      )
+      eleventyConfig.addPlugin(Podcaster, { handlePageTitle: true })
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com/')
+      eleventyConfig.addGlobalData('podcast.title', 'Flight Through Entirety')
       eleventyConfig.addTemplate('episode-1.md', '{{ pageTitle }}', {
         tags: ['podcastEpisode'],
         date: '2020-01-01',

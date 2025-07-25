@@ -35,8 +35,12 @@ export default function (eleventyConfig) {
   eleventyConfig.addGlobalData('eleventyComputed.podcast.episodeUrlBase', () => {
     return data => {
       if (data.podcast.episodeUrlBase) return data.podcast.episodeUrlBase
-
-      const siteUrl = data.podcast.siteUrl || data.site.url
+      let siteUrl
+      try {
+        siteUrl = data.podcast.siteUrl || data.site.url
+      } catch (e) {
+        console.error('[eleventy-plugin-podcaster] No site URL found. Please set `siteUrl` in your podcast data.')
+      }
       return URL.parse('episodes/', siteUrl)
     }
   })
@@ -89,7 +93,7 @@ export default function (eleventyConfig) {
       if (episodeMatch) {
         return parseInt(episodeMatch.groups.episodeNumber, 10)
       } else {
-        console.warn(`[eleventy-plugin-podcaster] Cannot determine episode number for ${data.page.inputPath}. Please ensure the file slug contains a number or set the episodeNumber explicitly in the front matter.`)
+        console.error(`[eleventy-plugin-podcaster] Cannot determine episode number for ${data.page.inputPath}. Please ensure the file slug contains a number or set the episodeNumber explicitly in the front matter.`)
       }
     }
   })

@@ -8,6 +8,7 @@ test('RSS feed template renders', async t => {
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com')
     }
   })
   const build = await eleventy.toJSON()
@@ -20,6 +21,7 @@ test('RSS feed is valid XML', async t => {
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com')
     }
   })
   const build = await eleventy.toJSON()
@@ -33,6 +35,7 @@ test('feed renders at /feed/podcast.xml by default', async t => {
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com')
     }
   })
   const build = await eleventy.toJSON()
@@ -44,7 +47,10 @@ test('feed renders at podcast.feedPath if set', async t => {
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData('podcast', { feedPath: '/feed.xml' })
+      eleventyConfig.addGlobalData('podcast', {
+        feedPath: '/feed.xml',
+        siteUrl: 'https://example.com'
+      })
     }
   })
   const build = await eleventy.toJSON()
@@ -108,7 +114,10 @@ test('copyright defaults to year and author name', async t => {
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData('podcast', { author: 'Test Author' })
+      eleventyConfig.addGlobalData('podcast', {
+        author: 'Test Author',
+        siteUrl: 'https://example.com'
+      })
     }
   })
   const build = await eleventy.toJSON()
@@ -123,7 +132,11 @@ test('copyright can be set to a range with startingYear', async t => {
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData('podcast', { copyright: 'Test Copyright', startingYear: 2020 })
+      eleventyConfig.addGlobalData('podcast', {
+        copyright: 'Test Copyright',
+        startingYear: 2020,
+        siteUrl: 'https://example.com'
+      })
     }
   })
   const build = await eleventy.toJSON()
@@ -139,30 +152,17 @@ test("copyright isn't expressed as a range when startingYear is this year", asyn
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData('podcast', { copyright: 'Test Copyright', startingYear: year })
+      eleventyConfig.addGlobalData('podcast', {
+        copyright: 'Test Copyright',
+        startingYear: year,
+        siteUrl: 'https://example.com'
+      })
     }
   })
   const build = await eleventy.toJSON()
   const parser = new XMLParser()
   const feedData = parser.parse(build[0].content)
   t.is(feedData.rss.channel.copyright, `© ${year} Test Copyright`)
-})
-
-test('copyright is also available as {{ copyrightNotice }}', async t => {
-  const eleventy = new Eleventy('./test', './test/_site', {
-    configPath: null,
-    config (eleventyConfig) {
-      eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData('podcast', { copyright: 'Test Copyright', startingYear: 2020 })
-      eleventyConfig.addTemplate('template-1.md', '{{ copyrightNotice }}', { permalink: '/1/' })
-    }
-  })
-  const build = await eleventy.toJSON()
-  const item = build.find(item => item.url === '/1/')
-  const parser = new XMLParser()
-  const itemData = parser.parse(item.content)
-  const year = new Date().getFullYear()
-  t.deepEqual(itemData, { p: `© 2020–${year} Test Copyright` })
 })
 
 // pubDate
@@ -174,6 +174,7 @@ test('lastBuildDate is set to the current date and time in RFC2822 format', asyn
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com')
     }
   })
   const build = await eleventy.toJSON()
@@ -194,6 +195,7 @@ test('image path defaults to "/img/podcast-logo.jpg"', async t => {
         siteUrl: 'https://example.com'
       })
       eleventyConfig.addPlugin(Podcaster)
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com')
     }
   })
   const build = await eleventy.toJSON()
@@ -211,7 +213,8 @@ test('<itunes:category> works if no subcategory is set', async t => {
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
       eleventyConfig.addGlobalData('podcast', {
-        category: 'TV & Film'
+        category: 'TV & Film',
+        siteUrl: 'https://example.com'
       })
     }
   })
@@ -228,6 +231,7 @@ test('<itunes:explicit> defaults to not existing', async t => {
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com')
     }
   })
   const build = await eleventy.toJSON()
@@ -241,7 +245,10 @@ test('<itunes:explicit> can be set to true', async t => {
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData('podcast', { explicit: true })
+      eleventyConfig.addGlobalData('podcast', {
+        explicit: true,
+        siteUrl: 'https://example.com'
+      })
     }
   })
   const build = await eleventy.toJSON()
@@ -255,7 +262,10 @@ test('<itunes:explicit> can be set to false', async t => {
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData('podcast', { explicit: false })
+      eleventyConfig.addGlobalData('podcast', {
+        explicit: false,
+        siteUrl: 'https://example.com'
+      })
     }
   })
   const build = await eleventy.toJSON()
@@ -271,6 +281,7 @@ test('<itunes:type> defaults to not existing', async t => {
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com')
     }
   })
   const build = await eleventy.toJSON()
@@ -284,7 +295,10 @@ test('<itunes:type> can be set to episodic', async t => {
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData('podcast', { type: 'episodic' })
+      eleventyConfig.addGlobalData('podcast', {
+        type: 'episodic',
+        siteUrl: 'https://example.com'
+      })
     }
   })
   const build = await eleventy.toJSON()
@@ -298,7 +312,10 @@ test('<itunes:type> can be set to serial', async t => {
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData('podcast', { type: 'serial' })
+      eleventyConfig.addGlobalData('podcast', {
+        type: 'serial',
+        siteUrl: 'https://example.com'
+      })
     }
   })
   const build = await eleventy.toJSON()
@@ -314,6 +331,7 @@ test('<itunes:complete> defaults to not existing', async t => {
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com')
     }
   })
   const build = await eleventy.toJSON()
@@ -327,7 +345,10 @@ test('<itunes:complete> can be set to true', async t => {
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData('podcast', { complete: true })
+      eleventyConfig.addGlobalData('podcast', {
+        complete: true,
+        siteUrl: 'https://example.com'
+      })
     }
   })
   const build = await eleventy.toJSON()
@@ -341,7 +362,10 @@ test("<itunes:complete> doesn't exist when set to false", async t => {
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData('podcast', { complete: false })
+      eleventyConfig.addGlobalData('podcast', {
+        complete: false,
+        siteUrl: 'https://example.com'
+      })
     }
   })
   const build = await eleventy.toJSON()
@@ -357,6 +381,7 @@ test('<itunes:block> defaults to not existing', async t => {
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com')
     }
   })
   const build = await eleventy.toJSON()
@@ -370,7 +395,10 @@ test('<itunes:block> can be set to true', async t => {
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData('podcast', { block: true })
+      eleventyConfig.addGlobalData('podcast', {
+        block: true,
+        siteUrl: 'https://example.com'
+      })
     }
   })
   const build = await eleventy.toJSON()
@@ -384,7 +412,10 @@ test("<itunes:block> doesn't exist when set to false", async t => {
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData('podcast', { block: false })
+      eleventyConfig.addGlobalData('podcast', {
+        block: false,
+        siteUrl: 'https://example.com'
+      })
     }
   })
   const build = await eleventy.toJSON()

@@ -19,6 +19,12 @@ export default function (eleventyConfig, options = {}) {
 
   // Optional features
 
+  if (options.optionalFeatures) {
+    options.handleDrafts = true
+    options.handleExcerpts = true
+    options.handlePageTitle ??= true // preserve setting for custom separators
+  }
+
   if (options.handleExcerpts) {
     eleventyConfig.addPlugin(excerpts, options)
   }

@@ -56,8 +56,10 @@ export default function (eleventyConfig) {
     return data => {
       if (data.episode.filename) return data.episode.filename
 
-      if (data.page.inputPath.includes('/episodePosts/') && data.episodeData) {
-        for (const file of Object.keys(data.episodeData)) {
+      if (!data.page.inputPath.includes('/episodePosts/')) return
+
+      for (const file of Object.keys(data.episodeData)) {
+        if (data.episode.seasonNumber && data.episode.episodeNumber) {
           const seasonAndEpisodeMatch = file.match(filenameSeasonAndEpisodePattern)
           if (seasonAndEpisodeMatch) {
             const matchedSeasonNumber = parseInt(seasonAndEpisodeMatch.groups.seasonNumber)
@@ -67,6 +69,7 @@ export default function (eleventyConfig) {
               return file
             }
           }
+        } else if (data.episode.episodeNumber) {
           const episodeMatch = file.match(filenameEpisodePattern)
           if (episodeMatch) {
             const matchedEpisodeNumber = parseInt(episodeMatch.groups.episodeNumber)

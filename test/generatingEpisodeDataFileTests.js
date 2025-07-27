@@ -4,10 +4,10 @@ import path from 'node:path'
 import { existsSync, readFileSync, unlinkSync } from 'node:fs'
 
 const fixture = './fixtures/generatingEpisodesDataFile'
-const episodesDataFilePath = path.join(process.cwd(), `${fixture}/src/_data/episodesData.json`)
+const episodeDataFilePath = path.join(process.cwd(), `${fixture}/src/_data/episodeData.json`)
 
 test.afterEach('delete episodesData file', async (t) => {
-  unlinkSync(episodesDataFilePath)
+  unlinkSync(episodeDataFilePath)
 })
 
 test.serial('the `episodesData.json` file is generated', async (t) => {
@@ -18,7 +18,7 @@ test.serial('the `episodesData.json` file is generated', async (t) => {
       configPath: `${fixture}/eleventy.config.js`
     })
   await eleventy.toJSON()
-  t.true(existsSync(episodesDataFilePath))
+  t.true(existsSync(episodeDataFilePath))
 })
 
 test.serial('the `episodesData.json` file is correct', async (t) => {
@@ -29,15 +29,15 @@ test.serial('the `episodesData.json` file is correct', async (t) => {
       configPath: `${fixture}/eleventy.config.js`
     })
   await eleventy.toJSON()
-  const episodesData = JSON.parse(readFileSync(episodesDataFilePath))
+  const episodesData = JSON.parse(readFileSync(episodeDataFilePath))
   const expectedEpisodesData = {
     '2GAB 1, The Star Beast.mp3': {
       size: 32004399,
-      duration: 1947.481
+      duration: 1947.2979591836734
     },
     '2GAB 2, Wild Blue Yonder.mp3': {
       size: 28683178,
-      duration: 1587.905
+      duration: 1587.7485714285715
     }
   }
   t.deepEqual(episodesData, expectedEpisodesData)

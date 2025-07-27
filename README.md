@@ -40,14 +40,14 @@ export default function (eleventyConfig) {
 
 [Podcaster]: https://eleventy-plugin-podcaster.com/docs
 
-## Usage
-
 Detailed and specific information about how to install and use **Podcaster** can be found in [the Documentation section](docs/index.md) of the site, but here's a quick summary.
 
 1. **Podcaster** is an Eleventy plugin. Create an Eleventy site and install the `eleventy-plugin-podcaster` plugin in the usual way.
 2. In the data directory, create a `podcast.json` file. This will contain information about your podcast and its site — at the very least, its title, the URL of the site, a description, its language, and its category.
 3. In the input directory, create a `episodeFiles` directory and put your podcast MP3s in there.
 4. In the input directory, create a `episodePosts` directory. You will have a post for each episode, and that post will include information about the episode in its filename and front matter and will have as its content the episode description or show notes.
+5. Create pages on your site for each of your episodes using the posts in the `episodePosts` directory. You can also create index pages, topic pages, guest pages or anything you like, using the information you have supplied to **Podcaster**.
+6. Find a host for your site, and a CDN for your podcast episodes.
 
 > [!WARNING]
 > **Podcaster** requires Node 20 or later.

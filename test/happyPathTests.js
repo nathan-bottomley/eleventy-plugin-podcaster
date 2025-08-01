@@ -195,10 +195,17 @@ test('episode posts can display their durations correctly', (t) => {
 
 test.after.always(async (t) => {
   const episodeDataPath = path.join(process.cwd(), 'fixtures/happyPath/_data/episodeData.json')
+  const podcastDataPath = path.join(process.cwd(), 'fixtures/happyPath/_data/podcastData.json')
   try {
     unlinkSync(episodeDataPath)
     console.log(`Deleted ${episodeDataPath}`)
   } catch (error) {
     console.error(`Failed to delete ${episodeDataPath}:`, error)
+  }
+  try {
+    unlinkSync(podcastDataPath)
+    console.log(`Deleted ${podcastDataPath}`)
+  } catch (error) {
+    console.error(`Failed to delete ${podcastDataPath}:`, error)
   }
 })

@@ -21,31 +21,34 @@ export default function (eleventyConfig) {
     if (!existsSync(episodesDir)) return
 
     const episodes = await readdir(episodesDir)
-    const episodesData = {}
-    let totalEpisodes = 0
+    const episodeData = {}
+    let numberOfEpisodes = 0
     let totalSize = 0
     let totalDuration = 0
 
     for (const episode of episodes) {
       if (!episode.endsWith('.mp3')) continue
 
-      totalEpisodes++
+      numberOfEpisodes++
       const episodePath = path.join(episodesDir, episode)
       const episodeSize = (await stat(episodePath)).size
       totalSize += episodeSize
       const episodeMetadata = await parseFile(episodePath, { duration: true })
       const episodeDuration = episodeMetadata.format.duration
       totalDuration += episodeDuration
-      episodesData[episode] = {
+      episodeData[episode] = {
         size: episodeSize,
-        duration: episodeDuration
+        duration: Math.round(episodeDuration * 1000) / 1000
       }
+      totalDuration = Math.round(totalDuration * 1000) / 1000
     }
+    const podcastData = { numberOfEpisodes, totalSize, totalDuration }
 
     const dataDir = path.join(process.cwd(), directories.data)
-    await writeFile(path.join(dataDir, 'episodeData.json'), JSON.stringify(episodesData, null, 2))
+    await writeFile(path.join(dataDir, 'episodeData.json'), JSON.stringify(episodeData, null, 2))
+    await writeFile(path.join(dataDir, 'podcastData.json'), JSON.stringify(podcastData, null, 2))
 
-    console.log(chalk.yellow(`${totalEpisodes} episodes; ${hr.fromBytes(totalSize)}; ${convertSecondsToReadableDuration(totalDuration)}.`))
+    console.log(chalk.yellow(`${numberOfEpisodes} episodes; ${hr.fromBytes(totalSize)}; ${convertSecondsToReadableDuration(totalDuration)}.`))
   })
 
   const filenameSeasonAndEpisodePattern =

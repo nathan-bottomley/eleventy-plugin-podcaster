@@ -61,7 +61,7 @@ test('the readableSize filter converts bytes to something readable', async t => 
   t.true(item.content.includes('28683178 = 28.7 MB'))
 })
 
-test('the readableDuration filter converts seconds to something readable', async t => {
+test('the readableDuration filter converts seconds to colon separated values', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
@@ -70,7 +70,7 @@ test('the readableDuration filter converts seconds to something readable', async
         'podcast.episodeUrlBase',
         'https://example.com/'
       )
-      eleventyConfig.addTemplate('index.md', '3599 = {{ 3599 | readableDuration }}\n3600 = {{ 3600 | readableDuration }}\n1947.481 = {{ 1947.481 | readableDuration }}\n1587.905 = {{ 1587.905 | readableDuration }}', {
+      eleventyConfig.addTemplate('index.md', '3599 = {{ 3599 | readableDuration }}\n3600 = {{ 3600 | readableDuration }}\n1947.481 = {{ 1947.481 | readableDuration }}\n1587.905 = {{ 1587.905 | readableDuration }}\n86400 = {{ 86400 | readableDuration }}\n90000 = {{ 90000 | readableDuration }}', {
         permalink: '/size/'
       })
     }
@@ -81,4 +81,28 @@ test('the readableDuration filter converts seconds to something readable', async
   t.true(item.content.includes('3600 = 1:00:00'))
   t.true(item.content.includes('1947.481 = 32:27'))
   t.true(item.content.includes('1587.905 = 26:27'))
+  t.true(item.content.includes('86400 = 24:00:00'))
+  t.true(item.content.includes('90000 = 25:00:00'))
+})
+
+test('the readableDuration filter converts seconds to words if the word "long" is passed as the second argument', async t => {
+  const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
+    config (eleventyConfig) {
+      eleventyConfig.addPlugin(Podcaster, { handleExcerpts: true })
+      eleventyConfig.addGlobalData(
+        'podcast.episodeUrlBase',
+        'https://example.com/'
+      )
+      eleventyConfig.addTemplate('index.md', '86399 = {{ 86399 | readableDuration: "long" }}\n86400 = {{ 86400 | readableDuration: "long" }}\n90000 = {{ 90000 | readableDuration: "long" }}\n100000.555 = {{ 100000.555 | readableDuration: "long" }}', {
+        permalink: '/size/'
+      })
+    }
+  })
+  const build = await eleventy.toJSON()
+  const item = build.find(item => item.url === '/size/')
+  t.true(item.content.includes('86399 = 0 days, 23 hours, 59 minutes, 59 seconds'))
+  t.true(item.content.includes('86400 = 1 day, 0 hours, 0 minutes, 0 seconds'))
+  t.true(item.content.includes('90000 = 1 day, 1 hour, 0 minutes, 0 seconds'))
+  t.true(item.content.includes('100000.555 = 1 day, 3 hours, 46 minutes, 40.555 seconds'))
 })

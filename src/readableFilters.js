@@ -13,12 +13,17 @@ export default function (eleventyConfig, options = {}) {
     return result.setLocale(readableDateLocale).toLocaleString(DateTime.DATE_HUGE)
   })
 
-  eleventyConfig.addFilter('readableDuration', (seconds) => {
+  eleventyConfig.addFilter('readableDuration', (seconds, length) => {
     if (!seconds) return '0:00:00'
-    if (seconds < 3600) {
+    if (length === 'long') {
+      return Duration.fromMillis(seconds * 1000)
+        .shiftTo('days', 'hours', 'minutes', 'seconds')
+        .toHuman()
+    } else if (seconds < 60 * 60) {
       return Duration.fromMillis(seconds * 1000).toFormat('mm:ss')
+    } else {
+      return Duration.fromMillis(seconds * 1000).toFormat('h:mm:ss')
     }
-    return Duration.fromMillis(seconds * 1000).toFormat('h:mm:ss')
   })
 
   eleventyConfig.addFilter('readableSize', (bytes, fixedPrecision = 1) =>

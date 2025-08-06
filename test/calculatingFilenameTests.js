@@ -27,6 +27,10 @@ test('the generated `episodeData.json` file is used to calculate filenames from 
     'filename: 500YD S2E1, Daleks Daleks (The Dalek Invasion of Earth).mp3'
   )
   t.is(
+    episodes.find(item => item.title === 'Season 2, Episode 10').description,
+    'filename: 500YD S2 E10, Glorious Spacename (Enemy of the Bane).mp3'
+  )
+  t.is(
     episodes.find(item => item.title === 'Season 2, Episode 11').description,
     'filename: 500YD S2E11, Behind Her (The Well).mp3'
   )

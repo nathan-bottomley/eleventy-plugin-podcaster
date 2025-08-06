@@ -52,7 +52,7 @@ export default function (eleventyConfig) {
   })
 
   const filenameSeasonAndEpisodePattern =
-    /^.*?\b[sS](?<seasonNumber>\d+)[eE](?<episodeNumber>\d+)\b.*\.mp3$/
+    /^.*?\b[sS](?<seasonNumber>\d+)\s*[eE](?<episodeNumber>\d+)\b.*\.mp3$/
   const filenameEpisodePattern = /^.*?\b(?<episodeNumber>\d+)\b.*\.mp3$/
 
   eleventyConfig.addGlobalData('eleventyComputed.episode.filename', () => {

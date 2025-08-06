@@ -49,7 +49,7 @@ test('the readableSize filter converts bytes to something readable', async t => 
         'podcast.episodeUrlBase',
         'https://example.com/'
       )
-      eleventyConfig.addTemplate('index.md', '1024 = {{ 1024 | readableSize }}\n32004399 = {{ 32004399 | readableSize }}\n28683178 = {{ 28683178 | readableSize }}', {
+      eleventyConfig.addTemplate('index.md', '1024 = {{ 1024 | readableSize }}\n28683178 = {{ 28683178 | readableSize }}\n32004399 = {{ 32004399 | readableSize }}\n1100000000 = {{ 1100000000 | readableSize }}', {
         permalink: '/size/'
       })
     }
@@ -57,8 +57,32 @@ test('the readableSize filter converts bytes to something readable', async t => 
   const build = await eleventy.toJSON()
   const item = build.find(item => item.url === '/size/')
   t.true(item.content.includes('1024 = 1.0 kB'))
-  t.true(item.content.includes('32004399 = 32.0 MB'))
   t.true(item.content.includes('28683178 = 28.7 MB'))
+  t.true(item.content.includes('32004399 = 32.0 MB'))
+  t.true(item.content.includes('1100000000 = 1.1 GB'))
+})
+
+test('the readableSize filter uses the specified number of fixed decimal places', async t => {
+  const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
+    config (eleventyConfig) {
+      eleventyConfig.addPlugin(Podcaster, { handleExcerpts: true })
+      eleventyConfig.addGlobalData(
+        'podcast.episodeUrlBase',
+        'https://example.com/'
+      )
+      eleventyConfig.addTemplate('index.md', '1024 = {{ 1024 | readableSize: 2 }}\n28683178 = {{ 28683178 | readableSize: 2 }}\n32004399 = {{ 32004399 | readableSize: 2 }}\n1100000000 = {{ 1100000000 | readableSize: 2 }}', {
+        permalink: '/size/'
+      })
+    }
+  })
+  const build = await eleventy.toJSON()
+  const item = build.find(item => item.url === '/size/')
+  console.log(item.content)
+  t.true(item.content.includes('1024 = 1.02 kB'))
+  t.true(item.content.includes('28683178 = 28.68 MB'))
+  t.true(item.content.includes('32004399 = 32.00 MB'))
+  t.true(item.content.includes('1100000000 = 1.10 GB'))
 })
 
 test('the readableDuration filter converts seconds to colon separated values', async t => {

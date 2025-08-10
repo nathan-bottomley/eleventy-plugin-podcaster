@@ -11,6 +11,24 @@ const convertSecondsToReadableDuration = seconds =>
     .shiftTo('days', 'hours', 'minutes', 'seconds')
     .toHuman()
 
+const convertReadableDurationToSeconds = duration => {
+  const durationPattern = /^(?:(?<hours>\d+):)?(?<minutes>\d{1,2}):(?<seconds>\d{2}(?:\.\d+)?)$/
+
+  let match
+  if (duration?.match) {
+    match = duration.match(durationPattern)
+  }
+
+  if (match) {
+    const hours = isNaN(parseInt(match.groups.hours))
+      ? 0
+      : parseInt(match.groups.hours)
+    const minutes = parseInt(match.groups.minutes)
+    const seconds = parseFloat(match.groups.seconds)
+    return hours * 3600 + minutes * 60 + seconds
+  }
+}
+
 export default function (eleventyConfig) {
   let firstRun = true
   eleventyConfig.on('eleventy.before', async ({ directories }) => {
@@ -96,7 +114,10 @@ export default function (eleventyConfig) {
 
   eleventyConfig.addGlobalData('eleventyComputed.episode.duration', () => {
     return data => {
-      if (data.episode.duration) return data.episode.duration
+      if (data.episode.duration) {
+        const convertedReadableDuration = convertReadableDurationToSeconds(data.episode.duration)
+        return convertedReadableDuration ?? data.episode.duration
+      }
 
       if (data.page.inputPath.includes('/episodePosts/') && data.episodeData) {
         return data.episodeData[data.episode.filename]?.duration

@@ -78,7 +78,6 @@ test('the readableSize filter uses the specified number of fixed decimal places'
   })
   const build = await eleventy.toJSON()
   const item = build.find(item => item.url === '/size/')
-  console.log(item.content)
   t.true(item.content.includes('1024 = 1.02 kB'))
   t.true(item.content.includes('28683178 = 28.68 MB'))
   t.true(item.content.includes('32004399 = 32.00 MB'))

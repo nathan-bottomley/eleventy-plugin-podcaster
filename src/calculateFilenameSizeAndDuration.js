@@ -2,7 +2,7 @@ import { Duration } from 'luxon'
 import path from 'node:path'
 import { existsSync } from 'node:fs'
 import { readdir, stat, writeFile } from 'node:fs/promises'
-import { parseFile } from 'music-metadata'
+import { parseFile as parseFileMetadata } from 'music-metadata'
 import hr from '@tsmx/human-readable'
 import chalk from 'chalk'
 
@@ -29,77 +29,93 @@ const convertReadableDurationToSeconds = duration => {
   }
 }
 
-export default function (eleventyConfig) {
-  let firstRun = true
-  eleventyConfig.on('eleventy.before', async ({ directories }) => {
-    // don't keep recalculating episode data in serve mode
-    if (!firstRun || process.env.SKIP_EPISODE_CALCULATIONS === 'true') return
-    firstRun = false
-    const episodesDir = path.join(directories.input, 'episodeFiles')
-    if (!existsSync(episodesDir)) return
+async function readEpisodeDataLocally (episodeFilesDirectory) {
+  const episodes = await readdir(episodeFilesDirectory)
+  const episodeData = {}
+  for (const episode of episodes) {
+    if (!episode.endsWith('.mp3')) continue
 
-    const episodes = await readdir(episodesDir)
-    const episodeData = {}
-    let numberOfEpisodes = 0
-    let totalSize = 0
-    let totalDuration = 0
-
-    for (const episode of episodes) {
-      if (!episode.endsWith('.mp3')) continue
-
-      numberOfEpisodes++
-      const episodePath = path.join(episodesDir, episode)
-      const episodeSize = (await stat(episodePath)).size
-      totalSize += episodeSize
-      const episodeMetadata = await parseFile(episodePath, { duration: true })
-      const episodeDuration = episodeMetadata.format.duration
-      totalDuration += episodeDuration
-      episodeData[episode] = {
-        size: episodeSize,
-        duration: Math.round(episodeDuration * 1000) / 1000
-      }
-      totalDuration = Math.round(totalDuration * 1000) / 1000
+    const episodePath = path.join(episodeFilesDirectory, episode)
+    const episodeSize = (await stat(episodePath)).size
+    const episodeMetadata = await parseFileMetadata(episodePath, { duration: true })
+    const episodeDuration = episodeMetadata.format.duration
+    episodeData[episode] = {
+      size: episodeSize,
+      duration: Math.round(episodeDuration * 1000) / 1000
     }
-    const podcastData = { numberOfEpisodes, totalSize, totalDuration }
+  }
+  return episodeData
+}
 
-    const dataDir = path.join(process.cwd(), directories.data)
-    await writeFile(path.join(dataDir, 'episodeData.json'), JSON.stringify(episodeData, null, 2))
-    await writeFile(path.join(dataDir, 'podcastData.json'), JSON.stringify(podcastData, null, 2))
+function calculatePodcastData (episodeData) {
+  const episodeDataValues = Object.values(episodeData)
+  const numberOfEpisodes = episodeDataValues.length
+  const totalSize = episodeDataValues.map(x => x.size).reduce((x, y) => x + y)
+  const totalDuration = episodeDataValues.map(x => x.duration).reduce((x, y) => x + y)
+  return { numberOfEpisodes, totalSize, totalDuration }
+}
 
-    console.log(chalk.yellow(`${numberOfEpisodes} episodes; ${hr.fromBytes(totalSize)}; ${convertSecondsToReadableDuration(totalDuration)}.`))
-  })
+function reportPodcastData (podcastData) {
+  const { numberOfEpisodes, totalSize, totalDuration } = podcastData
+  console.log(chalk.yellow(`${numberOfEpisodes} episodes; ${hr.fromBytes(totalSize)}; ${convertSecondsToReadableDuration(totalDuration)}.`))
+}
 
+async function writePodcastDataLocally (episodeData, podcastData, directories) {
+  const dataDir = path.join(process.cwd(), directories.data)
+  await writeFile(path.join(dataDir, 'episodeData.json'), JSON.stringify(episodeData, null, 2))
+  await writeFile(path.join(dataDir, 'podcastData.json'), JSON.stringify(podcastData, null, 2))
+}
+
+function findMatchingFilename (episodeData, thisEpisode) {
   const filenameSeasonAndEpisodePattern =
     /^.*?\b[sS](?<seasonNumber>\d+)\s*[eE](?<episodeNumber>\d+)\b.*\.mp3$/
   const filenameEpisodePattern = /^.*?\b(?<episodeNumber>\d+)\b.*\.mp3$/
+  const { seasonNumber, episodeNumber } = thisEpisode
+
+  for (const file of Object.keys(episodeData)) {
+    if (seasonNumber && episodeNumber) {
+      const seasonAndEpisodeMatch = file.match(filenameSeasonAndEpisodePattern)
+      if (seasonAndEpisodeMatch) {
+        const matchedSeasonNumber = parseInt(seasonAndEpisodeMatch.groups.seasonNumber)
+        const matchedEpisodeNumber = parseInt(seasonAndEpisodeMatch.groups.episodeNumber)
+        if (matchedSeasonNumber === seasonNumber &&
+            matchedEpisodeNumber === episodeNumber) {
+          return file
+        }
+      }
+    } else if (episodeNumber) {
+      const episodeMatch = file.match(filenameEpisodePattern)
+      if (episodeMatch) {
+        const matchedEpisodeNumber = parseInt(episodeMatch.groups.episodeNumber)
+        if (matchedEpisodeNumber === episodeNumber) {
+          return file
+        }
+      }
+    }
+  }
+}
+
+export default function (eleventyConfig) {
+  let firstRun = true
+  eleventyConfig.on('eleventy.before', async ({ directories }) => {
+    if (!firstRun || process.env.SKIP_EPISODE_CALCULATIONS === 'true') return
+    firstRun = false
+
+    const episodeFilesDirectory = path.join(directories.input, 'episodeFiles')
+    if (existsSync(episodeFilesDirectory)) {
+      const episodeData = await readEpisodeDataLocally(episodeFilesDirectory)
+      const podcastData = calculatePodcastData(episodeData)
+      await writePodcastDataLocally(episodeData, podcastData, directories)
+      reportPodcastData(podcastData)
+    }
+  })
 
   eleventyConfig.addGlobalData('eleventyComputed.episode.filename', () => {
     return data => {
       if (data.episode.filename) return data.episode.filename
-
       if (!data.page.inputPath.includes('/episodePosts/')) return
 
-      for (const file of Object.keys(data.episodeData)) {
-        if (data.episode.seasonNumber && data.episode.episodeNumber) {
-          const seasonAndEpisodeMatch = file.match(filenameSeasonAndEpisodePattern)
-          if (seasonAndEpisodeMatch) {
-            const matchedSeasonNumber = parseInt(seasonAndEpisodeMatch.groups.seasonNumber)
-            const matchedEpisodeNumber = parseInt(seasonAndEpisodeMatch.groups.episodeNumber)
-            if (matchedSeasonNumber === data.episode.seasonNumber &&
-                matchedEpisodeNumber === data.episode.episodeNumber) {
-              return file
-            }
-          }
-        } else if (data.episode.episodeNumber) {
-          const episodeMatch = file.match(filenameEpisodePattern)
-          if (episodeMatch) {
-            const matchedEpisodeNumber = parseInt(episodeMatch.groups.episodeNumber)
-            if (matchedEpisodeNumber === data.episode.episodeNumber) {
-              return file
-            }
-          }
-        }
-      }
+      return findMatchingFilename(data.episodeData, data.episode)
     }
   })
 

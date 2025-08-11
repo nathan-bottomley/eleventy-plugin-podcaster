@@ -8,7 +8,7 @@ const s3BucketEpisodeDataPath = path.join(process.cwd(), 'fixtures/s3Buckets/noE
 const episodeDataPath = path.join(process.cwd(), `${fixture}/src/_data/episodeData.json`)
 const podcastDataPath = path.join(process.cwd(), `${fixture}/src/_data/podcastData.json`)
 
-test.before(async (t) => {
+test.beforeEach(async (t) => {
   const eleventy = new Eleventy(
   `${fixture}/src`,
   `${fixture}/_site`,
@@ -37,8 +37,12 @@ test.serial('the `episodeData.json` file is correct', async (t) => {
   t.like(episodeData, expectedEpisodeData)
 })
 
+test.serial('the `episodeData.json` file is added to the S3 bucket', async (t) => {
+  t.true(existsSync(s3BucketEpisodeDataPath))
+})
+
 test.serial('the `podcastData.json` file is generated', async (t) => {
-  t.true(existsSync(episodeDataPath))
+  t.true(existsSync(podcastDataPath))
 })
 
 test.serial('the `podcastData.json` file is correct', async (t) => {
@@ -51,7 +55,7 @@ test.serial('the `podcastData.json` file is correct', async (t) => {
   t.deepEqual(podcastData, expectedPodcastData)
 })
 
-test.after.always(async (t) => {
+test.afterEach.always(async (t) => {
   try {
     unlinkSync(s3BucketEpisodeDataPath)
     console.log(`Deleted ${s3BucketEpisodeDataPath}`)

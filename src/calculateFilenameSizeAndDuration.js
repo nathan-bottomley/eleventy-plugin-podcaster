@@ -2,7 +2,10 @@ import { Duration } from 'luxon'
 import path from 'node:path'
 import { existsSync } from 'node:fs'
 import { readdir, stat, writeFile } from 'node:fs/promises'
-import { parseFile as parseFileMetadata } from 'music-metadata'
+import { createWriteStream, unlinkSync } from 'node:fs'
+import { S3Client, ListObjectsCommand, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3'
+import 'dotenv/config'
+import { parseFile as parseFileMetadata, parseBuffer as parseBufferMetadata } from 'music-metadata'
 import hr from '@tsmx/human-readable'
 import chalk from 'chalk'
 
@@ -41,7 +44,7 @@ async function readEpisodeDataLocally (episodeFilesDirectory) {
     const episodeDuration = episodeMetadata.format.duration
     episodeData[episode] = {
       size: episodeSize,
-      duration: Math.round(episodeDuration * 1000) / 1000
+      duration: episodeDuration
     }
   }
   return episodeData
@@ -64,6 +67,67 @@ async function writePodcastDataLocally (episodeData, podcastData, directories) {
   const dataDir = path.join(process.cwd(), directories.data)
   await writeFile(path.join(dataDir, 'episodeData.json'), JSON.stringify(episodeData, null, 2))
   await writeFile(path.join(dataDir, 'podcastData.json'), JSON.stringify(podcastData, null, 2))
+}
+
+function getS3Client (options) {
+  if (options.s3Client) return options.s3Client
+
+  if (options.s3ClientEndpoint) {
+    return new S3Client({
+      forcePathStyle: true,
+      endpoint: options.s3ClientEndpoint,
+      region: options.s3ClientRegion,
+      credentials: {
+        accessKeyId: process.env.S3_SECRET_KEY,
+        secretAccessKey: process.env.S3_ACCESS_KEY
+      }
+    })
+  }
+}
+
+async function readEpisodeDataFromS3Bucket (options, directories) {
+  const s3Client = getS3Client(options)
+  const list = await s3Client.send(new ListObjectsCommand({ Bucket: options.s3BucketName }))
+  const result = {}
+  for (const item of list.Contents ?? []) {
+    if (!item.Key.endsWith('.mp3')) continue
+
+    const { Key: filename, Size: size, LastModified: lastModified } = item
+    const getObjectResponse = await s3Client.send(new GetObjectCommand({ Bucket: options.s3BucketName, Key: filename }))
+    const chunks = []
+    let metadata
+    if (typeof getObjectResponse.Body.pipe === 'function') {
+      // this is to cope with the behaviour of the mock, which doesn't return an iterator full of chunks
+      const tempFilename = path.join(directories.input, filename)
+      const file = createWriteStream(tempFilename)
+      getObjectResponse.Body.pipe(file)
+      await new Promise((resolve, reject) => {
+        file.on('finish', resolve)
+        file.on('error', reject)
+      })
+      metadata = await parseFileMetadata(tempFilename, { duration: true })
+      unlinkSync(tempFilename)
+    } else {
+      for await (const chunk of getObjectResponse.Body) {
+        chunks.push(chunk)
+      }
+      const buffer = Buffer.concat(chunks)
+      metadata = await parseBufferMetadata(buffer, null, { duration: true })
+    }
+    const duration = metadata.format.duration
+    result[filename] = { size, lastModified, duration }
+  }
+  return result
+}
+
+async function writeEpisodeDataToS3Bucket (episodeData, options) {
+  const s3Client = getS3Client(options)
+  await s3Client.send(new PutObjectCommand({
+    Bucket: options.s3BucketName,
+    Key: 'episodeData.json',
+    Body: JSON.stringify(episodeData, null, 2),
+    ContentType: 'application/json'
+  }))
 }
 
 function findMatchingFilename (episodeData, thisEpisode) {
@@ -95,19 +159,25 @@ function findMatchingFilename (episodeData, thisEpisode) {
   }
 }
 
-export default function (eleventyConfig) {
+export default function (eleventyConfig, options = {}) {
   let firstRun = true
   eleventyConfig.on('eleventy.before', async ({ directories }) => {
     if (!firstRun || process.env.SKIP_EPISODE_CALCULATIONS === 'true') return
     firstRun = false
 
     const episodeFilesDirectory = path.join(directories.input, 'episodeFiles')
+    let episodeData
     if (existsSync(episodeFilesDirectory)) {
-      const episodeData = await readEpisodeDataLocally(episodeFilesDirectory)
-      const podcastData = calculatePodcastData(episodeData)
-      await writePodcastDataLocally(episodeData, podcastData, directories)
-      reportPodcastData(podcastData)
+      episodeData = await readEpisodeDataLocally(episodeFilesDirectory)
+    } else if (options.s3Client || options.s3ClientEndpoint) {
+      episodeData = await readEpisodeDataFromS3Bucket(options, directories)
+      await writeEpisodeDataToS3Bucket(episodeData, options)
+    } else {
+      return
     }
+    const podcastData = calculatePodcastData(episodeData)
+    await writePodcastDataLocally(episodeData, podcastData, directories)
+    reportPodcastData(podcastData)
   })
 
   eleventyConfig.addGlobalData('eleventyComputed.episode.filename', () => {

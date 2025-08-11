@@ -35,11 +35,11 @@ test.serial('the `episodeData.json` file is correct', async (t) => {
   const expectedEpisodeData = {
     '2GAB 1, The Star Beast.mp3': {
       size: 32004399,
-      duration: 1947.298
+      duration: 1947.2979591836734
     },
     '2GAB 2, Wild Blue Yonder.mp3': {
       size: 28683178,
-      duration: 1587.749
+      duration: 1587.7485714285715
     }
   }
   t.deepEqual(episodeData, expectedEpisodeData)
@@ -68,7 +68,7 @@ test.serial('the `podcastData.json` file is correct', async (t) => {
   const expectedPodcastData = {
     numberOfEpisodes: 2,
     totalSize: 60687577,
-    totalDuration: 3535.047
+    totalDuration: 3535.046530612245
   }
   t.deepEqual(podcastData, expectedPodcastData)
 })

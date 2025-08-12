@@ -85,20 +85,19 @@ function getS3Client (options) {
   }
 }
 
-async function readEpisodeDataFromS3Bucket (options, directories) {
-  const s3Client = getS3Client(options)
-  const list = await s3Client.send(new ListObjectsCommand({ Bucket: options.s3BucketName }))
+async function readEpisodeDataFromS3Bucket (s3Client, s3BucketName) {
+  const list = await s3Client.send(new ListObjectsCommand({ Bucket: s3BucketName }))
   const result = {}
   for (const item of list.Contents ?? []) {
     if (!item.Key.endsWith('.mp3')) continue
 
     const { Key: filename, Size: size, LastModified: lastModified } = item
-    const getObjectResponse = await s3Client.send(new GetObjectCommand({ Bucket: options.s3BucketName, Key: filename }))
+    const getObjectResponse = await s3Client.send(new GetObjectCommand({ Bucket: s3BucketName, Key: filename }))
     const chunks = []
     let metadata
     if (typeof getObjectResponse.Body.pipe === 'function') {
       // this is to cope with the behaviour of the mock, which doesn't return an iterator full of chunks
-      const tempFilename = path.join(directories.input, filename)
+      const tempFilename = path.join(process.cwd(), filename)
       const file = createWriteStream(tempFilename)
       getObjectResponse.Body.pipe(file)
       await new Promise((resolve, reject) => {
@@ -120,10 +119,9 @@ async function readEpisodeDataFromS3Bucket (options, directories) {
   return result
 }
 
-async function writeEpisodeDataToS3Bucket (episodeData, options) {
-  const s3Client = getS3Client(options)
+async function writeEpisodeDataToS3Bucket (s3Client, s3BucketName, episodeData) {
   await s3Client.send(new PutObjectCommand({
-    Bucket: options.s3BucketName,
+    Bucket: s3BucketName,
     Key: 'episodeData.json',
     Body: JSON.stringify(episodeData, null, 2),
     ContentType: 'application/json'
@@ -170,8 +168,10 @@ export default function (eleventyConfig, options = {}) {
     if (existsSync(episodeFilesDirectory)) {
       episodeData = await readEpisodeDataLocally(episodeFilesDirectory)
     } else if (options.s3Client || options.s3ClientEndpoint) {
-      episodeData = await readEpisodeDataFromS3Bucket(options, directories)
-      await writeEpisodeDataToS3Bucket(episodeData, options)
+      const s3Client = getS3Client(options)
+      const s3BucketName = options.s3BucketName
+      episodeData = await readEpisodeDataFromS3Bucket(s3Client, s3BucketName)
+      await writeEpisodeDataToS3Bucket(s3Client, s3BucketName, episodeData)
     } else {
       return
     }

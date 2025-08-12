@@ -106,17 +106,19 @@ async function getObjectFromS3Bucket (s3Client, s3BucketName, key) {
     }
     buffer = Buffer.concat(chunks)
   }
-  return buffer
+  return { buffer, lastModified: getObjectResponse.LastModified }
 }
 
-async function readEpisodeDataFromS3Bucket (s3Client, s3BucketName) {
+// async function getStoredEpisodeDataFromS3Bucket (s3Client, )
+
+async function updateEpisodeDataFromS3Bucket (s3Client, s3BucketName) {
   const list = await s3Client.send(new ListObjectsCommand({ Bucket: s3BucketName }))
   const result = {}
   for (const item of list.Contents ?? []) {
     if (!item.Key.endsWith('.mp3')) continue
 
     const { Key: filename, Size: size, LastModified: lastModified } = item
-    const buffer = await getObjectFromS3Bucket(s3Client, s3BucketName, filename)
+    const { buffer } = await getObjectFromS3Bucket(s3Client, s3BucketName, filename)
     const metadata = await parseBufferMetadata(buffer, null, { duration: true })
     const duration = metadata.format.duration
     result[filename] = { size, lastModified, duration }
@@ -133,35 +135,6 @@ async function writeEpisodeDataToS3Bucket (s3Client, s3BucketName, episodeData) 
   }))
 }
 
-function findMatchingFilename (episodeData, thisEpisode) {
-  const filenameSeasonAndEpisodePattern =
-    /^.*?\b[sS](?<seasonNumber>\d+)\s*[eE](?<episodeNumber>\d+)\b.*\.mp3$/
-  const filenameEpisodePattern = /^.*?\b(?<episodeNumber>\d+)\b.*\.mp3$/
-  const { seasonNumber, episodeNumber } = thisEpisode
-
-  for (const file of Object.keys(episodeData)) {
-    if (seasonNumber && episodeNumber) {
-      const seasonAndEpisodeMatch = file.match(filenameSeasonAndEpisodePattern)
-      if (seasonAndEpisodeMatch) {
-        const matchedSeasonNumber = parseInt(seasonAndEpisodeMatch.groups.seasonNumber)
-        const matchedEpisodeNumber = parseInt(seasonAndEpisodeMatch.groups.episodeNumber)
-        if (matchedSeasonNumber === seasonNumber &&
-            matchedEpisodeNumber === episodeNumber) {
-          return file
-        }
-      }
-    } else if (episodeNumber) {
-      const episodeMatch = file.match(filenameEpisodePattern)
-      if (episodeMatch) {
-        const matchedEpisodeNumber = parseInt(episodeMatch.groups.episodeNumber)
-        if (matchedEpisodeNumber === episodeNumber) {
-          return file
-        }
-      }
-    }
-  }
-}
-
 export default function (eleventyConfig, options = {}) {
   let firstRun = true
   eleventyConfig.on('eleventy.before', async ({ directories }) => {
@@ -175,7 +148,13 @@ export default function (eleventyConfig, options = {}) {
     } else if (options.s3Client || options.s3ClientEndpoint) {
       const s3Client = getS3Client(options)
       const s3BucketName = options.s3BucketName
-      episodeData = await readEpisodeDataFromS3Bucket(s3Client, s3BucketName)
+      let storedEpisodeData
+      try {
+        storedEpisodeData = await getObjectFromS3Bucket(s3Client, s3BucketName, 'episodes.json')
+      } catch (err) {
+        storedEpisodeData = null
+      }
+      episodeData = await updateEpisodeDataFromS3Bucket(s3Client, s3BucketName, storedEpisodeData)
       await writeEpisodeDataToS3Bucket(s3Client, s3BucketName, episodeData)
     } else {
       return
@@ -183,15 +162,6 @@ export default function (eleventyConfig, options = {}) {
     const podcastData = calculatePodcastData(episodeData)
     await writePodcastDataLocally(episodeData, podcastData, directories)
     reportPodcastData(podcastData)
-  })
-
-  eleventyConfig.addGlobalData('eleventyComputed.episode.filename', () => {
-    return data => {
-      if (data.episode.filename) return data.episode.filename
-      if (!data.page.inputPath.includes('/episodePosts/')) return
-
-      return findMatchingFilename(data.episodeData, data.episode)
-    }
   })
 
   eleventyConfig.addGlobalData('eleventyComputed.episode.size', () => {

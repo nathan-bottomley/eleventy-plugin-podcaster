@@ -1,7 +1,9 @@
 import podcastFeed from './src/podcastFeed.js'
 import podcastData from './src/podcastData.js'
 import episodeData from './src/episodeData.js'
-import calculateFilenameSizeAndDuration from './src/calculateFilenameSizeAndDuration.js'
+import calculateEpisodeSizeAndDuration from './src/calculateEpisodeSizeAndDuration.js'
+import calculateEpisodeFilename from './src/calculateEpisodeFilename.js'
+
 import readableFilters from './src/readableFilters.js'
 import excerpts from './src/excerpts.js'
 import drafts from './src/drafts.js'
@@ -11,7 +13,8 @@ export default function (eleventyConfig, options = {}) {
   eleventyConfig.addPlugin(podcastFeed, options)
   eleventyConfig.addPlugin(podcastData, options)
   eleventyConfig.addPlugin(episodeData, options)
-  eleventyConfig.addPlugin(calculateFilenameSizeAndDuration, options)
+  eleventyConfig.addPlugin(calculateEpisodeSizeAndDuration, options)
+  eleventyConfig.addPlugin(calculateEpisodeFilename, options)
 
   // Filters
 

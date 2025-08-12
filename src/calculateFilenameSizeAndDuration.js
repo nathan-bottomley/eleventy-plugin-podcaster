@@ -1,6 +1,6 @@
 import { Duration } from 'luxon'
 import path from 'node:path'
-import { existsSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { readdir, stat, writeFile } from 'node:fs/promises'
 import { createWriteStream, unlinkSync } from 'node:fs'
 import { S3Client, ListObjectsCommand, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3'
@@ -85,6 +85,30 @@ function getS3Client (options) {
   }
 }
 
+async function getObjectFromS3Bucket (s3Client, s3BucketName, key) {
+  const getObjectResponse = await s3Client.send(new GetObjectCommand({ Bucket: s3BucketName, Key: key }))
+  let buffer
+  if (typeof getObjectResponse.Body.pipe === 'function') {
+    // this is to cope with the behaviour of the mock, which doesn't return an iterator full of chunks
+    const tempFilename = path.join(process.cwd(), key)
+    const file = createWriteStream(tempFilename)
+    getObjectResponse.Body.pipe(file)
+    await new Promise((resolve, reject) => {
+      file.on('finish', resolve)
+      file.on('error', reject)
+    })
+    buffer = readFileSync(tempFilename)
+    unlinkSync(tempFilename)
+  } else {
+    const chunks = []
+    for await (const chunk of getObjectResponse.Body) {
+      chunks.push(chunk)
+    }
+    buffer = Buffer.concat(chunks)
+  }
+  return buffer
+}
+
 async function readEpisodeDataFromS3Bucket (s3Client, s3BucketName) {
   const list = await s3Client.send(new ListObjectsCommand({ Bucket: s3BucketName }))
   const result = {}
@@ -92,27 +116,8 @@ async function readEpisodeDataFromS3Bucket (s3Client, s3BucketName) {
     if (!item.Key.endsWith('.mp3')) continue
 
     const { Key: filename, Size: size, LastModified: lastModified } = item
-    const getObjectResponse = await s3Client.send(new GetObjectCommand({ Bucket: s3BucketName, Key: filename }))
-    const chunks = []
-    let metadata
-    if (typeof getObjectResponse.Body.pipe === 'function') {
-      // this is to cope with the behaviour of the mock, which doesn't return an iterator full of chunks
-      const tempFilename = path.join(process.cwd(), filename)
-      const file = createWriteStream(tempFilename)
-      getObjectResponse.Body.pipe(file)
-      await new Promise((resolve, reject) => {
-        file.on('finish', resolve)
-        file.on('error', reject)
-      })
-      metadata = await parseFileMetadata(tempFilename, { duration: true })
-      unlinkSync(tempFilename)
-    } else {
-      for await (const chunk of getObjectResponse.Body) {
-        chunks.push(chunk)
-      }
-      const buffer = Buffer.concat(chunks)
-      metadata = await parseBufferMetadata(buffer, null, { duration: true })
-    }
+    const buffer = await getObjectFromS3Bucket(s3Client, s3BucketName, filename)
+    const metadata = await parseBufferMetadata(buffer, null, { duration: true })
     const duration = metadata.format.duration
     result[filename] = { size, lastModified, duration }
   }

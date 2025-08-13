@@ -13,9 +13,9 @@ export default (eleventyConfig, options = {}) => {
     }
     if (!hasLoggedAboutDrafts) {
       if (shouldIncludeDrafts) {
-        console.log('Including drafts.')
+        if (!eleventyConfig.quietMode) console.log('Including drafts.')
       } else {
-        console.log('Excluding drafts.')
+        if (!eleventyConfig.quietMode) console.log('Excluding drafts.')
       }
       hasLoggedAboutDrafts = true
     }

@@ -9,4 +9,5 @@ export default function (eleventyConfig) {
     }),
     s3BucketName: 'goodEpisodeData'
   })
+  eleventyConfig.setQuietMode(true)
 }

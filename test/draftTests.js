@@ -18,6 +18,7 @@ test.serial('drafts status is ignored if plugin added without handleDrafts optio
         episode: { filename: 'episode-1.mp3' },
         draft: true
       })
+      eleventyConfig.setQuietMode(true)
     }
   })
   const build = await eleventy.toJSON()

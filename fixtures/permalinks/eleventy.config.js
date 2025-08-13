@@ -4,4 +4,5 @@ export default function (eleventyConfig, options = {}) {
   eleventyConfig.addPlugin(Podcaster, {
     handlePermalinks: true
   })
+  eleventyConfig.setQuietMode(true)
 }

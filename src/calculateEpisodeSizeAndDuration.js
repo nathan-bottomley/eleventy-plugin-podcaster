@@ -173,7 +173,7 @@ export default function (eleventyConfig, options = {}) {
     }
     const podcastData = calculatePodcastData(episodeData)
     await writePodcastDataLocally(episodeData, podcastData, directories)
-    reportPodcastData(podcastData)
+    if (!eleventyConfig.quietMode) reportPodcastData(podcastData)
   })
 
   eleventyConfig.addGlobalData('eleventyComputed.episode.size', () => {

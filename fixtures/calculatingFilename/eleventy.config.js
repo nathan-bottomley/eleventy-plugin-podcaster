@@ -4,4 +4,5 @@ export default function (eleventyConfig, options = {}) {
   eleventyConfig.addPlugin(Podcaster, {
     episodeFilenamePattern: /episode-(?<episodeNumber>\d+).mp3/
   })
+  eleventyConfig.setQuietMode(true)
 }

@@ -5,4 +5,5 @@ export default function (eleventyConfig, options = {}) {
     episodesDir: 'fixtures/generatingEpisodesDataFile/episodes',
     episodeFilenamePattern: /2GAB (?<episodeNumber>\d+),.*.mp3/
   })
+  eleventyConfig.setQuietMode(true)
 }

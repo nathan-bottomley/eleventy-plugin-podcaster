@@ -4,7 +4,6 @@ import { existsSync } from 'node:fs'
 import { readdir, stat, writeFile } from 'node:fs/promises'
 import { Writable } from 'node:stream'
 import { S3Client, ListObjectsCommand, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3'
-import 'dotenv/config'
 import { parseFile as parseFileMetadata, parseBuffer as parseBufferMetadata } from 'music-metadata'
 import hr from '@tsmx/human-readable'
 import chalk from 'chalk'
@@ -70,23 +69,23 @@ async function writePodcastDataLocally (episodeData, podcastData, directories) {
 }
 
 function getS3Client (options) {
-  if (options.s3Client) return options.s3Client
+  if (options.s3ClientObject) return options.s3ClientObject
 
-  if (options.s3ClientEndpoint) {
+  if (options.s3Client) {
     return new S3Client({
       forcePathStyle: true,
-      endpoint: options.s3ClientEndpoint,
-      region: options.s3ClientRegion,
+      endpoint: options.s3Client.endpoint,
+      region: options.s3Client.region,
       credentials: {
-        accessKeyId: process.env.S3_SECRET_KEY,
-        secretAccessKey: process.env.S3_ACCESS_KEY
+        accessKeyId: options.s3Client.accessKey,
+        secretAccessKey: options.s3Client.secretKey
       }
     })
   }
 }
 
-async function getObjectFromS3Bucket (s3Client, s3BucketName, key) {
-  const getObjectResponse = await s3Client.send(new GetObjectCommand({ Bucket: s3BucketName, Key: key }))
+async function getObjectFromS3Bucket (s3Client, s3Bucket, key) {
+  const getObjectResponse = await s3Client.send(new GetObjectCommand({ Bucket: s3Bucket, Key: key }))
 
   const chunks = []
   if (typeof getObjectResponse.Body.pipe === 'function') {
@@ -123,12 +122,12 @@ async function getStoredEpisodeDataFromS3Bucket (s3Client, s3BucketName) {
   }
 }
 
-async function updateEpisodeDataFromS3Bucket (s3Client, s3BucketName) {
-  const storedEpisodeData = await getStoredEpisodeDataFromS3Bucket(s3Client, s3BucketName)
+async function updateEpisodeDataFromS3Bucket (s3Client, s3Bucket) {
+  const storedEpisodeData = await getStoredEpisodeDataFromS3Bucket(s3Client, s3Bucket)
   const storedEpisodeDataLastModifiedDate = (storedEpisodeData.lastModified)
     ? DateTime.fromISO(storedEpisodeData.lastModified)
     : null
-  const list = await s3Client.send(new ListObjectsCommand({ Bucket: s3BucketName }))
+  const list = await s3Client.send(new ListObjectsCommand({ Bucket: s3Bucket }))
   const result = { ...storedEpisodeData.episodeData }
   for (const item of list.Contents ?? []) {
     if (!item.Key.endsWith('.mp3')) continue
@@ -140,7 +139,7 @@ async function updateEpisodeDataFromS3Bucket (s3Client, s3BucketName) {
         !('duration' in result[filename]) ||
         !storedEpisodeDataLastModifiedDate ||
         storedEpisodeDataLastModifiedDate > DateTime.fromISO(lastModified)) {
-      const { buffer } = await getObjectFromS3Bucket(s3Client, s3BucketName, filename)
+      const { buffer } = await getObjectFromS3Bucket(s3Client, s3Bucket, filename)
       const metadata = await parseBufferMetadata(buffer, null, { duration: true })
       const duration = metadata.format.duration
       result[filename] = { size, duration }
@@ -149,9 +148,9 @@ async function updateEpisodeDataFromS3Bucket (s3Client, s3BucketName) {
   return result
 }
 
-async function writeEpisodeDataToS3Bucket (s3Client, s3BucketName, episodeData) {
+async function writeEpisodeDataToS3Bucket (s3Client, s3Bucket, episodeData) {
   await s3Client.send(new PutObjectCommand({
-    Bucket: s3BucketName,
+    Bucket: s3Bucket,
     Key: 'episodeData.json',
     Body: JSON.stringify(episodeData, null, 2),
     ContentType: 'application/json'
@@ -168,11 +167,11 @@ export default function (eleventyConfig, options = {}) {
     let episodeData
     if (existsSync(episodeFilesDirectory)) {
       episodeData = await readEpisodeDataLocally(episodeFilesDirectory)
-    } else if (options.s3Client || options.s3ClientEndpoint) {
+    } else if (options.s3ClientObject || options.s3Client) {
       const s3Client = getS3Client(options)
-      const s3BucketName = options.s3BucketName
-      episodeData = await updateEpisodeDataFromS3Bucket(s3Client, s3BucketName)
-      await writeEpisodeDataToS3Bucket(s3Client, s3BucketName, episodeData)
+      const s3Bucket = options.s3Client.bucket
+      episodeData = await updateEpisodeDataFromS3Bucket(s3Client, s3Bucket)
+      await writeEpisodeDataToS3Bucket(s3Client, s3Bucket, episodeData)
     } else {
       return
     }

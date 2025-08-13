@@ -1,4 +1,4 @@
-import { Duration } from 'luxon'
+import { Duration, DateTime } from 'luxon'
 import path from 'node:path'
 import { existsSync, readFileSync } from 'node:fs'
 import { readdir, stat, writeFile } from 'node:fs/promises'
@@ -109,19 +109,37 @@ async function getObjectFromS3Bucket (s3Client, s3BucketName, key) {
   return { buffer, lastModified: getObjectResponse.LastModified }
 }
 
-// async function getStoredEpisodeDataFromS3Bucket (s3Client, )
+async function getStoredEpisodeDataFromS3Bucket (s3Client, s3BucketName) {
+  try {
+    const { buffer, lastModified } = await getObjectFromS3Bucket(s3Client, s3BucketName, 'episodeData.json')
+    return { episodeData: JSON.parse(buffer.toString()), lastModified }
+  } catch (err) {
+    return { episodeData: {}, lastModified: null }
+  }
+}
 
 async function updateEpisodeDataFromS3Bucket (s3Client, s3BucketName) {
+  const storedEpisodeData = await getStoredEpisodeDataFromS3Bucket(s3Client, s3BucketName)
+  const storedEpisodeDataLastModifiedDate = (storedEpisodeData.lastModified)
+    ? DateTime.fromISO(storedEpisodeData.lastModified)
+    : null
   const list = await s3Client.send(new ListObjectsCommand({ Bucket: s3BucketName }))
-  const result = {}
+  const result = { ...storedEpisodeData.episodeData }
   for (const item of list.Contents ?? []) {
     if (!item.Key.endsWith('.mp3')) continue
 
     const { Key: filename, Size: size, LastModified: lastModified } = item
-    const { buffer } = await getObjectFromS3Bucket(s3Client, s3BucketName, filename)
-    const metadata = await parseBufferMetadata(buffer, null, { duration: true })
-    const duration = metadata.format.duration
-    result[filename] = { size, lastModified, duration }
+
+    if (!(filename in result) ||
+        !('size' in result[filename]) ||
+        !('duration' in result[filename]) ||
+        !storedEpisodeDataLastModifiedDate ||
+        storedEpisodeDataLastModifiedDate > DateTime.fromISO(lastModified)) {
+      const { buffer } = await getObjectFromS3Bucket(s3Client, s3BucketName, filename)
+      const metadata = await parseBufferMetadata(buffer, null, { duration: true })
+      const duration = metadata.format.duration
+      result[filename] = { size, duration }
+    }
   }
   return result
 }
@@ -148,13 +166,7 @@ export default function (eleventyConfig, options = {}) {
     } else if (options.s3Client || options.s3ClientEndpoint) {
       const s3Client = getS3Client(options)
       const s3BucketName = options.s3BucketName
-      let storedEpisodeData
-      try {
-        storedEpisodeData = await getObjectFromS3Bucket(s3Client, s3BucketName, 'episodes.json')
-      } catch (err) {
-        storedEpisodeData = null
-      }
-      episodeData = await updateEpisodeDataFromS3Bucket(s3Client, s3BucketName, storedEpisodeData)
+      episodeData = await updateEpisodeDataFromS3Bucket(s3Client, s3BucketName)
       await writeEpisodeDataToS3Bucket(s3Client, s3BucketName, episodeData)
     } else {
       return

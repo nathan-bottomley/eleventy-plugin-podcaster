@@ -53,13 +53,11 @@ test.serial('the `podcastData.json` file is correct', async (t) => {
 test.afterEach.always(async (t) => {
   try {
     unlinkSync(episodeDataPath)
-    console.log(`Deleted ${episodeDataPath}`)
   } catch (error) {
     console.error(`Failed to delete ${episodeDataPath}:`, error)
   }
   try {
     unlinkSync(podcastDataPath)
-    console.log(`Deleted ${podcastDataPath}`)
   } catch (error) {
     console.error(`Failed to delete ${podcastDataPath}:`, error)
   }

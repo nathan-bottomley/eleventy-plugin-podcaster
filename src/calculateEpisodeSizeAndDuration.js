@@ -1,8 +1,8 @@
 import { Duration, DateTime } from 'luxon'
 import path from 'node:path'
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync } from 'node:fs'
 import { readdir, stat, writeFile } from 'node:fs/promises'
-import { createWriteStream, unlinkSync } from 'node:fs'
+import { Writable } from 'node:stream'
 import { S3Client, ListObjectsCommand, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3'
 import 'dotenv/config'
 import { parseFile as parseFileMetadata, parseBuffer as parseBufferMetadata } from 'music-metadata'
@@ -87,25 +87,30 @@ function getS3Client (options) {
 
 async function getObjectFromS3Bucket (s3Client, s3BucketName, key) {
   const getObjectResponse = await s3Client.send(new GetObjectCommand({ Bucket: s3BucketName, Key: key }))
-  let buffer
+
+  const chunks = []
   if (typeof getObjectResponse.Body.pipe === 'function') {
     // this is to cope with the behaviour of the mock, which doesn't return an iterator full of chunks
-    const tempFilename = path.join(process.cwd(), key)
-    const file = createWriteStream(tempFilename)
-    getObjectResponse.Body.pipe(file)
-    await new Promise((resolve, reject) => {
-      file.on('finish', resolve)
-      file.on('error', reject)
+    const writable = new Writable({
+      write (chunk, encoding, callback) {
+        chunks.push(chunk)
+        callback()
+      },
+      final (callback) {
+        callback()
+      }
     })
-    buffer = readFileSync(tempFilename)
-    unlinkSync(tempFilename)
+    getObjectResponse.Body.pipe(writable)
+    await new Promise((resolve, reject) => {
+      writable.on('finish', resolve)
+      writable.on('error', reject)
+    })
   } else {
-    const chunks = []
     for await (const chunk of getObjectResponse.Body) {
       chunks.push(chunk)
     }
-    buffer = Buffer.concat(chunks)
   }
+  const buffer = Buffer.concat(chunks)
   return { buffer, lastModified: getObjectResponse.LastModified }
 }
 

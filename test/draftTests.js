@@ -42,6 +42,7 @@ test.serial('drafts are built if INCLUDE_DRAFTS is absent and ELEVENTY_RUN_MODE 
         episode: { filename: 'episode-1.mp3' },
         draft: true
       })
+      eleventyConfig.setQuietMode(true)
     }
   })
   const build = await eleventy.toJSON()
@@ -65,6 +66,7 @@ test.serial('drafts are not built if INCLUDE_DRAFTS is absent and ELEVENTY_RUN_M
         episode: { filename: 'episode-1.mp3' },
         draft: true
       })
+      eleventyConfig.setQuietMode(true)
     }
   })
   const build = await eleventy.toJSON()
@@ -87,6 +89,7 @@ test.serial('drafts are not built if plugin added with handleDrafts option and I
         episode: { filename: 'episode-1.mp3' },
         draft: true
       })
+      eleventyConfig.setQuietMode(true)
     }
   })
   const build = await eleventy.toJSON()
@@ -109,6 +112,7 @@ test.serial('drafts are built if plugin added with handleDrafts option and INCLU
         episode: { filename: 'episode-1.mp3' },
         draft: true
       })
+      eleventyConfig.setQuietMode(true)
     }
   })
   const build = await eleventy.toJSON()

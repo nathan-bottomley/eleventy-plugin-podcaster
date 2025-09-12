@@ -8,6 +8,9 @@ import { parseFile as parseFileMetadata, parseBuffer as parseBufferMetadata } fr
 import hr from '@tsmx/human-readable'
 import chalk from 'chalk'
 
+const isAudioFile = episodeFilename => episodeFilename.endsWith('.mp3') ||
+                    episodeFilename.endsWith('.m4a')
+
 const convertSecondsToReadableDuration = seconds =>
   Duration.fromMillis(seconds * 1000)
     .shiftTo('days', 'hours', 'minutes', 'seconds')
@@ -35,7 +38,7 @@ async function readEpisodeDataLocally (episodeFilesDirectory) {
   const episodes = await readdir(episodeFilesDirectory)
   const episodeData = {}
   for (const episode of episodes) {
-    if (!episode.endsWith('.mp3')) continue
+    if (!isAudioFile(episode)) continue
 
     const episodePath = path.join(episodeFilesDirectory, episode)
     const episodeSize = (await stat(episodePath)).size
@@ -130,7 +133,7 @@ async function updateEpisodeDataFromS3Bucket (s3Client, s3Bucket) {
   const list = await s3Client.send(new ListObjectsCommand({ Bucket: s3Bucket }))
   const result = { ...storedEpisodeData.episodeData }
   for (const item of list.Contents ?? []) {
-    if (!item.Key.endsWith('.mp3')) continue
+    if (!isAudioFile(item.Key)) continue
 
     const { Key: filename, Size: size, LastModified: lastModified } = item
 

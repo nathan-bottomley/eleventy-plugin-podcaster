@@ -1,7 +1,7 @@
 function findMatchingFilename (episodeData, thisEpisode) {
   const filenameSeasonAndEpisodePattern =
-    /^.*?\b[sS](?<seasonNumber>\d+)\s*[eE](?<episodeNumber>\d+)\b.*\.mp3$/
-  const filenameEpisodePattern = /^.*?\b(?<episodeNumber>\d+)\b.*\.mp3$/
+    /^.*?\b[sS](?<seasonNumber>\d+)\s*[eE](?<episodeNumber>\d+)\b.*\.(mp3|m4a)$/
+  const filenameEpisodePattern = /^.*?\b(?<episodeNumber>\d+)\b.*\.(mp3|m4a)$/
   const { seasonNumber, episodeNumber } = thisEpisode
 
   for (const file of Object.keys(episodeData)) {

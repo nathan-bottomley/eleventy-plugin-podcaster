@@ -1,3 +1,5 @@
+import { isEpisodePost } from './utils.js'
+
 export default function (eleventyConfig, options = {}) {
   const postFilenameSeasonAndEpisodePattern =
     /^[sS](?<seasonNumber>\d+)[eE](?<episodeNumber>\d+)/i
@@ -7,7 +9,7 @@ export default function (eleventyConfig, options = {}) {
     return data => {
       if (data.episode?.seasonNumber) return data.episode.seasonNumber
 
-      if (!data.page.inputPath.includes('/episodePosts/')) return
+      if (!isEpisodePost(data)) return
 
       const seasonAndEpisodeMatch = data.page.fileSlug.match(postFilenameSeasonAndEpisodePattern)
       if (seasonAndEpisodeMatch) {
@@ -20,7 +22,7 @@ export default function (eleventyConfig, options = {}) {
     return data => {
       if (data.episode?.episodeNumber) return data.episode.episodeNumber
 
-      if (!data.page.inputPath.includes('/episodePosts/')) return
+      if (!isEpisodePost(data)) return
 
       const seasonAndEpisodeMatch = data.page.fileSlug.match(postFilenameSeasonAndEpisodePattern)
       if (seasonAndEpisodeMatch) {
@@ -49,7 +51,7 @@ export default function (eleventyConfig, options = {}) {
 
   eleventyConfig.addGlobalData('eleventyComputed.episode.url', () => {
     return data => {
-      if (!data.page.inputPath.includes('/episodePosts/')) return
+      if (!isEpisodePost(data)) return
 
       const episodeUrlBase = data.podcast.episodeUrlBase
       const filename = data.episode.filename

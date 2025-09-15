@@ -6,6 +6,7 @@ import { Writable } from 'node:stream'
 import { S3Client, ListObjectsCommand, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3'
 import { parseFile as parseFileMetadata, parseBuffer as parseBufferMetadata } from 'music-metadata'
 import hr from '@tsmx/human-readable'
+import { isEpisodePost } from './utils.js'
 
 const isAudioFile = episodeFilename => episodeFilename.endsWith('.mp3') ||
                     episodeFilename.endsWith('.m4a')
@@ -185,7 +186,7 @@ export default function (eleventyConfig, options = {}) {
   eleventyConfig.addGlobalData('eleventyComputed.episode.size', () => {
     return data => {
       if (data.episode.size) return data.episode.size
-      if (data.page.inputPath.includes('/episodePosts/') && data.episodeData) {
+      if (isEpisodePost(data) && data.episodeData) {
         return data.episodeData[data.episode.filename]?.size
       }
     }
@@ -198,7 +199,7 @@ export default function (eleventyConfig, options = {}) {
         return convertedReadableDuration ?? data.episode.duration
       }
 
-      if (data.page.inputPath.includes('/episodePosts/') && data.episodeData) {
+      if (isEpisodePost(data) && data.episodeData) {
         return data.episodeData[data.episode.filename]?.duration
       }
     }

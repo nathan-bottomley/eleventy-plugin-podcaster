@@ -1,3 +1,5 @@
+import { isEpisodePost } from './utils.js'
+
 function findMatchingFilename (episodeData, thisEpisode) {
   const filenameSeasonAndEpisodePattern =
     /^.*?\b[sS](?<seasonNumber>\d+)\s*[eE](?<episodeNumber>\d+)\b.*\.(mp3|m4a)$/
@@ -31,7 +33,7 @@ export default function (eleventyConfig, _options) {
   eleventyConfig.addGlobalData('eleventyComputed.episode.filename', () => {
     return data => {
       if (data.episode.filename) return data.episode.filename
-      if (!data.page.inputPath.includes('/episodePosts/')) return
+      if (!isEpisodePost(data)) return
 
       return findMatchingFilename(data.episodeData, data.episode)
     }

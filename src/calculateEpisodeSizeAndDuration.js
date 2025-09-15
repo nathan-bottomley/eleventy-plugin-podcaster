@@ -166,7 +166,7 @@ export default function (eleventyConfig, options = {}) {
     if (!firstRun || process.env.SKIP_EPISODE_CALCULATIONS === 'true') return
     firstRun = false
 
-    const episodeFilesDirectory = path.join(directories.input, 'episodeFiles')
+    const episodeFilesDirectory = path.join(directories.input, 'episode-files')
     let episodeData
     if (existsSync(episodeFilesDirectory)) {
       episodeData = await readEpisodeDataLocally(episodeFilesDirectory)

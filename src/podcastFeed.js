@@ -23,6 +23,6 @@ export default function (eleventyConfig, options = {}) {
   })
 
   eleventyConfig.addCollection('podcastEpisode', (collectionApi) => {
-    return collectionApi.getFilteredByGlob('**/episodePosts/*')
+    return collectionApi.getFilteredByGlob('**/episode-posts/*')
   })
 }

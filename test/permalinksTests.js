@@ -8,7 +8,7 @@ test('if specified in the filename, the permalink of an episode will be its numb
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
       eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com/')
-      eleventyConfig.addTemplate('episodePosts/2020-01-01-ep12.md', '# Episode 12', {
+      eleventyConfig.addTemplate('episode-posts/2020-01-01-ep12.md', '# Episode 12', {
         title: 'Episode 12',
         episode: { filename: 'episode-1.mp3' }
       })
@@ -17,7 +17,7 @@ test('if specified in the filename, the permalink of an episode will be its numb
 
   const build = await eleventy.toJSON()
   const item = build.find(
-    item => item.inputPath === './test/episodePosts/2020-01-01-ep12.md'
+    item => item.inputPath === './test/episode-posts/2020-01-01-ep12.md'
   )
   t.is(item.url, '/12/')
 })
@@ -28,7 +28,7 @@ test('if specified in the filename, the permalink will include the season and ep
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
       eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com/')
-      eleventyConfig.addTemplate('episodePosts/2020-01-10-s18e3.md', '# Season 18, Episode 3', {
+      eleventyConfig.addTemplate('episode-posts/2020-01-10-s18e3.md', '# Season 18, Episode 3', {
         title: 'Season 18, Episode 3',
         episode: {
           filename: 'season-18-episode-3.mp3'
@@ -38,7 +38,7 @@ test('if specified in the filename, the permalink will include the season and ep
   })
 
   const build = await eleventy.toJSON()
-  const item = build.find(item => item.inputPath === './test/episodePosts/2020-01-10-s18e3.md')
+  const item = build.find(item => item.inputPath === './test/episode-posts/2020-01-10-s18e3.md')
   t.is(item.url, '/s18/e3/')
 })
 
@@ -48,7 +48,7 @@ test('season and episode numbers can be provided in front matter instead of the 
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
       eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com/')
-      eleventyConfig.addTemplate('episodePosts/2020-01-10-episode.md', '# Season 18, Episode 3', {
+      eleventyConfig.addTemplate('episode-posts/2020-01-10-episode.md', '# Season 18, Episode 3', {
         title: 'Season 18, Episode 3',
         episode: {
           episodeNumber: 3,
@@ -60,7 +60,7 @@ test('season and episode numbers can be provided in front matter instead of the 
   })
 
   const build = await eleventy.toJSON()
-  const item = build.find(item => item.inputPath === './test/episodePosts/2020-01-10-episode.md')
+  const item = build.find(item => item.inputPath === './test/episode-posts/2020-01-10-episode.md')
   t.is(item.url, '/s18/e3/')
 })
 

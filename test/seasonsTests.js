@@ -14,7 +14,7 @@ test.before(async (t) => {
     item => item.inputPath === './fixtures/seasons/feed.njk'
   )
   t.context.episodePosts = t.context.build.filter(
-    item => item.inputPath.startsWith('./fixtures/seasons/episodePosts/')
+    item => item.inputPath.startsWith('./fixtures/seasons/episode-posts/')
   )
 })
 

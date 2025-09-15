@@ -1,4 +1,4 @@
-import { isEpisodePost } from './utils.js'
+import isEpisodePost from './isEpisodePost.js'
 
 function findMatchingFilename (episodeData, thisEpisode) {
   const filenameSeasonAndEpisodePattern =

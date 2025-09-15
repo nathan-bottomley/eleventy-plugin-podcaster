@@ -1,7 +1,7 @@
 import * as htmlparser2 from 'htmlparser2'
 import render from 'dom-serializer'
 import markdownIt from 'markdown-it'
-import { isEpisodePost } from './utils.js'
+import isEpisodePost from './isEpisodePost.js'
 
 export default function (eleventyConfig, options = {}) {
   eleventyConfig.addGlobalData('eleventyComputed.excerpt', () => {

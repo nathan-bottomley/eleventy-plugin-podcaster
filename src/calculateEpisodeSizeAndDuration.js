@@ -6,7 +6,7 @@ import { Writable } from 'node:stream'
 import { S3Client, ListObjectsCommand, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3'
 import { parseFile as parseFileMetadata, parseBuffer as parseBufferMetadata } from 'music-metadata'
 import hr from '@tsmx/human-readable'
-import { isEpisodePost } from './utils.js'
+import isEpisodePost from './isEpisodePost.js'
 
 const isAudioFile = episodeFilename => episodeFilename.endsWith('.mp3') ||
                     episodeFilename.endsWith('.m4a')

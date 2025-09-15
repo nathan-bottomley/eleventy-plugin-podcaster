@@ -1,4 +1,4 @@
-import { isEpisodePost } from './utils.js'
+import isEpisodePost from './isEpisodePost.js'
 
 export default function (eleventyConfig, options = {}) {
   const postFilenameSeasonAndEpisodePattern =

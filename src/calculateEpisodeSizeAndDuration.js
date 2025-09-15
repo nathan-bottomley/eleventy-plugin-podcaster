@@ -6,7 +6,6 @@ import { Writable } from 'node:stream'
 import { S3Client, ListObjectsCommand, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3'
 import { parseFile as parseFileMetadata, parseBuffer as parseBufferMetadata } from 'music-metadata'
 import hr from '@tsmx/human-readable'
-import chalk from 'chalk'
 
 const isAudioFile = episodeFilename => episodeFilename.endsWith('.mp3') ||
                     episodeFilename.endsWith('.m4a')
@@ -62,7 +61,7 @@ function calculatePodcastData (episodeData) {
 
 function reportPodcastData (podcastData) {
   const { numberOfEpisodes, totalSize, totalDuration } = podcastData
-  console.log(chalk.yellow(`${numberOfEpisodes} episodes; ${hr.fromBytes(totalSize)}; ${convertSecondsToReadableDuration(totalDuration)}.`))
+  console.log(`\u001b[33m${numberOfEpisodes} episodes; ${hr.fromBytes(totalSize)}; ${convertSecondsToReadableDuration(totalDuration)}.\u001b[0m`)
 }
 
 async function writePodcastDataLocally (episodeData, podcastData, directories) {

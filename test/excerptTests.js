@@ -14,7 +14,7 @@ test('excerpt is the first child <p> of the content not in a <blockquote>', asyn
         permalink: '/1/',
         episode: { filename: 'episode-1.mp3' }
       })
-      eleventyConfig.addTemplate('index.md', '# Excerpts\n\n{% for post in  collections.podcastEpisode %}Excerpt is {{ post.data.excerpt }}{% endfor %}', { date: '2020-01-01', title: 'Excerpts', permalink: '/excerpts/' })
+      eleventyConfig.addTemplate('index.md', '# Excerpts\n\n{% for post in  collections.episodePost %}Excerpt is {{ post.data.excerpt }}{% endfor %}', { date: '2020-01-01', title: 'Excerpts', permalink: '/excerpts/' })
     }
   })
   const build = await eleventy.toJSON()
@@ -35,7 +35,7 @@ test('if front matter excerpt is set, it is used after being converted to raw HT
         episode: { filename: 'episode-1.mp3' },
         excerpt: 'front matter **excerpt**'
       })
-      eleventyConfig.addTemplate('index.md', '# Excerpts\n\n{% for post in collections.podcastEpisode %}Excerpt is {{ post.data.excerpt }}{% endfor %}', { date: '2020-01-01', title: 'Excerpts', permalink: '/excerpts/' })
+      eleventyConfig.addTemplate('index.md', '# Excerpts\n\n{% for post in collections.episodePost %}Excerpt is {{ post.data.excerpt }}{% endfor %}', { date: '2020-01-01', title: 'Excerpts', permalink: '/excerpts/' })
     }
   })
   const build = await eleventy.toJSON()
@@ -50,13 +50,13 @@ test('if excerpt is set using comment delimiters, it is used after being convert
       eleventyConfig.addPlugin(Podcaster, { handleExcerpts: true })
       eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com/')
       eleventyConfig.addTemplate('episode-posts/episode-1.md', '# Episode 1\n\nfirst paragraph\n<!---excerpt-->\nsecond *paragraph*\n<!---endexcerpt-->\nthird paragraph\n', {
-        tags: ['podcastEpisode'],
+        tags: ['episodePost'],
         date: '2020-01-01',
         title: 'Episode 1',
         permalink: '/1/',
         episode: { filename: 'episode-1.mp3' }
       })
-      eleventyConfig.addTemplate('index.md', '# Excerpts\n\n{% for post in collections.podcastEpisode %}Excerpt is {{ post.data.excerpt }}{% endfor %}', { date: '2020-01-01', title: 'Excerpts', permalink: '/excerpts/' })
+      eleventyConfig.addTemplate('index.md', '# Excerpts\n\n{% for post in collections.episodePost %}Excerpt is {{ post.data.excerpt }}{% endfor %}', { date: '2020-01-01', title: 'Excerpts', permalink: '/excerpts/' })
     }
   })
   const build = await eleventy.toJSON()
@@ -91,7 +91,7 @@ test('if multiline excerpt is set using comment delimiters, it is used after bei
         permalink: '/1/',
         episode: { filename: 'episode-1.mp3' }
       })
-      eleventyConfig.addTemplate('index.md', '# Excerpts\n\n{% for post in collections.podcastEpisode %}\n\n{{ post.data.excerpt }}\n\n{% endfor %}', { date: '2020-01-01', title: 'Excerpts', permalink: '/excerpts/' })
+      eleventyConfig.addTemplate('index.md', '# Excerpts\n\n{% for post in collections.episodePost %}\n\n{{ post.data.excerpt }}\n\n{% endfor %}', { date: '2020-01-01', title: 'Excerpts', permalink: '/excerpts/' })
     }
   })
   const build = await eleventy.toJSON()

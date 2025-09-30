@@ -17,7 +17,7 @@ eleventyAllowMissingExtension: true
     <description>{{ podcast.description }}</description>
     <language>{{ podcast.language }}</language>
     <copyright>{{ podcast.copyrightNotice }}</copyright>
-    <pubDate>{{ collections.podcastEpisode | getNewestCollectionItemDate | dateToRfc3339 }}</pubDate>
+    <pubDate>{{ collections.episodePost | getNewestCollectionItemDate | dateToRfc3339 }}</pubDate>
     <lastBuildDate>{{ podcast.feedLastBuildDate }}</lastBuildDate>
     <itunes:image href="{{ podcast.imagePath | htmlBaseUrl(siteUrl) }}"></itunes:image>
     {%- if podcast.subcategory %}
@@ -47,7 +47,7 @@ eleventyAllowMissingExtension: true
     </itunes:owner>
     {%- endif %}
 
-    {% for post in collections.podcastEpisode | reverse %}
+    {% for post in collections.episodePost | reverse %}
     <item>
       <title>{{ post.data.episode.title or post.data.title }}</title>
       {% if post.data.episode.itunesTitle %}

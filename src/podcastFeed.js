@@ -12,7 +12,7 @@ export default function (eleventyConfig, options = {}) {
   eleventyConfig.addTemplate('feed.njk', readFileSync(podcastFeedPath), {
     eleventyExcludeFromCollections: true,
     eleventyImport: {
-      collections: ['podcastEpisode']
+      collections: ['episodePost']
     }
   })
 
@@ -22,7 +22,7 @@ export default function (eleventyConfig, options = {}) {
     }
   })
 
-  eleventyConfig.addCollection('podcastEpisode', (collectionApi) => {
+  eleventyConfig.addCollection('episodePost', (collectionApi) => {
     return collectionApi.getFilteredByGlob('**/episode-posts/*')
   })
 }

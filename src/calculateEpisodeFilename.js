@@ -29,11 +29,11 @@ function findMatchingFilename (episodeData, thisEpisode) {
   }
 }
 
-export default function (eleventyConfig, _options) {
+export default function (eleventyConfig, options) {
   eleventyConfig.addGlobalData('eleventyComputed.episode.filename', () => {
     return data => {
       if (data.episode.filename) return data.episode.filename
-      if (!isEpisodePost(data)) return
+      if (!isEpisodePost(data, options)) return
 
       return findMatchingFilename(data.episodeData, data.episode)
     }

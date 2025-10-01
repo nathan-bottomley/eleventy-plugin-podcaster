@@ -1,3 +1,5 @@
+import path from 'node:path'
+
 import podcastFeed from './src/podcastFeed.js'
 import podcastData from './src/podcastData.js'
 import episodeData from './src/episodeData.js'
@@ -10,6 +12,11 @@ import drafts from './src/drafts.js'
 import pageTitle from './src/pageTitle.js'
 
 export default function (eleventyConfig, options = {}) {
+  const episodePostsDirectory = options.episodePostsDirectory ?? 'episode-posts'
+  options.episodePostsDirectory = path.join(eleventyConfig.directories.input, episodePostsDirectory)
+  const episodeFilesDirectory = options.episodeFilesDirectory ?? 'episode-files'
+  options.episodeFilesDirectory = path.join(eleventyConfig.directories.input, episodeFilesDirectory)
+
   eleventyConfig.addPlugin(podcastFeed, options)
   eleventyConfig.addPlugin(podcastData, options)
   eleventyConfig.addPlugin(episodeData, options)

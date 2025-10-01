@@ -1,6 +1,7 @@
 import rssPlugin from '@11ty/eleventy-plugin-rss'
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
+import isEpisodePost from './isEpisodePost.js'
 
 export default function (eleventyConfig, options = {}) {
   if (!('addTemplate' in eleventyConfig)) {
@@ -23,6 +24,6 @@ export default function (eleventyConfig, options = {}) {
   })
 
   eleventyConfig.addCollection('episodePost', (collectionApi) => {
-    return collectionApi.getFilteredByGlob('**/episode-posts/*')
+    return collectionApi.getAll().filter(item => isEpisodePost(item.data, options))
   })
 }

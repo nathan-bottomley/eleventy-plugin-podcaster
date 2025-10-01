@@ -9,7 +9,7 @@ export default function (eleventyConfig, options = {}) {
     return data => {
       if (data.episode?.seasonNumber) return data.episode.seasonNumber
 
-      if (!isEpisodePost(data)) return
+      if (!isEpisodePost(data, options)) return
 
       const seasonAndEpisodeMatch = data.page.fileSlug.match(postFilenameSeasonAndEpisodePattern)
       if (seasonAndEpisodeMatch) {
@@ -22,7 +22,7 @@ export default function (eleventyConfig, options = {}) {
     return data => {
       if (data.episode?.episodeNumber) return data.episode.episodeNumber
 
-      if (!isEpisodePost(data)) return
+      if (!isEpisodePost(data, options)) return
 
       const seasonAndEpisodeMatch = data.page.fileSlug.match(postFilenameSeasonAndEpisodePattern)
       if (seasonAndEpisodeMatch) {
@@ -51,7 +51,7 @@ export default function (eleventyConfig, options = {}) {
 
   eleventyConfig.addGlobalData('eleventyComputed.episode.url', () => {
     return data => {
-      if (!isEpisodePost(data)) return
+      if (!isEpisodePost(data, options)) return
 
       const episodeUrlBase = data.podcast.episodeUrlBase
       const filename = data.episode.filename

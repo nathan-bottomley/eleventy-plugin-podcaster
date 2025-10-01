@@ -6,7 +6,7 @@ import isEpisodePost from './isEpisodePost.js'
 export default function (eleventyConfig, options = {}) {
   eleventyConfig.addGlobalData('eleventyComputed.excerpt', () => {
     return (data) => {
-      if (!isEpisodePost(data)) return
+      if (!isEpisodePost(data, options)) return
 
       const md = markdownIt({
         html: true,

@@ -166,7 +166,7 @@ export default function (eleventyConfig, options = {}) {
     if (!firstRun || process.env.SKIP_EPISODE_CALCULATIONS === 'true') return
     firstRun = false
 
-    const episodeFilesDirectory = path.join(directories.input, 'episode-files')
+    const episodeFilesDirectory = options.episodeFilesDirectory
     let episodeData
     if (existsSync(episodeFilesDirectory)) {
       episodeData = await readEpisodeDataLocally(episodeFilesDirectory)
@@ -186,7 +186,7 @@ export default function (eleventyConfig, options = {}) {
   eleventyConfig.addGlobalData('eleventyComputed.episode.size', () => {
     return data => {
       if (data.episode.size) return data.episode.size
-      if (isEpisodePost(data) && data.episodeData) {
+      if (isEpisodePost(data, options) && data.episodeData) {
         return data.episodeData[data.episode.filename]?.size
       }
     }
@@ -199,7 +199,7 @@ export default function (eleventyConfig, options = {}) {
         return convertedReadableDuration ?? data.episode.duration
       }
 
-      if (isEpisodePost(data) && data.episodeData) {
+      if (isEpisodePost(data, options) && data.episodeData) {
         return data.episodeData[data.episode.filename]?.duration
       }
     }

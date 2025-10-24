@@ -13,7 +13,6 @@ test.before(async (t) => {
       configPath: `${t.context.fixture}/eleventy.config.js`
     })
   t.context.build = await eleventy.toJSON()
-  console.log(JSON.stringify(t.context.build, null, 2))
   t.context.feed = t.context.build.find(
     item => item.inputPath === `${t.context.fixture}/src/feed.njk`
   )

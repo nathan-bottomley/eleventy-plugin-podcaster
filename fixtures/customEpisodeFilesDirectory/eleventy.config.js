@@ -5,7 +5,6 @@ export default function (eleventyConfig, options = {}) {
     episodeFilesDirectory: '../episode-files'
   })
   eleventyConfig.setQuietMode(true)
-  console.log(`custom directory test input dir ${eleventyConfig.directories.input}`)
 }
 
 export const config = {

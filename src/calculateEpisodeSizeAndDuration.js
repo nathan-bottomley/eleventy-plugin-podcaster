@@ -164,6 +164,7 @@ export default function (eleventyConfig, options = {}) {
   let firstRun = true
   eleventyConfig.on('eleventy.before', async ({ directories }) => {
     if (!firstRun || process.env.SKIP_EPISODE_CALCULATIONS === 'true') return
+
     firstRun = false
 
     const episodeFilesDirectory = options.episodeFilesDirectory

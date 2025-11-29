@@ -26,4 +26,9 @@ export default function (eleventyConfig, options = {}) {
   eleventyConfig.addCollection('episodePost', (collectionApi) => {
     return collectionApi.getAll().filter(item => isEpisodePost(item.data, options))
   })
+
+  // included for backward compatibility, will be deprecated in 3.0
+  eleventyConfig.addCollection('podcastEpisode', (collectionApi) => {
+    return collectionApi.getAll().filter(item => isEpisodePost(item.data, options))
+  })
 }

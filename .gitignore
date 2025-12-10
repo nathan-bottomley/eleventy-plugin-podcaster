@@ -4,3 +4,5 @@ node_modules
 .nova
 .DS_Store
 .env
+.github
+.github/workflows

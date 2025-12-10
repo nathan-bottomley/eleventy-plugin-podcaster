@@ -1,0 +1,15 @@
+{
+  "episode": {
+    "chapters": [
+      { "title": "Introduction", "startTime": "00:00:00" },
+      {
+        "title": "The Power of the Daleks",
+        "startTime": "00:05:00"
+      },
+      {
+        "title": "Conclusion",
+        "startTime": "00:10:00"
+      }
+    ]
+  }
+}

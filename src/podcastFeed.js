@@ -9,11 +9,18 @@ export default function (eleventyConfig, options = {}) {
   }
 
   const podcastFeedPath = path.join(import.meta.dirname, './podcastFeed.njk')
-
   eleventyConfig.addTemplate('feed.njk', readFileSync(podcastFeedPath), {
     eleventyExcludeFromCollections: true,
     eleventyImport: {
       collections: ['episodePost']
+    }
+  })
+
+  const chaptersPath = path.join(import.meta.dirname, './chapters.njk')
+  eleventyConfig.addTemplate('chapters.njk', readFileSync(chaptersPath), {
+    eleventyExcludeFromCollections: true,
+    eleventyImport: {
+      collections: ['episodePostWithChapters']
     }
   })
 
@@ -24,11 +31,22 @@ export default function (eleventyConfig, options = {}) {
   })
 
   eleventyConfig.addCollection('episodePost', (collectionApi) => {
-    return collectionApi.getAll().filter(item => isEpisodePost(item.data, options))
+    return collectionApi
+      .getAll()
+      .filter(item => isEpisodePost(item.data, options))
+      // sort order explicit: presence of template data files disrupts it otherwise
+      .sort((a, b) => a.date - b.date)
   })
 
   // included for backward compatibility, will be deprecated in 3.0
   eleventyConfig.addCollection('podcastEpisode', (collectionApi) => {
-    return collectionApi.getAll().filter(item => isEpisodePost(item.data, options))
+    return collectionApi
+      .getAll()
+      .filter(item => isEpisodePost(item.data, options))
+      .sort((a, b) => a.date - b.date)
+  })
+
+  eleventyConfig.addCollection('episodePostWithChapters', (collectionApi) => {
+    return collectionApi.getAll().filter(item => isEpisodePost(item.data, options) && item.data.episode?.chapters)
   })
 }

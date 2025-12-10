@@ -7,6 +7,7 @@ import calculateEpisodeSizeAndDuration from './src/calculateEpisodeSizeAndDurati
 import calculateEpisodeFilename from './src/calculateEpisodeFilename.js'
 
 import readableFilters from './src/readableFilters.js'
+import chapters from './src/chapters.js'
 import excerpts from './src/excerpts.js'
 import drafts from './src/drafts.js'
 import pageTitle from './src/pageTitle.js'
@@ -26,6 +27,7 @@ export default function (eleventyConfig, options = {}) {
   // Filters
 
   eleventyConfig.addPlugin(readableFilters, options)
+  eleventyConfig.addPlugin(chapters, options)
 
   // Optional features
 

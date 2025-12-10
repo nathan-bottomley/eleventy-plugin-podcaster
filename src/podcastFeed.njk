@@ -60,6 +60,10 @@ eleventyAllowMissingExtension: true
       <guid isPermaLink="true">{{ post.url | htmlBaseUrl(siteUrl) }}</guid>
       {% endif -%}
       <pubDate>{{ post.date | dateToRfc3339 }}</pubDate>
+      {%- if post.data.episode.chapters %}
+      <podcast:chapters url="{{ [post.url, 'chapters.json'] | join('/') | htmlBaseUrl(siteUrl) }}"
+        type="application/json+chapters" />
+      {% endif -%}
       {% if podcast.episodeDescriptionTemplate %}
       {%- set episodeDescription -%}
       {% include podcast.episodeDescriptionTemplate %}

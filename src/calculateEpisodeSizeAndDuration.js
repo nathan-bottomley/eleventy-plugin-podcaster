@@ -1,4 +1,5 @@
-import { Duration, DateTime } from 'luxon'
+import { DateTime } from 'luxon'
+import readableDuration from './readableDuration.js'
 import path from 'node:path'
 import { existsSync } from 'node:fs'
 import { readdir, stat, writeFile } from 'node:fs/promises'
@@ -10,29 +11,6 @@ import isEpisodePost from './isEpisodePost.js'
 
 const isAudioFile = episodeFilename => episodeFilename.endsWith('.mp3') ||
                     episodeFilename.endsWith('.m4a')
-
-const convertSecondsToReadableDuration = seconds =>
-  Duration.fromMillis(seconds * 1000)
-    .shiftTo('days', 'hours', 'minutes', 'seconds')
-    .toHuman()
-
-const convertReadableDurationToSeconds = duration => {
-  const durationPattern = /^(?:(?<hours>\d+):)?(?<minutes>\d{1,2}):(?<seconds>\d{2}(?:\.\d+)?)$/
-
-  let match
-  if (duration?.match) {
-    match = duration.match(durationPattern)
-  }
-
-  if (match) {
-    const hours = isNaN(parseInt(match.groups.hours))
-      ? 0
-      : parseInt(match.groups.hours)
-    const minutes = parseInt(match.groups.minutes)
-    const seconds = parseFloat(match.groups.seconds)
-    return hours * 3600 + minutes * 60 + seconds
-  }
-}
 
 async function readEpisodeDataLocally (episodeFilesDirectory) {
   const episodes = await readdir(episodeFilesDirectory)
@@ -62,7 +40,7 @@ function calculatePodcastData (episodeData) {
 
 function reportPodcastData (podcastData) {
   const { numberOfEpisodes, totalSize, totalDuration } = podcastData
-  console.log(`\u001b[33m${numberOfEpisodes} episodes; ${hr.fromBytes(totalSize)}; ${convertSecondsToReadableDuration(totalDuration)}.\u001b[0m`)
+  console.log(`\u001b[33m${numberOfEpisodes} episodes; ${hr.fromBytes(totalSize)}; ${readableDuration.convertFromSeconds(totalDuration)}.\u001b[0m`)
 }
 
 async function writePodcastDataLocally (episodeData, podcastData, directories) {
@@ -196,7 +174,7 @@ export default function (eleventyConfig, options = {}) {
   eleventyConfig.addGlobalData('eleventyComputed.episode.duration', () => {
     return data => {
       if (data.episode.duration) {
-        const convertedReadableDuration = convertReadableDurationToSeconds(data.episode.duration)
+        const convertedReadableDuration = readableDuration.convertToSeconds(data.episode.duration)
         return convertedReadableDuration ?? data.episode.duration
       }
 

@@ -2,7 +2,7 @@ import { Duration } from 'luxon'
 
 export default {
   convertFromSeconds (seconds) {
-    Duration.fromMillis(seconds * 1000)
+    return Duration.fromMillis(seconds * 1000)
       .shiftTo('days', 'hours', 'minutes', 'seconds')
       .toHuman()
   },

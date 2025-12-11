@@ -8,7 +8,7 @@ episode:
     - title: Introduction
       startTime: "00:00:00"
     - title: Spearhead from Space
-      startTime: "00:05:00"
+      startTime: 300
     - title: Conclusion
       startTime: "00:10:00"
 ---

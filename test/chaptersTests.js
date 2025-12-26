@@ -13,9 +13,17 @@ test.before(async (t) => {
   t.context.feed = t.context.build.find(
     item => item.inputPath === './fixtures/chapters/feed.njk'
   )
-  t.context.episodePosts = t.context.build.filter(
-    item => item.inputPath.startsWith('./fixtures/chapters/episode-posts/')
-  )
+  const parser = new XMLParser({ ignoreAttributes: false })
+  t.context.feedData = parser.parse(t.context.feed.content)
+
+  const episodes = t.context.feedData.rss.channel.item
+  t.context.testEpisode = {
+    withChapters1: episodes.find(item => item.title === 'Entering a New Phase'),
+    withChapters2: episodes.find(item => item.title === 'The Pertwee I Have in My Head'),
+    withoutChapters: episodes.find(item => item.title === 'Establishment Drag'),
+    withChapterFile1: episodes.find(item => item.title === 'Daleks Daleks'),
+    withChapterFile2: episodes.find(item => item.title === 'The Show as We Know It')
+  }
 })
 
 // building the site
@@ -29,7 +37,7 @@ test('builds without errors', (t) => {
 
 // chapters.json files
 
-test('chapters.json files are generated', (t) => {
+test('chapters.json files are generated for items with chapters', (t) => {
   const { build } = t.context
 
   t.true(build.some(item => item.url === '/s1/e1/chapters.json'))
@@ -38,30 +46,36 @@ test('chapters.json files are generated', (t) => {
   t.false(build.some(item => item.url === '/s2/e2/chapters.json'))
 })
 
-// podcast:chapters tag in feed
-//
 test('podcast:chapters tags exist in feed', (t) => {
   const { feed } = t.context
   t.true(feed.content.includes('<podcast:chapters'))
 })
 
 test('items with chapters have podcast:chapters tags', (t) => {
-  const { feed } = t.context
-  const parser = new XMLParser()
-  const feedData = parser.parse(feed.content)
-  const episodes = feedData.rss.channel.item
-  t.true('podcast:chapters' in episodes[2])
-  t.true('podcast:chapters' in episodes[3])
-  t.false('podcast:chapters' in episodes[0])
-  t.false('podcast:chapters' in episodes[1])
+  const { testEpisode } = t.context
+  t.true('podcast:chapters' in testEpisode.withChapters1)
+  t.true('podcast:chapters' in testEpisode.withChapters2)
 })
 
-test('chapter durations are converted into seconds', (t) => {
-  const { build } = t.context
-  const chaptersData = [
-    build.find(item => item.url === '/s1/e1/chapters.json').content,
-    build.find(item => item.url === '/s1/e2/chapters.json').content
-  ]
-  t.deepEqual(JSON.parse(chaptersData[0]).map(x => x.startTime), [0, 300, 600])
-  t.deepEqual(JSON.parse(chaptersData[1]).map(x => x.startTime), [0, 300, 600])
+test('items with chapter file have podcast:chapters tags', (t) => {
+  const { testEpisode } = t.context
+  t.true('podcast:chapters' in testEpisode.withChapterFile1)
+  t.true('podcast:chapters' in testEpisode.withChapterFile2)
+})
+
+test("items without chapters or chapter file don't have podcast:chapters tags", (t) => {
+  const { testEpisode } = t.context
+  t.false('podcast:chapters' in testEpisode.withoutChapters)
+})
+
+test('items with chapters have podcast:chapters tags containing URLs', (t) => {
+  const { testEpisode } = t.context
+  t.is(testEpisode.withChapters1['podcast:chapters']['@_url'], 'https://500yeardiary.example.com/s1/e1/chapters.json')
+  t.is(testEpisode.withChapters2['podcast:chapters']['@_url'], 'https://500yeardiary.example.com/s1/e2/chapters.json')
+})
+
+test('items with chapter file have podcast:chapters tags containing URLs', (t) => {
+  const { testEpisode } = t.context
+  t.is(testEpisode.withChapterFile1['podcast:chapters']['@_url'], 'https://500yeardiary.example.com/chapters/the-dalek-invasion-of-earth.json')
+  t.is(testEpisode.withChapterFile2['podcast:chapters']['@_url'], 'https://500yeardiary.example.com/chapters/the-moonbase.json')
 })

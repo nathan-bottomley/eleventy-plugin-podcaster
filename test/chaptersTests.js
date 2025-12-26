@@ -18,11 +18,11 @@ test.before(async (t) => {
 
   const episodes = t.context.feedData.rss.channel.item
   t.context.testEpisode = {
-    withChapters1: episodes.find(item => item.title === 'Entering a New Phase'),
-    withChapters2: episodes.find(item => item.title === 'The Pertwee I Have in My Head'),
+    withChaptersInFrontMatter: episodes.find(item => item.title === 'Entering a New Phase'),
+    withChaptersInDataFile: episodes.find(item => item.title === 'The Pertwee I Have in My Head'),
     withoutChapters: episodes.find(item => item.title === 'Establishment Drag'),
-    withChapterFile1: episodes.find(item => item.title === 'Daleks Daleks'),
-    withChapterFile2: episodes.find(item => item.title === 'The Show as We Know It')
+    withPathToChapterFile: episodes.find(item => item.title === 'Daleks Daleks'),
+    withUrlToChapterFile: episodes.find(item => item.title === 'The Show as We Know It')
   }
 })
 
@@ -53,14 +53,14 @@ test('podcast:chapters tags exist in feed', (t) => {
 
 test('items with chapters have podcast:chapters tags', (t) => {
   const { testEpisode } = t.context
-  t.true('podcast:chapters' in testEpisode.withChapters1)
-  t.true('podcast:chapters' in testEpisode.withChapters2)
+  t.true('podcast:chapters' in testEpisode.withChaptersInFrontMatter)
+  t.true('podcast:chapters' in testEpisode.withChaptersInDataFile)
 })
 
 test('items with chapter file have podcast:chapters tags', (t) => {
   const { testEpisode } = t.context
-  t.true('podcast:chapters' in testEpisode.withChapterFile1)
-  t.true('podcast:chapters' in testEpisode.withChapterFile2)
+  t.true('podcast:chapters' in testEpisode.withPathToChapterFile)
+  t.true('podcast:chapters' in testEpisode.withUrlToChapterFile)
 })
 
 test("items without chapters or chapter file don't have podcast:chapters tags", (t) => {
@@ -70,12 +70,12 @@ test("items without chapters or chapter file don't have podcast:chapters tags", 
 
 test('items with chapters have podcast:chapters tags containing URLs', (t) => {
   const { testEpisode } = t.context
-  t.is(testEpisode.withChapters1['podcast:chapters']['@_url'], 'https://500yeardiary.example.com/s1/e1/chapters.json')
-  t.is(testEpisode.withChapters2['podcast:chapters']['@_url'], 'https://500yeardiary.example.com/s1/e2/chapters.json')
+  t.is(testEpisode.withChaptersInFrontMatter['podcast:chapters']['@_url'], 'https://500yeardiary.example.com/s1/e1/chapters.json')
+  t.is(testEpisode.withChaptersInDataFile['podcast:chapters']['@_url'], 'https://500yeardiary.example.com/s1/e2/chapters.json')
 })
 
 test('items with chapter file have podcast:chapters tags containing URLs', (t) => {
   const { testEpisode } = t.context
-  t.is(testEpisode.withChapterFile1['podcast:chapters']['@_url'], 'https://500yeardiary.example.com/chapters/the-dalek-invasion-of-earth.json')
-  t.is(testEpisode.withChapterFile2['podcast:chapters']['@_url'], 'https://500yeardiary.example.com/chapters/the-moonbase.json')
+  t.is(testEpisode.withPathToChapterFile['podcast:chapters']['@_url'], 'https://500yeardiary.example.com/chapters/the-dalek-invasion-of-earth.json')
+  t.is(testEpisode.withUrlToChapterFile['podcast:chapters']['@_url'], 'https://500yeardiary.example.com/chapters/the-moonbase.json')
 })

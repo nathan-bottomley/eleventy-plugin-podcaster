@@ -47,6 +47,8 @@ export default function (eleventyConfig, options = {}) {
   })
 
   eleventyConfig.addCollection('episodePostWithChapters', (collectionApi) => {
-    return collectionApi.getAll().filter(item => isEpisodePost(item.data, options) && item.data.episode?.chapters)
+    return collectionApi.getAll().filter(item => isEpisodePost(item.data, options) &&
+                                         item.data.episode?.chapters &&
+                                         typeof item.data.episode.chapters !== 'string')
   })
 }

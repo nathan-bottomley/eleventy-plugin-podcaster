@@ -8,6 +8,9 @@ export default (eleventyConfig, options = {}) => {
       }
       return x
     })
-    return JSON.stringify(result, null, 2)
+    return JSON.stringify({
+      version: '1.2.0',
+      chapters: result
+    }, null, 2)
   })
 }

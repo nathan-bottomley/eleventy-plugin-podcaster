@@ -66,13 +66,14 @@ test('season and episode numbers can be provided in front matter instead of the 
 
 test('specified permalinks can be overridden by a directory data file', async (t) => {
   const eleventy = new Eleventy(
-    './fixtures/permalinks/src',
+    './fixtures/permalinks/',
     './fixtures/permalinks/_site',
     {
       configPath: './fixtures/permalinks/eleventy.config.js'
     })
 
   const build = await eleventy.toJSON()
-  const item = build.find(item => item.inputPath === './fixtures/permalinks/src/posts/episode-1.md')
+  console.log(JSON.stringify(build, 2, null))
+  const item = build.find(item => item.inputPath === './fixtures/permalinks/episode-posts/2023-11-26-episode-1-the-star-beast.md')
   t.is(item.url, '/overridden/')
 })

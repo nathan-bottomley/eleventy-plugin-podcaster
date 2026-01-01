@@ -34,7 +34,7 @@ export default function (eleventyConfig, options = {}) {
   if (options.optionalFeatures) {
     options.handleDrafts = true
     options.handleExcerpts = true
-    options.handlePageTitle ??= true // preserve setting for custom separators
+    options.handlePageTitles ??= true // preserve setting for custom separators
   }
 
   if (options.handleExcerpts) {
@@ -43,7 +43,7 @@ export default function (eleventyConfig, options = {}) {
   if (options.handleDrafts) {
     eleventyConfig.addPlugin(drafts, options)
   }
-  if (options.handlePageTitle) {
+  if (options.handlePageTitles) {
     eleventyConfig.addPlugin(pageTitle, options)
   }
 }

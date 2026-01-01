@@ -39,24 +39,24 @@ function calculatePodcastData (episodeData) {
   return { numberOfEpisodes, totalSize, totalDuration }
 }
 
-function getS3Client (options) {
-  if (options.s3ClientObject) return options.s3ClientObject
+function getS3Storage (options) {
+  if (options.s3StorageObject) return options.s3StorageObject
 
-  if (options.s3Client) {
+  if (options.s3Storage) {
     return new S3Client({
       forcePathStyle: true,
-      endpoint: options.s3Client.endpoint,
-      region: options.s3Client.region,
+      endpoint: options.s3Storage.endpoint,
+      region: options.s3Storage.region,
       credentials: {
-        accessKeyId: options.s3Client.accessKey,
-        secretAccessKey: options.s3Client.secretKey
+        accessKeyId: options.s3Storage.accessKey,
+        secretAccessKey: options.s3Storage.secretKey
       }
     })
   }
 }
 
-async function getObjectFromS3Bucket (s3Client, s3Bucket, key) {
-  const getObjectResponse = await s3Client.send(new GetObjectCommand({ Bucket: s3Bucket, Key: key }))
+async function getObjectFromS3Bucket (s3Storage, s3Bucket, key) {
+  const getObjectResponse = await s3Storage.send(new GetObjectCommand({ Bucket: s3Bucket, Key: key }))
 
   const chunks = []
   if (typeof getObjectResponse.Body.pipe === 'function') {
@@ -84,23 +84,23 @@ async function getObjectFromS3Bucket (s3Client, s3Bucket, key) {
   return { buffer, lastModified: getObjectResponse.LastModified }
 }
 
-async function getCachedEpisodeDataFromS3Bucket (s3Client, s3Bucket) {
+async function getCachedEpisodeDataFromS3Bucket (s3Storage, s3Bucket) {
   try {
-    const { buffer, lastModified } = await getObjectFromS3Bucket(s3Client, s3Bucket, 'cachedEpisodeData.json')
+    const { buffer, lastModified } = await getObjectFromS3Bucket(s3Storage, s3Bucket, 'cachedEpisodeData.json')
     return { episodeData: JSON.parse(buffer.toString()), lastModified }
   } catch (err) {
     return { episodeData: {}, lastModified: null }
   }
 }
 
-async function calculateEpisodeDataFromS3Bucket (s3Client, s3Bucket) {
-  const cachedEpisodeData = await getCachedEpisodeDataFromS3Bucket(s3Client, s3Bucket)
+async function calculateEpisodeDataFromS3Bucket (s3Storage, s3Bucket) {
+  const cachedEpisodeData = await getCachedEpisodeDataFromS3Bucket(s3Storage, s3Bucket)
   const cachedEpisodeDataLastModifiedDate = (cachedEpisodeData.lastModified)
     ? DateTime.fromISO(cachedEpisodeData.lastModified)
     : null
 
   console.log(`Reading episode data from S3 bucket ${s3Bucket}`)
-  const list = await s3Client.send(new ListObjectsCommand({ Bucket: s3Bucket }))
+  const list = await s3Storage.send(new ListObjectsCommand({ Bucket: s3Bucket }))
   const result = { ...cachedEpisodeData.episodeData }
   for (const item of list.Contents ?? []) {
     if (!isAudioFile(item.Key)) continue
@@ -112,7 +112,7 @@ async function calculateEpisodeDataFromS3Bucket (s3Client, s3Bucket) {
         !('duration' in result[filename]) ||
         !cachedEpisodeDataLastModifiedDate ||
         cachedEpisodeDataLastModifiedDate < DateTime.fromISO(lastModified)) {
-      const { buffer } = await getObjectFromS3Bucket(s3Client, s3Bucket, filename)
+      const { buffer } = await getObjectFromS3Bucket(s3Storage, s3Bucket, filename)
       const metadata = await parseBufferMetadata(buffer, null, { duration: true })
       const duration = metadata.format.duration
       result[filename] = { size, duration }
@@ -121,8 +121,8 @@ async function calculateEpisodeDataFromS3Bucket (s3Client, s3Bucket) {
   return result
 }
 
-async function cacheEpisodeDataToS3Bucket (s3Client, s3Bucket, episodeData) {
-  await s3Client.send(new PutObjectCommand({
+async function cacheEpisodeDataToS3Bucket (s3Storage, s3Bucket, episodeData) {
+  await s3Storage.send(new PutObjectCommand({
     Bucket: s3Bucket,
     Key: 'cachedEpisodeData.json',
     Body: JSON.stringify(episodeData, null, 2),
@@ -132,18 +132,19 @@ async function cacheEpisodeDataToS3Bucket (s3Client, s3Bucket, episodeData) {
 
 export default function (eleventyConfig, options = {}) {
   eleventyConfig.addGlobalData('episodeData', async () => {
-    if (process.env.SKIP_EPISODE_CALCULATIONS === 'true') return null
-
-    let episodeData = []
+    let episodeData = {}
     const cachedEpisodeDataPath = path.join(eleventyConfig.directories.input, 'cachedEpisodeData.json')
-    if (options.episodeFilesDirectory && existsSync(options.episodeFilesDirectory)) {
+    if (options.episodeFilesDirectory &&
+        existsSync(options.episodeFilesDirectory) &&
+        process.env.SKIP_EPISODE_CALCULATIONS !== 'true') {
       episodeData = await calculateEpisodeDataLocally(options.episodeFilesDirectory)
       await writeFile(cachedEpisodeDataPath, JSON.stringify(episodeData, null, 2))
-    } else if (options.s3Client || options.s3ClientObject) {
-      const s3Client = getS3Client(options)
-      const s3Bucket = options.s3Client.bucket
-      episodeData = await calculateEpisodeDataFromS3Bucket(s3Client, s3Bucket)
-      cacheEpisodeDataToS3Bucket(s3Client, s3Bucket, episodeData)
+    } else if ((options.s3Storage || options.s3StorageObject) &&
+               process.env.SKIP_EPISODE_CALCULATIONS !== 'true') {
+      const s3Storage = getS3Storage(options)
+      const s3Bucket = options.s3Storage.bucket
+      episodeData = await calculateEpisodeDataFromS3Bucket(s3Storage, s3Bucket)
+      cacheEpisodeDataToS3Bucket(s3Storage, s3Bucket, episodeData)
       await writeFile(cachedEpisodeDataPath, JSON.stringify(episodeData, null, 2))
     } else if (existsSync(cachedEpisodeDataPath)) {
       episodeData = JSON.parse(readFileSync(cachedEpisodeDataPath))

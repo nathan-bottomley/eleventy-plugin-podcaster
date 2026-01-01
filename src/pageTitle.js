@@ -1,7 +1,7 @@
 export default function (eleventyConfig, options = {}) {
-  const separator = (options.handlePageTitle === true)
+  const separator = (options.handlePageTitles === true)
     ? '&middot;'
-    : options.handlePageTitle
+    : options.handlePageTitles
 
   eleventyConfig.addGlobalData('eleventyComputed.pageTitle', () => {
     return data => {

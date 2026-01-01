@@ -1,18 +1,17 @@
 import { DateTime } from 'luxon'
 import readableDuration from './readableDuration.js'
 import path from 'node:path'
-import { existsSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { readdir, stat, writeFile } from 'node:fs/promises'
 import { Writable } from 'node:stream'
 import { S3Client, ListObjectsCommand, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3'
 import { parseFile as parseFileMetadata, parseBuffer as parseBufferMetadata } from 'music-metadata'
-import hr from '@tsmx/human-readable'
 import isEpisodePost from './isEpisodePost.js'
 
 const isAudioFile = episodeFilename => episodeFilename.endsWith('.mp3') ||
                     episodeFilename.endsWith('.m4a')
 
-async function readEpisodeDataLocally (episodeFilesDirectory) {
+async function calculateEpisodeDataLocally (episodeFilesDirectory) {
   const episodes = await readdir(episodeFilesDirectory)
   const episodeData = {}
   for (const episode of episodes) {
@@ -33,20 +32,9 @@ async function readEpisodeDataLocally (episodeFilesDirectory) {
 function calculatePodcastData (episodeData) {
   const episodeDataValues = Object.values(episodeData)
   const numberOfEpisodes = episodeDataValues.length
-  const totalSize = episodeDataValues.map(x => x.size).reduce((x, y) => x + y)
-  const totalDuration = episodeDataValues.map(x => x.duration).reduce((x, y) => x + y)
+  const totalSize = episodeDataValues.map(x => x.size).reduce((x, y) => x + y, 0)
+  const totalDuration = episodeDataValues.map(x => x.duration).reduce((x, y) => x + y, 0)
   return { numberOfEpisodes, totalSize, totalDuration }
-}
-
-function reportPodcastData (podcastData) {
-  const { numberOfEpisodes, totalSize, totalDuration } = podcastData
-  console.log(`\u001b[33m${numberOfEpisodes} episodes; ${hr.fromBytes(totalSize)}; ${readableDuration.convertFromSeconds(totalDuration)}.\u001b[0m`)
-}
-
-async function writePodcastDataLocally (episodeData, podcastData, directories) {
-  const dataDir = path.join(process.cwd(), directories.data)
-  await writeFile(path.join(dataDir, 'episodeData.json'), JSON.stringify(episodeData, null, 2))
-  await writeFile(path.join(dataDir, 'podcastData.json'), JSON.stringify(podcastData, null, 2))
 }
 
 function getS3Client (options) {
@@ -94,22 +82,24 @@ async function getObjectFromS3Bucket (s3Client, s3Bucket, key) {
   return { buffer, lastModified: getObjectResponse.LastModified }
 }
 
-async function getStoredEpisodeDataFromS3Bucket (s3Client, s3BucketName) {
+async function getCachedEpisodeDataFromS3Bucket (s3Client, s3Bucket) {
   try {
-    const { buffer, lastModified } = await getObjectFromS3Bucket(s3Client, s3BucketName, 'episodeData.json')
+    const { buffer, lastModified } = await getObjectFromS3Bucket(s3Client, s3Bucket, 'cachedEpisodeData.json')
     return { episodeData: JSON.parse(buffer.toString()), lastModified }
   } catch (err) {
     return { episodeData: {}, lastModified: null }
   }
 }
 
-async function updateEpisodeDataFromS3Bucket (s3Client, s3Bucket) {
-  const storedEpisodeData = await getStoredEpisodeDataFromS3Bucket(s3Client, s3Bucket)
-  const storedEpisodeDataLastModifiedDate = (storedEpisodeData.lastModified)
-    ? DateTime.fromISO(storedEpisodeData.lastModified)
+async function calculateEpisodeDataFromS3Bucket (s3Client, s3Bucket) {
+  const cachedEpisodeData = await getCachedEpisodeDataFromS3Bucket(s3Client, s3Bucket)
+  const cachedEpisodeDataLastModifiedDate = (cachedEpisodeData.lastModified)
+    ? DateTime.fromISO(cachedEpisodeData.lastModified)
     : null
+
+  console.log(`Reading episode data from S3 bucket ${s3Bucket}`)
   const list = await s3Client.send(new ListObjectsCommand({ Bucket: s3Bucket }))
-  const result = { ...storedEpisodeData.episodeData }
+  const result = { ...cachedEpisodeData.episodeData }
   for (const item of list.Contents ?? []) {
     if (!isAudioFile(item.Key)) continue
 
@@ -118,8 +108,8 @@ async function updateEpisodeDataFromS3Bucket (s3Client, s3Bucket) {
     if (!(filename in result) ||
         !('size' in result[filename]) ||
         !('duration' in result[filename]) ||
-        !storedEpisodeDataLastModifiedDate ||
-        storedEpisodeDataLastModifiedDate > DateTime.fromISO(lastModified)) {
+        !cachedEpisodeDataLastModifiedDate ||
+        cachedEpisodeDataLastModifiedDate < DateTime.fromISO(lastModified)) {
       const { buffer } = await getObjectFromS3Bucket(s3Client, s3Bucket, filename)
       const metadata = await parseBufferMetadata(buffer, null, { duration: true })
       const duration = metadata.format.duration
@@ -129,37 +119,36 @@ async function updateEpisodeDataFromS3Bucket (s3Client, s3Bucket) {
   return result
 }
 
-async function writeEpisodeDataToS3Bucket (s3Client, s3Bucket, episodeData) {
+async function cacheEpisodeDataToS3Bucket (s3Client, s3Bucket, episodeData) {
   await s3Client.send(new PutObjectCommand({
     Bucket: s3Bucket,
-    Key: 'episodeData.json',
+    Key: 'cachedEpisodeData.json',
     Body: JSON.stringify(episodeData, null, 2),
     ContentType: 'application/json'
   }))
 }
 
 export default function (eleventyConfig, options = {}) {
-  let firstRun = true
-  eleventyConfig.on('eleventy.before', async ({ directories }) => {
-    if (!firstRun || process.env.SKIP_EPISODE_CALCULATIONS === 'true') return
-
-    firstRun = false
-
-    const episodeFilesDirectory = options.episodeFilesDirectory
-    let episodeData
-    if (existsSync(episodeFilesDirectory)) {
-      episodeData = await readEpisodeDataLocally(episodeFilesDirectory)
-    } else if (options.s3ClientObject || options.s3Client) {
+  eleventyConfig.addGlobalData('episodeData', async () => {
+    let episodeData = []
+    const cachedEpisodeDataPath = path.join(eleventyConfig.directories.input, 'cachedEpisodeData.json')
+    if (options.episodeFilesDirectory && existsSync(options.episodeFilesDirectory)) {
+      episodeData = await calculateEpisodeDataLocally(options.episodeFilesDirectory)
+      await writeFile(cachedEpisodeDataPath, JSON.stringify(episodeData, null, 2))
+    } else if (options.s3Client || options.s3ClientObject) {
       const s3Client = getS3Client(options)
       const s3Bucket = options.s3Client.bucket
-      episodeData = await updateEpisodeDataFromS3Bucket(s3Client, s3Bucket)
-      await writeEpisodeDataToS3Bucket(s3Client, s3Bucket, episodeData)
-    } else {
-      return
+      episodeData = await calculateEpisodeDataFromS3Bucket(s3Client, s3Bucket)
+      cacheEpisodeDataToS3Bucket(s3Client, s3Bucket, episodeData)
+      await writeFile(cachedEpisodeDataPath, JSON.stringify(episodeData, null, 2))
+    } else if (existsSync(cachedEpisodeDataPath)) {
+      episodeData = JSON.parse(readFileSync(cachedEpisodeDataPath))
     }
-    const podcastData = calculatePodcastData(episodeData)
-    await writePodcastDataLocally(episodeData, podcastData, directories)
-    if (!eleventyConfig.quietMode) reportPodcastData(podcastData)
+    return episodeData
+  })
+
+  eleventyConfig.addGlobalData('eleventyComputed.podcastData', async () => {
+    return (data) => calculatePodcastData(data.episodeData)
   })
 
   eleventyConfig.addGlobalData('eleventyComputed.episode.size', () => {

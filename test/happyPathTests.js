@@ -1,8 +1,7 @@
 import test from 'ava'
 import Eleventy from '@11ty/eleventy'
 import { XMLParser } from 'fast-xml-parser'
-import { unlinkSync } from 'node:fs'
-import path from 'node:path'
+import { unlinkSync } from 'fs'
 
 test.before(async (t) => {
   const eleventy = new Eleventy(
@@ -194,16 +193,10 @@ test('episode posts can display their durations correctly', (t) => {
 // after
 
 test.after.always(async (t) => {
-  const episodeDataPath = path.join(process.cwd(), 'fixtures/happyPath/_data/episodeData.json')
-  const podcastDataPath = path.join(process.cwd(), 'fixtures/happyPath/_data/podcastData.json')
+  const cachedEpisodeDataPath = './fixtures/happyPath/cachedEpisodeData.json'
   try {
-    unlinkSync(episodeDataPath)
+    unlinkSync(cachedEpisodeDataPath)
   } catch (error) {
-    console.error(`Failed to delete ${episodeDataPath}:`, error)
-  }
-  try {
-    unlinkSync(podcastDataPath)
-  } catch (error) {
-    console.error(`Failed to delete ${podcastDataPath}:`, error)
+    console.error(`Failed to delete ${cachedEpisodeDataPath}:`, error)
   }
 })

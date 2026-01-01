@@ -129,16 +129,10 @@ test('episode posts have permalinks that match their episode numbers', (t) => {
 // after
 
 test.after.always(async (t) => {
-  const episodeDataPath = path.join(process.cwd(), `${t.context.fixture}/_data/episodeData.json`)
-  const podcastDataPath = path.join(process.cwd(), `${t.context.fixture}/_data/podcastData.json`)
+  const cachedEpisodeDataPath = path.join(process.cwd(), `${t.context.fixture}/cachedEpisodeData.json`)
   try {
-    unlinkSync(episodeDataPath)
+    unlinkSync(cachedEpisodeDataPath)
   } catch (error) {
-    console.error(`Failed to delete ${episodeDataPath}:`, error)
-  }
-  try {
-    unlinkSync(podcastDataPath)
-  } catch (error) {
-    console.error(`Failed to delete ${podcastDataPath}:`, error)
+    console.error(`Failed to delete ${cachedEpisodeDataPath}:`, error)
   }
 })

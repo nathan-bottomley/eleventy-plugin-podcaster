@@ -120,16 +120,10 @@ test('episodes in feed have episode numbers', (t) => {
 // after
 
 test.after.always(async (t) => {
-  const episodeDataPath = path.join(process.cwd(), `${t.context.fixture}/src/_data/episodeData.json`)
-  const podcastDataPath = path.join(process.cwd(), `${t.context.fixture}/src/_data/podcastData.json`)
+  const cachedEpisodeDataPath = path.join(process.cwd(), `${t.context.fixture}/src/cachedEpisodeData.json`)
   try {
-    unlinkSync(episodeDataPath)
+    unlinkSync(cachedEpisodeDataPath)
   } catch (error) {
-    console.error(`Failed to delete ${episodeDataPath}:`, error)
-  }
-  try {
-    unlinkSync(podcastDataPath)
-  } catch (error) {
-    console.error(`Failed to delete ${podcastDataPath}:`, error)
+    console.error(`Failed to delete ${cachedEpisodeDataPath}:`, error)
   }
 })

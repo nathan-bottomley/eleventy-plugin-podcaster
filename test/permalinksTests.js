@@ -73,7 +73,6 @@ test('specified permalinks can be overridden by a directory data file', async (t
     })
 
   const build = await eleventy.toJSON()
-  console.log(JSON.stringify(build, 2, null))
   const item = build.find(item => item.inputPath === './fixtures/permalinks/episode-posts/2023-11-26-episode-1-the-star-beast.md')
   t.is(item.url, '/overridden/')
 })

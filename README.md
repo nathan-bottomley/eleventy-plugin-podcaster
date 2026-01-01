@@ -1,11 +1,12 @@
-# eleventy-plugin-podcaster 🕚⚡️🎈🐀🎤📲
+---
+title: eleventy-plugin-podcaster
+---
 
-`eleventy-plugin-podcaster` — or **Podcaster**, as we will call it from now on — is an Eleventy plugin which lets you create a podcast and its accompanying website.
-
-- **Podcaster** creates the podcast feed that you submit to Apple Podcasts, Spotify or any other podcast directory.
-- **Podcaster** also provides information about your podcast to your Eleventy templates. This means that you can describe the podcast and its episodes on your podcast website, creating pages for individual episodes, guests, topics, seasons or anything else at all.
+`eleventy-plugin-podcaster` — or **Podcaster**, as we will call it from now on — is an Eleventy plugin which lets you create a podcast and its accompanying website. You provide **Podcaster** with information about your podcast and its episodes, and it creates the podcast feed that you submit to Apple Podcasts, Spotify or any other podcast directory. And you can use the information you have provided to create pages for individual episodes, guests, topics, seasons or anything else at all.
 
 Plenty of services exist that will host your podcast online — [Spotify][], [Acast][], [Podbean][], [Buzzsprout][], [Blubrry][]. But none of these will allow you to own your podcast's presence on the web, and none of them will give you the freedom to create a site that presents your podcast in a way that reflects its premise, tone and style.
+
+But Eleventy and **Podcaster** will.
 
 [Spotify]: https://podcasters.spotify.com
 [Acast]: https://www.acast.com
@@ -13,44 +14,47 @@ Plenty of services exist that will host your podcast online — [Spotify][], [Ac
 [Buzzsprout]: https://www.buzzsprout.com
 [Blubrry]: https://blubrry.com
 
-But Eleventy and **Podcaster** will.
+## Usage
 
-## Installation
+Detailed and specific information about how to install and use **Podcaster** can be found in [the Documentation section](https://eleventy-plugin-podcaster.com/docs) of the site, but here's a quick summary.
 
-To install the npm package, type this at the command line:
+### 1. Install Podcaster
 
-```shell
-npm install eleventy-plugin-podcaster
-```
+**Podcaster** is an Eleventy plugin. Create an Eleventy site and install the `eleventy-plugin-podcaster` plugin in the usual way. **Podcaster** requires Node 20 or later.
 
-And then include the plugin in your Eleventy configuration file.
+### 2. Provide information to the plugin
 
-```js
-// eleventy.config.js
+- In the data directory, create a `podcast.json` file. This will contain information about your podcast and its site — at the very least, its title, the site URL, a description, its language, and its category.
 
-import Podcaster from 'eleventy-plugin-podcaster'
+- In the input directory, create an `episode-posts` directory. This directory will contain a post for each episode, a post which includes information about the episode, including its title, date, episode number and show notes.
 
-export default function (eleventyConfig) {
-  .
-  .
-  eleventyConfig.addPlugin(Podcaster)
-  .
-  .
-}
-```
+- Optionally, in the input directory, create an `episode-files` directory for your episode MP3 files.
 
-## ➡ [Documentation and usage][Podcaster]
+### 3. Create the website pages
 
-[Podcaster]: https://eleventy-plugin-podcaster.com/docs
+A podcast website will usually have an index page or pages, which list and describe all the episodes as well as pages for individual episodes. You can use the information you've provided — including the posts you've made for each episode — to create these pages and many more.
 
-Detailed and specific information about how to install and use **Podcaster** can be found in [the Documentation section](docs/index.md) of the site, but here's a quick summary.
+### 4. Host the website
 
-1. **Podcaster** is an Eleventy plugin. Create an Eleventy site and install the `eleventy-plugin-podcaster` plugin in the usual way.
-2. In the data directory, create a `podcast.json` file. This will contain information about your podcast and its site — at the very least, its title, the URL of the site, a description, its language, and its category.
-3. In the input directory, create an `episode-files` directory and put your podcast MP3s in there.
-4. In the input directory, create an `episode-posts` directory. Here you will create a post for each episode, which will include information about the episode in its filename and front matter and which whill contain the episode description or show notes.
-5. Create pages on your site for each of your episodes using the posts in the `episode-posts` directory. And you can also create index pages, topic pages, guest pages or anything you like — all using the information you have supplied to **Podcaster** in your `podcast.json` file and your episode posts.
-6. Find a host for your site, and a CDN for your podcast episodes.
+You can host a **Podcaster** site wherever you host an Eleventy site. But your podcast episode files will need to be hosted on a CDN, and you will need to include a URL prefix for that CDN in your `podcast.json` data file.
 
-> [!WARNING]
-> **Podcaster** requires Node 20 or later.
+## Podcaster in action
+
+I started podcasting and creating podcasting websites in 2014. At first I used Squarespace, then WordPress, and then Jekyll, before finally settling on Eleventy late in 2022.
+
+I now have eight podcast websites built with Eleventy and **Podcaster**;  **Podcaster** itself was derived from the code I originally used to create them.
+
+Here's the list:
+
+- [Flight Through Entirety](https://flightthroughentirety.com), a _Doctor Who_ podcast flying through the entirety of the show's 60-something-year history.
+- [Untitled Star Trek Project](https://untitledstartrekproject.com), a _Star Trek_ commentary podcast, where two friends watch _Star Trek_ episodes from across the franchise, chosen (nearly) at random using [a page on the podcast website](https://untitledstartrekproject.com/randomiser).
+- [500 Year Diary](https://500yeardiary.com), another _Doctor Who_ podcast, where we look at the show's themes and ideas and some of the people involved in its creation.
+- [The Second Great and Bountiful Human Empire](https://thesecondgreatandbountifulhumanempire.com), a _Doctor Who_ flashcast, where we give our initial reactions to each episode of the post-2023 era of the show.
+- [Startling Barbara Bain](https://startlingbarbarabain.com), a commentary podcast on _Space: 1999_, a lavish and generally ridiculous British scifi show from the 1970s.
+- [Maximum Power](https://maximumpowerpodcast.com), a podcast about _Blakes 7_, a less lavish but more ridiculous British scifi show from the 1970s.
+- [Bondfinger](https://bondfinger.com), a James Bond commentary podcast that soon ran out of James Bond films and ended up spending its time drinking and watching terrible TV shows from the 1960s.
+- [Jodie into Terror](https://jodieintoterror.com), our original _Doctor Who_ flashcast, where we gave our initial reactions to each episode of _Doctor Who_’s Jodie Whittaker Era.
+
+## Licence
+
+This plugin is available as open source under the terms of the [ISC License](https://opensource.org/licenses/ISC).

@@ -30,6 +30,8 @@ async function calculateEpisodeDataLocally (episodeFilesDirectory) {
 }
 
 function calculatePodcastData (episodeData) {
+  if (episodeData === null) return null
+
   const episodeDataValues = Object.values(episodeData)
   const numberOfEpisodes = episodeDataValues.length
   const totalSize = episodeDataValues.map(x => x.size).reduce((x, y) => x + y, 0)
@@ -130,6 +132,8 @@ async function cacheEpisodeDataToS3Bucket (s3Client, s3Bucket, episodeData) {
 
 export default function (eleventyConfig, options = {}) {
   eleventyConfig.addGlobalData('episodeData', async () => {
+    if (process.env.SKIP_EPISODE_CALCULATIONS === 'true') return null
+
     let episodeData = []
     const cachedEpisodeDataPath = path.join(eleventyConfig.directories.input, 'cachedEpisodeData.json')
     if (options.episodeFilesDirectory && existsSync(options.episodeFilesDirectory)) {

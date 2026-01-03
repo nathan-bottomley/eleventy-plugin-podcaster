@@ -14,7 +14,7 @@ export default function (eleventyConfig, options = {}) {
   })
 
   eleventyConfig.addFilter('readableDuration', (seconds, length) => {
-    if (!seconds) return '0:00:00'
+    if (!seconds) return '0:00'
     if (length === 'long') {
       return Duration.fromMillis(seconds * 1000)
         .shiftTo('days', 'hours', 'minutes', 'seconds')

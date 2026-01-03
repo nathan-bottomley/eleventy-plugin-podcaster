@@ -2,8 +2,8 @@ import isEpisodePost from './isEpisodePost.js'
 
 function findMatchingFilename (episodeData, thisEpisode) {
   const filenameSeasonAndEpisodePattern =
-    /^.*?\b[sS](?<seasonNumber>\d+)\s*[eE](?<episodeNumber>\d+)\b.*\.(mp3|m4a)$/
-  const filenameEpisodePattern = /^.*?\b(?<episodeNumber>\d+)\b.*\.(mp3|m4a)$/
+    /\bs(?<seasonNumber>\d+)\s*e(?<episodeNumber>\d+)\b/i
+  const filenameEpisodePattern = /\b(?<episodeNumber>\d+)\b/
   const { seasonNumber, episodeNumber } = thisEpisode
 
   for (const file of Object.keys(episodeData)) {

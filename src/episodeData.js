@@ -2,7 +2,7 @@ import isEpisodePost from './isEpisodePost.js'
 
 export default function (eleventyConfig, options = {}) {
   const postFilenameSeasonAndEpisodePattern =
-    /^[sS](?<seasonNumber>\d+)[eE](?<episodeNumber>\d+)/i
+    /^s(?<seasonNumber>\d+)e(?<episodeNumber>\d+)/i
   const postFilenameEpisodePattern = /^(?:e|ep|episode-)(?<episodeNumber>\d+)/i
 
   eleventyConfig.addGlobalData('eleventyComputed.episode.seasonNumber', () => {
@@ -21,7 +21,6 @@ export default function (eleventyConfig, options = {}) {
   eleventyConfig.addGlobalData('eleventyComputed.episode.episodeNumber', () => {
     return data => {
       if (data.episode?.episodeNumber) return data.episode.episodeNumber
-
       if (!isEpisodePost(data, options)) return
 
       const seasonAndEpisodeMatch = data.page.fileSlug.match(postFilenameSeasonAndEpisodePattern)

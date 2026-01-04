@@ -1,3 +1,4 @@
+import slugify from 'slugify'
 import isEpisodePost from './isEpisodePost.js'
 
 export default function (eleventyConfig, options = {}) {
@@ -39,6 +40,13 @@ export default function (eleventyConfig, options = {}) {
   eleventyConfig.addGlobalData('eleventyComputed.permalink', () => {
     return data => {
       if (data.permalink) return data.permalink
+
+      if (data.podcast.episodePermalinkPattern) {
+        return data.podcast.episodePermalinkPattern
+          .replace('{seasonNumber}', data.episode.seasonNumber || '')
+          .replace('{episodeNumber}', data.episode.episodeNumber || '')
+          .replace('{titleSlug}', slugify(data.title, { lower: true, strict: true }) || '')
+      }
 
       if (data.episode?.seasonNumber && data.episode?.episodeNumber) {
         return `/s${data.episode.seasonNumber}/e${data.episode.episodeNumber}/`

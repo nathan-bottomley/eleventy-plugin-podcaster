@@ -64,7 +64,7 @@ test('season and episode numbers can be provided in front matter instead of the 
   t.is(item.url, '/s18/e3/')
 })
 
-test('specified permalinks can be overridden by a directory data file', async (t) => {
+test('specified permalinks can be overridden by a directory data file using front matter data', async (t) => {
   const eleventy = new Eleventy(
     './fixtures/permalinks/',
     './fixtures/permalinks/_site',
@@ -74,5 +74,27 @@ test('specified permalinks can be overridden by a directory data file', async (t
 
   const build = await eleventy.toJSON()
   const item = build.find(item => item.inputPath === './fixtures/permalinks/episode-posts/2023-11-26-episode-1-the-star-beast.md')
-  t.is(item.url, '/overridden/')
+  t.is(item.url, '/overridden/1/the-star-beast/')
+})
+
+test('an episode permalink pattern can be used to specify permalinks', async (t) => {
+  const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
+    config (eleventyConfig) {
+      eleventyConfig.addPlugin(Podcaster)
+      eleventyConfig.addGlobalData('podcast', {
+        siteUrl: 'https://example.com/',
+        episodePermalinkPattern: '/season/{seasonNumber}/episode/{episodeNumber}/{titleSlug}/'
+      })
+      eleventyConfig.addTemplate('episode-posts/2020-01-01-s1e12.md', '# Season 1, Episode 12', {
+        title: 'The Star Beast',
+        episode: { filename: 'episode-1.mp3' }
+      })
+    }
+  })
+
+  const build = await eleventy.toJSON()
+  const item = build.find(item => item.inputPath === './test/episode-posts/2020-01-01-s1e12.md')
+  console.log(JSON.stringify(item, null, 2))
+  t.is(item.url, '/season/1/episode/12/the-star-beast/')
 })

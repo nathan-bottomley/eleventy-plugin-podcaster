@@ -1,8 +1,8 @@
 import readableDuration from './readableDuration.js'
 
 export default (eleventyConfig, options = {}) => {
-  eleventyConfig.addFilter('normalizeChaptersData', (data) => {
-    const result = data.map(x => {
+  eleventyConfig.addFilter('normalizeChaptersData', (chaptersData) => {
+    const result = chaptersData.map(x => {
       if (x.startTime) {
         x.startTime = readableDuration.convertToSeconds(x.startTime) ?? x.startTime
       }

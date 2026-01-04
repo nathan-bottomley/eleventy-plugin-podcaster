@@ -79,3 +79,13 @@ test('items with chapter file have podcast:chapters tags containing URLs', (t) =
   t.is(testEpisode.withPathToChapterFile['podcast:chapters']['@_url'], 'https://500yeardiary.example.com/chapters/the-dalek-invasion-of-earth.json')
   t.is(testEpisode.withUrlToChapterFile['podcast:chapters']['@_url'], 'https://500yeardiary.example.com/chapters/the-moonbase.json')
 })
+
+test('items in chapter front matter have startTime expressed in seconds', (t) => {
+  const { build } = t.context
+  const chaptersFile = build.find(item => item.url === '/s1/e2/chapters.json')
+  const chaptersData = JSON.parse(chaptersFile.content)
+  console.log(chaptersData)
+  t.is(chaptersData.chapters[0].startTime, 0)
+  t.is(chaptersData.chapters[1].startTime, 300)
+  t.is(chaptersData.chapters[2].startTime, 600)
+})

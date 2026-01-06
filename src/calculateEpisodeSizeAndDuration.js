@@ -131,7 +131,11 @@ async function cacheEpisodeDataToS3Bucket (s3Storage, s3Bucket, episodeData) {
 }
 
 export default function (eleventyConfig, options = {}) {
+  let cachedFunctionResult
   eleventyConfig.addGlobalData('episodeData', async () => {
+    if (cachedFunctionResult) {
+      return cachedFunctionResult
+    }
     let episodeData = {}
     const cachedEpisodeDataPath = path.join(eleventyConfig.directories.input, 'cachedEpisodeData.json')
     if (options.episodeFilesDirectory &&
@@ -149,6 +153,7 @@ export default function (eleventyConfig, options = {}) {
     } else if (existsSync(cachedEpisodeDataPath)) {
       episodeData = JSON.parse(readFileSync(cachedEpisodeDataPath))
     }
+    cachedFunctionResult = episodeData
     return episodeData
   })
 

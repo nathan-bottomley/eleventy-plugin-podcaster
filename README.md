@@ -1,6 +1,5 @@
----
-title: eleventy-plugin-podcaster 🕚⚡️🎈🐀🎤📲
----
+# eleventy-plugin-podcaster 🕚⚡️🎈🐀🎤📲
+
 `eleventy-plugin-podcaster` — or **Podcaster**, as we will call it from now on — is an Eleventy plugin that helps you create a podcast and a website to accompany it. You provide **Podcaster** with information about your podcast and its episodes, and it creates a feed for you to submit to podcast directories like Apple Podcasts or Spotify. And you can use all the information you have provided to create your site, with pages for individual episodes, guests, topics, seasons or anything else at all.
 
 Plenty of services exist to host your podcast online — [Spotify][], [Acast][], [Podbean][], [Buzzsprout][], [Blubrry][]. But none of these will allow you to own and control your podcast's presence on the web, and none of them will give you the freedom to create a site that presents your podcast in a way that reflects its premise, tone and style.

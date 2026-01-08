@@ -1,0 +1,20 @@
+{
+  "episode": {
+    "chapters": [
+      { "title": "Introduction",
+        "startTime": "00:00:00",
+        "image": "/images/introduction.jpg"
+      },
+      {
+        "title": "The Power of the Daleks",
+        "startTime": "5:00",
+        "image": "https://example.com/images/daleks.jpg"
+      },
+      {
+        "title": "Conclusion",
+        "startTime": "00:10:00",
+        "image": "https://500yeardiary.example.com/images/conclusion.jpg"
+      }
+    ]
+  }
+}

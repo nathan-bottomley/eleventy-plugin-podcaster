@@ -1,13 +1,12 @@
 import * as htmlparser2 from 'htmlparser2'
 import render from 'dom-serializer'
 import markdownIt from 'markdown-it'
+import isEpisodePost from './isEpisodePost.js'
 
 export default function (eleventyConfig, options = {}) {
   eleventyConfig.addGlobalData('eleventyComputed.excerpt', () => {
-    if (!options.handleExcerpts) return
-
     return (data) => {
-      if (!data.tags?.includes('podcastEpisode')) return
+      if (!isEpisodePost(data, options)) return
 
       const md = markdownIt({
         html: true,

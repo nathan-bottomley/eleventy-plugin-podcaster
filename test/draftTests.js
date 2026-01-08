@@ -9,7 +9,7 @@ test.serial('drafts status is ignored if plugin added without handleDrafts optio
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData('podcast.episodeUrlBase', 'https://example.com/')
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com/')
       eleventyConfig.addTemplate('episode-1.md', '# Episode 1\n\n> blockquote paragraph\n\nnon-blockquote paragraph', {
         tags: ['podcastEpisode'],
         date: '2020-01-01',
@@ -18,6 +18,7 @@ test.serial('drafts status is ignored if plugin added without handleDrafts optio
         episode: { filename: 'episode-1.mp3' },
         draft: true
       })
+      eleventyConfig.setQuietMode(true)
     }
   })
   const build = await eleventy.toJSON()
@@ -32,7 +33,7 @@ test.serial('drafts are built if INCLUDE_DRAFTS is absent and ELEVENTY_RUN_MODE 
     runMode: 'watch',
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster, { handleDrafts: true })
-      eleventyConfig.addGlobalData('podcast.episodeUrlBase', 'https://example.com/')
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com/')
       eleventyConfig.addTemplate('episode-1.md', '# Episode 1\n\n> blockquote paragraph\n\nnon-blockquote paragraph', {
         tags: ['podcastEpisode'],
         date: '2020-01-01',
@@ -41,6 +42,7 @@ test.serial('drafts are built if INCLUDE_DRAFTS is absent and ELEVENTY_RUN_MODE 
         episode: { filename: 'episode-1.mp3' },
         draft: true
       })
+      eleventyConfig.setQuietMode(true)
     }
   })
   const build = await eleventy.toJSON()
@@ -55,7 +57,7 @@ test.serial('drafts are not built if INCLUDE_DRAFTS is absent and ELEVENTY_RUN_M
     runMode: 'build',
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster, { handleDrafts: true })
-      eleventyConfig.addGlobalData('podcast.episodeUrlBase', 'https://example.com/')
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com/')
       eleventyConfig.addTemplate('episode-1.md', '# Episode 1\n\n> blockquote paragraph\n\nnon-blockquote paragraph', {
         tags: ['podcastEpisode'],
         date: '2020-01-01',
@@ -64,6 +66,7 @@ test.serial('drafts are not built if INCLUDE_DRAFTS is absent and ELEVENTY_RUN_M
         episode: { filename: 'episode-1.mp3' },
         draft: true
       })
+      eleventyConfig.setQuietMode(true)
     }
   })
   const build = await eleventy.toJSON()
@@ -77,7 +80,7 @@ test.serial('drafts are not built if plugin added with handleDrafts option and I
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster, { handleDrafts: true })
-      eleventyConfig.addGlobalData('podcast.episodeUrlBase', 'https://example.com/')
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com/')
       eleventyConfig.addTemplate('episode-1.md', '# Episode 1\n\n> blockquote paragraph\n\nnon-blockquote paragraph', {
         tags: ['podcastEpisode'],
         date: '2020-01-01',
@@ -86,6 +89,7 @@ test.serial('drafts are not built if plugin added with handleDrafts option and I
         episode: { filename: 'episode-1.mp3' },
         draft: true
       })
+      eleventyConfig.setQuietMode(true)
     }
   })
   const build = await eleventy.toJSON()
@@ -99,7 +103,7 @@ test.serial('drafts are built if plugin added with handleDrafts option and INCLU
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster, { handleDrafts: true })
-      eleventyConfig.addGlobalData('podcast.episodeUrlBase', 'https://example.com/')
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com/')
       eleventyConfig.addTemplate('episode-1.md', '# Episode 1\n\n> blockquote paragraph\n\nnon-blockquote paragraph', {
         tags: ['podcastEpisode'],
         date: '2020-01-01',
@@ -108,6 +112,7 @@ test.serial('drafts are built if plugin added with handleDrafts option and INCLU
         episode: { filename: 'episode-1.mp3' },
         draft: true
       })
+      eleventyConfig.setQuietMode(true)
     }
   })
   const build = await eleventy.toJSON()

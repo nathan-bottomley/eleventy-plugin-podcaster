@@ -3,3 +3,7 @@ node_modules
 .idea
 .nova
 .DS_Store
+.env
+.github
+.github/workflows
+.zed

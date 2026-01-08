@@ -1,0 +1,9 @@
+---
+pagination:
+  data: collections.episodePostWithChapters
+  size: 1
+  alias: episodePost
+permalink: "{{ episodePost.page.url }}/chapters.json"
+---
+
+{{ episodePost.data.episode.chapters | normalizeChaptersData | safe }}

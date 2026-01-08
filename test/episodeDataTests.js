@@ -8,19 +8,15 @@ test('podcastEpisode template produces <item> tag in feed', async t => {
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData(
-        'podcast.episodeUrlBase',
-        'https://example.com/'
-      )
-      eleventyConfig.addTemplate('episode-1.md', '# Episode 1', {
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com/')
+      eleventyConfig.addTemplate('episode-posts/episode-1.md', '# Episode 1', {
         tags: ['podcastEpisode'],
         date: '2020-01-01',
         title: 'Episode 1',
         permalink: '/1/',
         episode: { filename: 'episode-1.mp3' }
       })
-      eleventyConfig.addTemplate('episode-2.md', '# Episode 2', {
-        tags: ['podcastEpisode'],
+      eleventyConfig.addTemplate('episode-posts/episode-2.md', '# Episode 2', {
         date: '2020-01-02',
         title: 'Episode 2',
         permalink: '/2/',
@@ -42,12 +38,8 @@ test('if podcast.title is provided, it is used instead of the post title', async
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData(
-        'podcast.episodeUrlBase',
-        'https://example.com/'
-      )
-      eleventyConfig.addTemplate('episode-1.md', '# Episode 1', {
-        tags: ['podcastEpisode'],
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com/')
+      eleventyConfig.addTemplate('episode-posts/episode-1.md', '# Episode 1', {
         date: '2020-01-01',
         title: 'Episode 1',
         permalink: '/1/',
@@ -72,12 +64,8 @@ test('itunes:title tag is omitted if episode.itunesTitle is absent', async t => 
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData(
-        'podcast.episodeUrlBase',
-        'https://example.com/'
-      )
-      eleventyConfig.addTemplate('episode-1.md', '# Episode 1', {
-        tags: ['podcastEpisode'],
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com/')
+      eleventyConfig.addTemplate('episode-posts/episode-1.md', '# Episode 1', {
         date: '2020-01-01',
         title: 'Episode 1',
         permalink: '/1/',
@@ -97,12 +85,8 @@ test('itunes:title tag exists if episode.itunesTitle is provided', async t => {
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData(
-        'podcast.episodeUrlBase',
-        'https://example.com/'
-      )
-      eleventyConfig.addTemplate('episode-1.md', '# Episode 1', {
-        tags: ['podcastEpisode'],
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com/')
+      eleventyConfig.addTemplate('episode-posts/episode-1.md', '# Episode 1', {
         date: '2020-01-01',
         title: 'Episode 1',
         permalink: '/1/',
@@ -127,20 +111,8 @@ test('site.url is used if podcast.siteUrl is absent', async t => {
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData(
-        'podcast.episodeUrlBase',
-        'https://example.com/'
-      )
-      eleventyConfig.addGlobalData(
-        'site.url',
-        'https://example.com/'
-      )
-      eleventyConfig.addGlobalData(
-        'podcast.imagePath',
-        '/img/podcast-logo.jpg'
-      )
-      eleventyConfig.addTemplate('episode-1.md', '[Episode 1](/episode-1.mp3)', {
-        tags: ['podcastEpisode'],
+      eleventyConfig.addGlobalData('site.url', 'https://example.com/')
+      eleventyConfig.addTemplate('episode-posts/episode-1.md', '[Episode 1](/episode-1.mp3)', {
         date: '2020-01-01',
         title: 'Episode 1',
         permalink: '/1/',
@@ -162,16 +134,8 @@ test("if guid isn't provided, it defaults to the URL", async t => {
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData(
-        'site.url',
-        'https://example.com/'
-      )
-      eleventyConfig.addGlobalData(
-        'podcast.episodeUrlBase',
-        'https://example.com/'
-      )
-      eleventyConfig.addTemplate('episode-1.md', '{{ episode.url }}', {
-        tags: ['podcastEpisode'],
+      eleventyConfig.addGlobalData('site.url', 'https://example.com/')
+      eleventyConfig.addTemplate('episode-posts/episode-1.md', '{{ episode.url }}', {
         date: '2020-01-01',
         title: 'Episode 1',
         permalink: '/1/',
@@ -189,16 +153,8 @@ test('if guid is provided, it is used and isPermaLink is false', async t => {
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData(
-        'site.url',
-        'https://example.com/'
-      )
-      eleventyConfig.addGlobalData(
-        'podcast.episodeUrlBase',
-        'https://example.com/'
-      )
-      eleventyConfig.addTemplate('episode-1.md', '{{ episode.url }}', {
-        tags: ['podcastEpisode'],
+      eleventyConfig.addGlobalData('site.url', 'https://example.com/')
+      eleventyConfig.addTemplate('episode-posts/episode-1.md', '{{ episode.url }}', {
         date: '2020-01-01',
         title: 'Episode 1',
         permalink: '/1/',
@@ -219,18 +175,14 @@ test("pubDate is the date of the posts' publication'", async t => {
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData(
-        'podcast.episodeUrlBase',
-        'https://example.com/'
-      )
-      eleventyConfig.addTemplate('episode-1.md', '# Episode 1', {
-        tags: ['podcastEpisode'],
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com/')
+      eleventyConfig.addTemplate('episode-posts/episode-1.md', '# Episode 1', {
         date: '2020-01-01',
         title: 'Episode 1',
         permalink: '/1/',
         episode: { filename: 'episode-1.mp3' }
       })
-      eleventyConfig.addTemplate('episode-2.md', '# Episode 2', {
+      eleventyConfig.addTemplate('episode-posts/episode-2.md', '# Episode 2', {
         tags: ['podcastEpisode'],
         date: '2020-01-02',
         title: 'Episode 2',
@@ -253,12 +205,8 @@ test("if description is provided, it is used as the feed's description and itune
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData(
-        'podcast.episodeUrlBase',
-        'https://example.com/'
-      )
-      eleventyConfig.addTemplate('episode-1.md', "This is the post's content", {
-        tags: ['podcastEpisode'],
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com/')
+      eleventyConfig.addTemplate('episode-posts/episode-1.md', "This is the post's content", {
         date: '2020-01-01',
         title: 'Episode 1',
         permalink: '/1/',
@@ -279,12 +227,8 @@ test("if podcast.description isn't provided, the feed's description and itunes:s
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData(
-        'podcast.episodeUrlBase',
-        'https://example.com/'
-      )
-      eleventyConfig.addTemplate('episode-1.md', "This **is** the post's _content_", {
-        tags: ['podcastEpisode'],
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com/')
+      eleventyConfig.addTemplate('episode-posts/episode-1.md', "This **is** the post's _content_", {
         date: '2020-01-01',
         title: 'Episode 1',
         permalink: '/1/',
@@ -305,11 +249,8 @@ test('An ampersand in the episode content ends up encoded as &amp; in the descri
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData(
-        'podcast.episodeUrlBase',
-        'https://example.com/'
-      )
-      eleventyConfig.addTemplate('episode-1.md', 'A game of Bat’leths & BiHnuchs takes a surprising turn', {
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com/')
+      eleventyConfig.addTemplate('episode-posts/episode-1.md', 'A game of Bat’leths & BiHnuchs takes a surprising turn', {
         tags: ['podcastEpisode'],
         date: '2020-01-01',
         title: 'Episode 1',
@@ -333,16 +274,8 @@ test('a local link in podcast episode content is converted to an absolute URL', 
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData(
-        'podcast.episodeUrlBase',
-        'https://example.com/'
-      )
-      eleventyConfig.addGlobalData(
-        'podcast.siteUrl',
-        'https://example.com/'
-      )
-      eleventyConfig.addTemplate('episode-1.md', '[Episode 1](/episode-1.mp3)', {
-        tags: ['podcastEpisode'],
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com/')
+      eleventyConfig.addTemplate('episode-posts/episode-1.md', '[Episode 1](/episode-1.mp3)', {
         date: '2020-01-01',
         title: 'Episode 1',
         permalink: '/1/',
@@ -362,12 +295,8 @@ test('size and duration are included in the feed if explicitly specified', async
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData(
-        'podcast.episodeUrlBase',
-        'https://example.com/'
-      )
-      eleventyConfig.addTemplate('episode-1.md', '# Episode 1', {
-        tags: ['podcastEpisode'],
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com/')
+      eleventyConfig.addTemplate('episode-posts/episode-1.md', '# Episode 1', {
         date: '2020-01-01',
         title: 'Episode 1',
         permalink: '/1/',
@@ -377,8 +306,7 @@ test('size and duration are included in the feed if explicitly specified', async
           duration: 1947.481
         }
       })
-      eleventyConfig.addTemplate('episode-2.md', '# Episode 2', {
-        tags: ['podcastEpisode'],
+      eleventyConfig.addTemplate('episode-posts/episode-2.md', '# Episode 2', {
         date: '2020-01-02',
         title: 'Episode 2',
         permalink: '/2/',
@@ -394,7 +322,7 @@ test('size and duration are included in the feed if explicitly specified', async
   const parser = new XMLParser({ ignoreAttributes: false })
   const item = build.find(item => item.url === '/feed/podcast.xml')
   const feedData = parser.parse(item.content)
-  t.like(feedData.rss.channel.item, [{ enclosure: { '@_length': '28683178' }, 'itunes:duration': '0:26:27' }, { enclosure: { '@_length': '32004399' }, 'itunes:duration': '0:32:27' }])
+  t.like(feedData.rss.channel.item, [{ enclosure: { '@_length': '28683178' }, 'itunes:duration': '26:27' }, { enclosure: { '@_length': '32004399' }, 'itunes:duration': '32:27' }])
 })
 
 // episode.filename
@@ -404,12 +332,8 @@ test('episode.url consists of the episode prefix plus the episode filename', asy
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData(
-        'podcast.episodeUrlBase',
-        'https://example.com/'
-      )
-      eleventyConfig.addTemplate('episode-1.md', '{{ episode.url }}', {
-        tags: ['podcastEpisode'],
+      eleventyConfig.addGlobalData('podcast.episodeUrlBase', 'https://cdn.example.com/')
+      eleventyConfig.addTemplate('episode-posts/episode-1.md', '{{ episode.url }}', {
         date: '2020-01-01',
         title: 'Episode 1',
         permalink: '/1/',
@@ -419,7 +343,7 @@ test('episode.url consists of the episode prefix plus the episode filename', asy
   })
   const build = await eleventy.toJSON()
   const item = build.find(item => item.url === '/1/')
-  t.true(item.content.includes('https://example.com/episode-1.mp3'))
+  t.true(item.content.includes('https://cdn.example.com/episode-1.mp3'))
 })
 
 test('episode.url is percent encoded', async t => {
@@ -427,12 +351,8 @@ test('episode.url is percent encoded', async t => {
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData(
-        'podcast.episodeUrlBase',
-        'https://example.com/'
-      )
-      eleventyConfig.addTemplate('episode-1.md', '{{ episode.url }}', {
-        tags: ['podcastEpisode'],
+      eleventyConfig.addGlobalData('podcast.episodeUrlBase', 'https://cdn.example.com/')
+      eleventyConfig.addTemplate('episode-posts/episode-1.md', '{{ episode.url }}', {
         date: '2020-01-01',
         title: 'Episode 1',
         permalink: '/1/',
@@ -442,7 +362,7 @@ test('episode.url is percent encoded', async t => {
   })
   const build = await eleventy.toJSON()
   const item = build.find(item => item.url === '/1/')
-  t.true(item.content.includes('https://example.com/episode%201.mp3'), item.content)
+  t.true(item.content.includes('https://cdn.example.com/episode%201.mp3'), item.content)
 })
 
 // episode episodeNumber and seasonNumber
@@ -457,12 +377,8 @@ test('episode number and season number appear in the correct place in the feed',
         seasonNumber: 2
       }
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData(
-        'podcast.episodeUrlBase',
-        'https://example.com'
-      )
-      eleventyConfig.addTemplate('episode-1.md', '{{ episode.url }}', {
-        tags: ['podcastEpisode'],
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com')
+      eleventyConfig.addTemplate('episode-posts/episode-1.md', '{{ episode.url }}', {
         date: '2020-01-01',
         title: 'Episode 1',
         permalink: '/1/',
@@ -485,12 +401,8 @@ test('episode.image is omitted from the feed if not specified', async t => {
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData(
-        'podcast.episodeUrlBase',
-        'https://example.com/'
-      )
-      eleventyConfig.addTemplate('episode-1.md', '[Episode 1](/episode-1.mp3)', {
-        tags: ['podcastEpisode'],
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com/')
+      eleventyConfig.addTemplate('episode-posts/episode-1.md', '[Episode 1](/episode-1.mp3)', {
         date: '2020-01-01',
         title: 'Episode 1',
         permalink: '/1/',
@@ -510,16 +422,8 @@ test('episode.image works when just a path is provided', async t => {
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData(
-        'podcast.siteUrl',
-        'https://example.com'
-      )
-      eleventyConfig.addGlobalData(
-        'podcast.episodeUrlBase',
-        'https://example.com'
-      )
-      eleventyConfig.addTemplate('episode-1.md', '{{ episode.url }}', {
-        tags: ['podcastEpisode'],
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com')
+      eleventyConfig.addTemplate('episode-posts/episode-1.md', '{{ episode.url }}', {
         date: '2020-01-01',
         title: 'Episode 1',
         permalink: '/1/',
@@ -540,16 +444,8 @@ test('episode.image works when a full URL is provided', async t => {
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData(
-        'podcast.siteUrl',
-        'https://example.com'
-      )
-      eleventyConfig.addGlobalData(
-        'podcast.episodeUrlBase',
-        'https://example.com'
-      )
-      eleventyConfig.addTemplate('episode-1.md', '{{ episode.url }}', {
-        tags: ['podcastEpisode'],
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com')
+      eleventyConfig.addTemplate('episode-posts/episode-1.md', '{{ episode.url }}', {
         date: '2020-01-01',
         title: 'Episode 1',
         permalink: '/1/',
@@ -572,12 +468,8 @@ test('episode.explicit is omitted from the feed if not specified', async t => {
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData(
-        'podcast.episodeUrlBase',
-        'https://example.com/'
-      )
-      eleventyConfig.addTemplate('episode-1.md', '[Episode 1](/episode-1.mp3)', {
-        tags: ['podcastEpisode'],
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com/')
+      eleventyConfig.addTemplate('episode-posts/episode-1.md', '[Episode 1](/episode-1.mp3)', {
         date: '2020-01-01',
         title: 'Episode 1',
         permalink: '/1/',
@@ -597,9 +489,8 @@ test('episode.explicit is set to true if the value is true', async t => {
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData('podcast.episodeUrlBase', 'https://example.com/')
-      eleventyConfig.addTemplate('episode-1.md', '[Episode 1](/episode-1.mp3)', {
-        tags: ['podcastEpisode'],
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com/')
+      eleventyConfig.addTemplate('episode-posts/episode-1.md', '[Episode 1](/episode-1.mp3)', {
         date: '2020-01-01',
         title: 'Episode 1',
         permalink: '/1/',
@@ -619,9 +510,8 @@ test('episode.explicit is set to false if the value is false', async t => {
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData('podcast.episodeUrlBase', 'https://example.com/')
-      eleventyConfig.addTemplate('episode-1.md', '[Episode 1](/episode-1.mp3)', {
-        tags: ['podcastEpisode'],
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com/')
+      eleventyConfig.addTemplate('episode-posts/episode-1.md', '[Episode 1](/episode-1.mp3)', {
         date: '2020-01-01',
         title: 'Episode 1',
         permalink: '/1/',
@@ -643,12 +533,8 @@ test('episode.type is omitted from the feed if not specified', async t => {
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData(
-        'podcast.episodeUrlBase',
-        'https://example.com/'
-      )
-      eleventyConfig.addTemplate('episode-1.md', '[Episode 1](/episode-1.mp3)', {
-        tags: ['podcastEpisode'],
+      eleventyConfig.addGlobalData('podcast.episodeUrlBase', 'https://example.com/')
+      eleventyConfig.addTemplate('episode-posts/episode-1.md', '[Episode 1](/episode-1.mp3)', {
         date: '2020-01-01',
         title: 'Episode 1',
         permalink: '/1/',
@@ -668,12 +554,8 @@ test('episode.type can be successfully set', async t => {
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData(
-        'podcast.episodeUrlBase',
-        'https://example.com/'
-      )
-      eleventyConfig.addTemplate('episode-1.md', '[Episode 1](/episode-1.mp3)', {
-        tags: ['podcastEpisode'],
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com/')
+      eleventyConfig.addTemplate('episode-posts/episode-1.md', '[Episode 1](/episode-1.mp3)', {
         date: '2020-01-01',
         title: 'Episode 1',
         permalink: '/1/',
@@ -695,12 +577,8 @@ test('episode.transcript is omitted from the feed if not specified', async t => 
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData(
-        'podcast.episodeUrlBase',
-        'https://example.com/'
-      )
-      eleventyConfig.addTemplate('episode-1.md', '[Episode 1](/episode-1.mp3)', {
-        tags: ['podcastEpisode'],
+      eleventyConfig.addGlobalData('podcast.episodeUrlBase', 'https://example.com/')
+      eleventyConfig.addTemplate('episode-posts/episode-1.md', '[Episode 1](/episode-1.mp3)', {
         date: '2020-01-01',
         title: 'Episode 1',
         permalink: '/1/',
@@ -720,16 +598,8 @@ test('episode.transcript works when just a path is provided', async t => {
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData(
-        'podcast.siteUrl',
-        'https://example.com'
-      )
-      eleventyConfig.addGlobalData(
-        'podcast.episodeUrlBase',
-        'https://example.com'
-      )
-      eleventyConfig.addTemplate('episode-1.md', '{{ episode.url }}', {
-        tags: ['podcastEpisode'],
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com')
+      eleventyConfig.addTemplate('episode-posts/episode-1.md', '{{ episode.url }}', {
         date: '2020-01-01',
         title: 'Episode 1',
         permalink: '/1/',
@@ -750,16 +620,8 @@ test('episode.transcript works when a full URL is provided', async t => {
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData(
-        'podcast.siteUrl',
-        'https://example.com'
-      )
-      eleventyConfig.addGlobalData(
-        'podcast.episodeUrlBase',
-        'https://example.com'
-      )
-      eleventyConfig.addTemplate('episode-1.md', '{{ episode.url }}', {
-        tags: ['podcastEpisode'],
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com')
+      eleventyConfig.addTemplate('episode-posts/episode-1.md', '{{ episode.url }}', {
         date: '2020-01-01',
         title: 'Episode 1',
         permalink: '/1/',
@@ -782,12 +644,8 @@ test('episode.block is omitted from the feed if not specified', async t => {
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData(
-        'podcast.episodeUrlBase',
-        'https://example.com/'
-      )
-      eleventyConfig.addTemplate('episode-1.md', '[Episode 1](/episode-1.mp3)', {
-        tags: ['podcastEpisode'],
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com/')
+      eleventyConfig.addTemplate('episode-posts/episode-1.md', '[Episode 1](/episode-1.mp3)', {
         date: '2020-01-01',
         title: 'Episode 1',
         permalink: '/1/',
@@ -807,9 +665,8 @@ test('episode.block is set to Yes if the value is true', async t => {
     configPath: null,
     config (eleventyConfig) {
       eleventyConfig.addPlugin(Podcaster)
-      eleventyConfig.addGlobalData('podcast.episodeUrlBase', 'https://example.com/')
-      eleventyConfig.addTemplate('episode-1.md', '[Episode 1](/episode-1.mp3)', {
-        tags: ['podcastEpisode'],
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com/')
+      eleventyConfig.addTemplate('episode-posts/episode-1.md', '[Episode 1](/episode-1.mp3)', {
         date: '2020-01-01',
         title: 'Episode 1',
         permalink: '/1/',

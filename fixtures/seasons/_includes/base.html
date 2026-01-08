@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+  <h1>{{ title }}</h1>
+  {{ content }}
+  <p>Season {{ episode.seasonNumber }}, Episode {{ episode.episodeNumber }}</p>
+  <p>Date: {{ page.date | readableDate }}</p>
+  <p>Size: {{ episode.size | readableSize }}</p>
+  <p>URL: {{ episode.url }}</p>
+  <p>Filename: {{ episode.filename }}</p>
+  <p>Duration: {{ episode.duration | readableDuration }}</p>
+</body>
+</html>

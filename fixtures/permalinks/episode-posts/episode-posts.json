@@ -1,0 +1,3 @@
+{
+  "permalink": "/overridden/{{ episode.episodeNumber }}/{{ title | slugify }}/"
+}

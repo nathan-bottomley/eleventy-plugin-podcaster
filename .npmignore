@@ -8,3 +8,7 @@ fixtures
 .editorconfig
 .markdownlint.jsonc
 eslint.config.js
+.prettierrc
+ava.config.js
+eslint.config.js
+.env

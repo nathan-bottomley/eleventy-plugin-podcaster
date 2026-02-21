@@ -1,5 +1,3 @@
-import { DateTime } from 'luxon'
-
 export default function (eleventyConfig) {
   eleventyConfig.addGlobalData('eleventyComputed.podcast.feedPath', () => {
     return data => data.podcast.feedPath || '/feed/podcast.xml'
@@ -23,7 +21,7 @@ export default function (eleventyConfig) {
   })
 
   function constructCopyrightNotice (data) {
-    const thisYear = DateTime.now().year
+    const thisYear = new Date().getFullYear()
     let yearRange
     if (!data.podcast.startingYear || data.podcast.startingYear === thisYear) {
       yearRange = thisYear
@@ -40,5 +38,5 @@ export default function (eleventyConfig) {
   eleventyConfig.addGlobalData('eleventyComputed.copyrightNotice', () => {
     return constructCopyrightNotice
   })
-  eleventyConfig.addGlobalData('podcast.feedLastBuildDate', DateTime.now().toRFC2822())
+  eleventyConfig.addGlobalData('podcast.feedLastBuildDate', new Date().toUTCString().replace('GMT', '+0000'))
 }

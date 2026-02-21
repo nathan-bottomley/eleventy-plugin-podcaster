@@ -1,10 +1,29 @@
-import { Duration } from 'luxon'
+function pluralise (value, unit) {
+  return `${value} ${unit}${value === 1 ? '' : 's'}`
+}
+
+function toComponents (seconds) {
+  return {
+    d: Math.floor(seconds / 86400),
+    h: Math.floor((seconds % 86400) / 3600),
+    m: Math.floor((seconds % 3600) / 60),
+    s: Math.round((seconds % 60) * 1000) / 1000
+  }
+}
 
 export default {
-  convertFromSeconds (seconds) {
-    return Duration.fromMillis(seconds * 1000)
-      .shiftTo('days', 'hours', 'minutes', 'seconds')
-      .toHuman()
+  longFormat (seconds) {
+    const { d, h, m, s } = toComponents(seconds)
+    return [pluralise(d, 'day'), pluralise(h, 'hour'), pluralise(m, 'minute'), pluralise(s, 'second')].join(', ')
+  },
+  shortFormat (seconds) {
+    const h = Math.floor(seconds / 3600)
+    const m = Math.floor((seconds % 3600) / 60)
+    const s = Math.floor(seconds % 60)
+    if (h === 0) {
+      return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
+    }
+    return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
   },
   convertToSeconds (duration) {
     const durationPattern = /^(?:(?<hours>\d+):)?(?<minutes>\d{1,2}):(?<seconds>\d{2}(?:\.\d+)?)$/

@@ -1,4 +1,3 @@
-import { DateTime } from 'luxon'
 import readableDuration from './readableDuration.js'
 import path from 'node:path'
 import { existsSync, readFileSync } from 'node:fs'
@@ -96,7 +95,7 @@ async function getCachedEpisodeDataFromS3Bucket (s3Storage, s3Bucket) {
 async function calculateEpisodeDataFromS3Bucket (s3Storage, s3Bucket) {
   const cachedEpisodeData = await getCachedEpisodeDataFromS3Bucket(s3Storage, s3Bucket)
   const cachedEpisodeDataLastModifiedDate = (cachedEpisodeData.lastModified)
-    ? DateTime.fromISO(cachedEpisodeData.lastModified)
+    ? new Date(cachedEpisodeData.lastModified)
     : null
 
   console.log(`Reading episode data from S3 bucket ${s3Bucket}`)
@@ -111,7 +110,7 @@ async function calculateEpisodeDataFromS3Bucket (s3Storage, s3Bucket) {
         !('size' in result[filename]) ||
         !('duration' in result[filename]) ||
         !cachedEpisodeDataLastModifiedDate ||
-        cachedEpisodeDataLastModifiedDate < DateTime.fromISO(lastModified)) {
+        cachedEpisodeDataLastModifiedDate < new Date(lastModified)) {
       const { buffer } = await getObjectFromS3Bucket(s3Storage, s3Bucket, filename)
       const metadata = await parseBufferMetadata(buffer, null, { duration: true })
       const duration = metadata.format.duration

@@ -11,6 +11,7 @@ eleventyAllowMissingExtension: true
   xmlns:content="http://purl.org/rss/1.0/modules/content/"
   xmlns:podcast="https://podcastindex.org/namespace/1.0">
   <channel>
+    {% if script %}<script src="{{ script }}" xmlns="http://www.w3.org/1999/xhtml"></script>{% endif %}
     <title>{{ podcast.title }}</title>
     <link>{{ siteUrl }}</link>
     <atom:link href="{{ permalink | htmlBaseUrl(siteUrl) }}" rel="self" type="application/rss+xml" />

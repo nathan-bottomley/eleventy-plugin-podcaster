@@ -13,7 +13,8 @@ export default function (eleventyConfig, options = {}) {
     eleventyExcludeFromCollections: true,
     eleventyImport: {
       collections: ['episodePost']
-    }
+    },
+    script: options?.rssFeedScript
   })
 
   const chaptersPath = path.join(import.meta.dirname, './chapters.njk')

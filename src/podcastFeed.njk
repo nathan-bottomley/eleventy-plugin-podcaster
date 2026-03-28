@@ -5,6 +5,7 @@ eleventyAllowMissingExtension: true
 ---
 {%- set siteUrl %}{{ podcast.siteUrl or site.url }}{% endset -%}
 <?xml version="1.0" encoding="utf-8"?>
+{% if stylesheet %}<?xml-stylesheet type="text/xsl" href="{{ stylesheet }}" ?>{% endif %}
 <rss version="2.0"
   xmlns:atom="http://www.w3.org/2005/Atom"
   xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd"

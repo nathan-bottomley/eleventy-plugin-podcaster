@@ -3,7 +3,13 @@ import Eleventy from '@11ty/eleventy'
 import Podcaster from 'eleventy-plugin-podcaster'
 import { XMLParser } from 'fast-xml-parser'
 
-test("not providing options.rssFeedScript doesn't create <script> tag in feed", async t => {
+const parserOptions = {
+  ignoreAttributes: false,
+  allowBooleanAttributes: true,
+  preserveOrder: true
+}
+
+test("not providing options.feedStylesheet doesn't create xml-stylesheet PI in feed", async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
@@ -25,17 +31,17 @@ test("not providing options.rssFeedScript doesn't create <script> tag in feed", 
     }
   })
   const build = await eleventy.toJSON()
-  const parser = new XMLParser()
+  const parser = new XMLParser(parserOptions)
   const item = build.find(item => item.url === '/feed/podcast.xml')
-  const feedData = parser.parse(item.content)
-  t.is(feedData.rss.channel.script, undefined)
+  const result = parser.parse(item.content)
+  t.false(result.some(item => '?xml-stylesheet' in item))
 })
 
-test('providing options.rssFeedScript creates <script> tag in feed', async t => {
+test('providing options.feedStylesheet creates xml-stylesheet PI in feed', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
-      eleventyConfig.addPlugin(Podcaster, { rssFeedScript: '/js/feedScript.js' })
+      eleventyConfig.addPlugin(Podcaster, { feedStylesheet: '/xsl/feedStylesheet.xsl' })
       eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com/')
       eleventyConfig.addTemplate('episode-posts/episode-1.md', '# Episode 1', {
         tags: ['podcastEpisode'],
@@ -53,9 +59,10 @@ test('providing options.rssFeedScript creates <script> tag in feed', async t => 
     }
   })
   const build = await eleventy.toJSON()
-  const parser = new XMLParser({ ignoreAttributes: false })
+  const parser = new XMLParser(parserOptions)
   const item = build.find(item => item.url === '/feed/podcast.xml')
-  const feedData = parser.parse(item.content)
-  t.is(feedData.rss.channel.script['@_src'], '/js/feedScript.js')
-  t.is(feedData.rss.channel.script['@_xmlns'], 'http://www.w3.org/1999/xhtml')
+  const result = parser.parse(item.content)
+  const pi = result.find(item => '?xml-stylesheet' in item)
+  t.is(pi[':@']['@_href'], '/xsl/feedStylesheet.xsl')
+  t.is(pi[':@']['@_type'], 'text/xsl')
 })

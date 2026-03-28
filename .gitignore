@@ -7,3 +7,5 @@ node_modules
 .github
 .github/workflows
 .zed
+CLAUDE.md
+TODO.md

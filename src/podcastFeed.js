@@ -5,7 +5,7 @@ import isEpisodePost from './isEpisodePost.js'
 
 export default function (eleventyConfig, options = {}) {
   if (!('addTemplate' in eleventyConfig)) {
-    console.error('[eleventy-plugin-podcasting] Eleventy plugin compatibility: Virtual Templates are required for this plugin — please use Eleventy v3.0 or newer.')
+    console.error('[podcaster] Eleventy plugin compatibility: Virtual Templates are required for this plugin — please use Eleventy v3.0 or newer.')
   }
 
   const podcastFeedPath = path.join(import.meta.dirname, './podcastFeed.njk')

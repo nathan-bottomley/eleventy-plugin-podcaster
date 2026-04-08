@@ -95,6 +95,5 @@ test('an episode permalink pattern can be used to specify permalinks', async (t)
 
   const build = await eleventy.toJSON()
   const item = build.find(item => item.inputPath === './test/episode-posts/2020-01-01-s1e12.md')
-  console.log(JSON.stringify(item, null, 2))
   t.is(item.url, '/season/1/episode/12/the-star-beast/')
 })

@@ -29,8 +29,10 @@ eleventyAllowMissingExtension: true
     {%- else %}
     <itunes:category text="{{ podcast.category }}" />
     {%- endif %}
-    {% if podcast.explicit !== undefined %}
-    <itunes:explicit>{{ podcast.explicit }}</itunes:explicit>
+    {% if podcast.explicit == true %}
+    <itunes:explicit>true</itunes:explicit>
+    {% else %}
+    <itunes:explicit>false</itunes:explicit>
     {% endif -%}
     <itunes:author>{{ podcast.author }}</itunes:author>
     {%- if podcast.type %}

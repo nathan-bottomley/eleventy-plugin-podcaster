@@ -226,7 +226,7 @@ test('<itunes:category> works if no subcategory is set', async t => {
 
 // explicit
 
-test('<itunes:explicit> defaults to not existing', async t => {
+test('<itunes:explicit> defaults to false', async t => {
   const eleventy = new Eleventy('./test', './test/_site', {
     configPath: null,
     config (eleventyConfig) {
@@ -237,7 +237,7 @@ test('<itunes:explicit> defaults to not existing', async t => {
   const build = await eleventy.toJSON()
   const parser = new XMLParser()
   const feedData = parser.parse(build[0].content)
-  t.false('itunes:explicit' in feedData.rss.channel)
+  t.false(feedData.rss.channel['itunes:explicit'])
 })
 
 test('<itunes:explicit> can be set to true', async t => {

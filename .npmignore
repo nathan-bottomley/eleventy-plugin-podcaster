@@ -12,3 +12,7 @@ eslint.config.js
 ava.config.js
 eslint.config.js
 .env
+.claude
+CLAUDE.md
+TODO.md
+jsconfig.json

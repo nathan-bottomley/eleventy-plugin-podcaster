@@ -1,4 +1,3 @@
-import hr from '@tsmx/human-readable'
 import readableDuration from './readableDuration.js'
 
 export default function (eleventyConfig, options = {}) {
@@ -21,7 +20,9 @@ export default function (eleventyConfig, options = {}) {
     return readableDuration.shortFormat(seconds)
   })
 
-  eleventyConfig.addFilter('readableSize', (bytes, fixedPrecision = 1) =>
-    hr.fromBytes(bytes, { fixedPrecision })
-  )
+  eleventyConfig.addFilter('readableSize', (bytes, fixedPrecision = 1) => {
+    if (bytes < 1000 * 1000) return `${(bytes / 1000).toFixed(fixedPrecision)} kB`
+    if (bytes < 1000 * 1000 * 1000) return `${(bytes / 1000 / 1000).toFixed(fixedPrecision)} MB`
+    return `${(bytes / 1000 / 1000 / 1000).toFixed(fixedPrecision)} GB`
+  })
 }

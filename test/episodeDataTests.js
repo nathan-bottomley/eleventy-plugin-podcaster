@@ -218,8 +218,8 @@ test("if description is provided, it is used as the feed's description and itune
   const item = build.find(item => item.url === '/feed/podcast.xml')
   const parser = new XMLParser()
   const feedData = parser.parse(item.content)
-  t.is(feedData.rss.channel.item.description, "This is the post's description")
-  t.is(feedData.rss.channel.item['itunes:summary'], "This is the post's description")
+  t.is(feedData.rss.channel.item.description, 'This is the post&#39;s description')
+  t.is(feedData.rss.channel.item['itunes:summary'], 'This is the post&#39;s description')
 })
 
 test("if podcast.description isn't provided, the feed's description and itunes:summary will be like the start of the content, only without html", async t => {

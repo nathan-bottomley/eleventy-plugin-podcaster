@@ -33,7 +33,7 @@
     "dom-serializer": "^2.0.0",
     "htmlparser2": "^9.1.0",
     "markdown-it": "^14.1.0",
-    "music-metadata": "^11.7.1"
+    "music-metadata": "^11.12.3"
   },
   "devDependencies": {
     "@11ty/eleventy": "^3.0.0",

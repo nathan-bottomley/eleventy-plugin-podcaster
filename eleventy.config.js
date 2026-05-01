@@ -8,6 +8,7 @@ import calculateEpisodeFilename from './src/calculateEpisodeFilename.js'
 import validation from './src/validation.js'
 import readableFilters from './src/readableFilters.js'
 import chapters from './src/chapters.js'
+import transcriptMimeTypes from './src/transcriptMimeTypes.js'
 import excerpts from './src/excerpts.js'
 import drafts from './src/drafts.js'
 import pageTitle from './src/pageTitle.js'
@@ -29,6 +30,8 @@ export default function (eleventyConfig, options = {}) {
 
   eleventyConfig.addPlugin(readableFilters, options)
   eleventyConfig.addPlugin(chapters, options)
+
+  eleventyConfig.addPlugin(transcriptMimeTypes)
 
   // Optional features
 

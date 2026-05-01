@@ -107,7 +107,7 @@ eleventyAllowMissingExtension: true
       <itunes:episodeType>{{ post.data.episode.type }}</itunes:episodeType>
       {% endif -%}
       {%- if post.data.episode.transcript %}
-      <podcast:transcript url="{{ post.data.episode.transcript | htmlBaseUrl(siteUrl) }}"></podcast:transcript>
+      <podcast:transcript url="{{ post.data.episode.transcript | htmlBaseUrl(siteUrl) }}" type="{{ post.data.episode.transcript | transcriptMimeType }}"></podcast:transcript>
       {%- endif %}
       {%- if post.data.episode.block === true %}
       <itunes:block>Yes</itunes:block>

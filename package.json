@@ -30,6 +30,7 @@
   "dependencies": {
     "@11ty/eleventy-plugin-rss": "^3.0.0",
     "@aws-sdk/client-s3": "^3.862.0",
+    "@sindresorhus/slugify": "^3.0.0",
     "dom-serializer": "^2.0.0",
     "htmlparser2": "^9.1.0",
     "markdown-it": "^14.1.0",

@@ -1,4 +1,4 @@
-import slugify from 'slugify'
+import slugify from '@sindresorhus/slugify'
 import isEpisodePost from './isEpisodePost.js'
 
 export default function (eleventyConfig, options = {}) {

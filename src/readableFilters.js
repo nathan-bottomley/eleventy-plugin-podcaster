@@ -21,6 +21,8 @@ export default function (eleventyConfig, options = {}) {
   })
 
   eleventyConfig.addFilter('readableSize', (bytes, fixedPrecision = 1) => {
+    if (isNaN(bytes)) return 'NaN kB'
+    if (bytes === 0) return '0 kB'
     if (bytes < 1000 * 1000) return `${(bytes / 1000).toFixed(fixedPrecision)} kB`
     if (bytes < 1000 * 1000 * 1000) return `${(bytes / 1000 / 1000).toFixed(fixedPrecision)} MB`
     return `${(bytes / 1000 / 1000 / 1000).toFixed(fixedPrecision)} GB`

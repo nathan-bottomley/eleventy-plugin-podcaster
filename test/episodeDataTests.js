@@ -195,7 +195,7 @@ test("pubDate is the date of the posts' publication'", async t => {
   const parser = new XMLParser()
   const item = build.find(item => item.url === '/feed/podcast.xml')
   const feedData = parser.parse(item.content)
-  t.like(feedData.rss.channel.item, [{ pubDate: '2020-01-02T00:00:00Z' }, { pubDate: '2020-01-01T00:00:00Z' }])
+  t.like(feedData.rss.channel.item, [{ pubDate: 'Thu, 02 Jan 2020 00:00:00 +0000' }, { pubDate: 'Wed, 01 Jan 2020 00:00:00 +0000' }])
 })
 
 // description

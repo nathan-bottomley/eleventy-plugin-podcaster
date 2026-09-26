@@ -93,9 +93,9 @@ test('episodes in feed have dates', (t) => {
   const parser = new XMLParser()
   const feedData = parser.parse(feed.content)
   const episodes = feedData.rss.channel.item
-  t.is(episodes[0].pubDate, '2023-12-11T00:00:00Z')
-  t.is(episodes[1].pubDate, '2023-12-04T00:00:00Z')
-  t.is(episodes[2].pubDate, '2023-11-26T00:00:00Z')
+  t.is(episodes[0].pubDate, 'Mon, 11 Dec 2023 00:00:00 +0000')
+  t.is(episodes[1].pubDate, 'Mon, 04 Dec 2023 00:00:00 +0000')
+  t.is(episodes[2].pubDate, 'Sun, 26 Nov 2023 00:00:00 +0000')
 })
 
 test('episodes in feed have episode urls', (t) => {

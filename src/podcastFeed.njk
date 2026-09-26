@@ -19,7 +19,7 @@ eleventyAllowMissingExtension: true
     <description>{{ podcast.description }}</description>
     <language>{{ podcast.language }}</language>
     <copyright>{{ podcast.copyrightNotice }}</copyright>
-    <pubDate>{{ collections.episodePost | getNewestCollectionItemDate | dateToRfc3339 }}</pubDate>
+    <pubDate>{{ collections.episodePost | getNewestCollectionItemDate | dateToRfc822('UTC') }}</pubDate>
     <lastBuildDate>{{ podcast.feedLastBuildDate }}</lastBuildDate>
     <itunes:image href="{{ podcast.imagePath | htmlBaseUrl(siteUrl) }}"></itunes:image>
     {%- if podcast.subcategory %}
@@ -63,7 +63,7 @@ eleventyAllowMissingExtension: true
       {% else %}
       <guid isPermaLink="true">{{ post.url | htmlBaseUrl(siteUrl) }}</guid>
       {% endif -%}
-      <pubDate>{{ post.date | dateToRfc3339 }}</pubDate>
+      <pubDate>{{ post.date | dateToRfc822('UTC') }}</pubDate>
       {%- if post.data.episode.chapters is string %}
       <podcast:chapters url="{{ post.data.episode.chapters | htmlBaseUrl(siteUrl) }}"
         type="application/json+chapters" />

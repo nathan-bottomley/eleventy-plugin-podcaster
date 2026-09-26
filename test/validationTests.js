@@ -1,6 +1,7 @@
 import test from 'ava'
 import Eleventy from '@11ty/eleventy'
 import Podcaster from 'eleventy-plugin-podcaster'
+import { withSuppressedStderr } from './testHelpers.js'
 
 async function withCapturedWarnings (fn) {
   const warnings = []
@@ -10,16 +11,6 @@ async function withCapturedWarnings (fn) {
     return { result: await fn(), warnings }
   } finally {
     console.warn = warn
-  }
-}
-
-async function withSuppressedStderr (fn) {
-  const write = process.stderr.write.bind(process.stderr)
-  process.stderr.write = () => true
-  try {
-    return await fn()
-  } finally {
-    process.stderr.write = write
   }
 }
 

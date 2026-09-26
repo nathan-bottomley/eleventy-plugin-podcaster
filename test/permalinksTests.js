@@ -1,6 +1,7 @@
 import test from 'ava'
 import Eleventy from '@11ty/eleventy'
 import Podcaster from 'eleventy-plugin-podcaster'
+import { withSuppressedStderr } from './testHelpers.js'
 
 test('if specified in the filename, the permalink of an episode will be its number', async (t) => {
   const eleventy = new Eleventy('./test', './test/_site', {
@@ -75,6 +76,43 @@ test('specified permalinks can be overridden by a directory data file using fron
   const build = await eleventy.toJSON()
   const item = build.find(item => item.inputPath === './fixtures/permalinks/episode-posts/2023-11-26-episode-1-the-star-beast.md')
   t.is(item.url, '/overridden/1/the-star-beast/')
+})
+
+test('an explicit permalink: false in front matter is respected for a non-episode page', async (t) => {
+  const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
+    config (eleventyConfig) {
+      eleventyConfig.addPlugin(Podcaster)
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com/')
+      eleventyConfig.addTemplate('draft-page.md', '# Draft', {
+        title: 'Draft',
+        permalink: false
+      })
+    }
+  })
+
+  const build = await eleventy.toJSON()
+  const item = build.find(item => item.inputPath === './test/draft-page.md')
+  t.is(item.url, false)
+})
+
+test.serial('permalink: false is not permitted on an episode post', async (t) => {
+  const eleventy = new Eleventy('./test', './test/_site', {
+    configPath: null,
+    config (eleventyConfig) {
+      eleventyConfig.addPlugin(Podcaster)
+      eleventyConfig.addGlobalData('podcast.siteUrl', 'https://example.com/')
+      eleventyConfig.addTemplate('episode-posts/2020-01-01-ep12.md', '# Episode 12', {
+        title: 'Episode 12',
+        permalink: false,
+        episode: { filename: 'episode-1.mp3' }
+      })
+    }
+  })
+
+  const error = await withSuppressedStderr(() => t.throwsAsync(() => eleventy.toJSON()))
+  const expectedError = 'Episode posts cannot have `permalink: false`'
+  t.true(error.originalError.message.includes(expectedError), error.originalError.message)
 })
 
 test('an episode permalink pattern can be used to specify permalinks', async (t) => {

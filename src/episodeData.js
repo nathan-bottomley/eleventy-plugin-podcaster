@@ -39,7 +39,11 @@ export default function (eleventyConfig, options = {}) {
 
   eleventyConfig.addGlobalData('eleventyComputed.permalink', () => {
     return data => {
-      if (data.permalink) return data.permalink
+      if (data.permalink === false && isEpisodePost(data, options)) {
+        throw new Error(`[eleventy-plugin-podcaster] Episode posts cannot have \`permalink: false\`. See ${data.page.inputPath}.`)
+      }
+
+      if (data.permalink || data.permalink === false) return data.permalink
 
       if (data.podcast.episodePermalinkPattern) {
         return data.podcast.episodePermalinkPattern

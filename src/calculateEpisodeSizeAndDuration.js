@@ -147,7 +147,7 @@ export default function (eleventyConfig, options = {}) {
       const s3Storage = getS3Storage(options)
       const s3Bucket = options.s3Storage.bucket
       episodeData = await calculateEpisodeDataFromS3Bucket(s3Storage, s3Bucket)
-      cacheEpisodeDataToS3Bucket(s3Storage, s3Bucket, episodeData)
+      await cacheEpisodeDataToS3Bucket(s3Storage, s3Bucket, episodeData)
       await writeFile(cachedEpisodeDataPath, JSON.stringify(episodeData, null, 2))
     } else if (existsSync(cachedEpisodeDataPath)) {
       episodeData = JSON.parse(readFileSync(cachedEpisodeDataPath))

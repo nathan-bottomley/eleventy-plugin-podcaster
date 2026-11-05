@@ -91,7 +91,7 @@ eleventyAllowMissingExtension: true
       {%- set episodeContent = post.content -%}
       {% endif %}
       <content:encoded><![CDATA[{{ episodeContent | renderTransforms(post.data.page, siteUrl) | safe | trim }}]]></content:encoded>
-      <enclosure url="{{ post.data.episode.url }}" length="{{ post.data.episode.size }}" type="audio/mp3"></enclosure>
+      <enclosure url="{{ post.data.episode.url }}" length="{{ post.data.episode.size }}" type="{{ post.data.episode.filename | episodeMimeType }}"></enclosure>
       <itunes:duration>{{ post.data.episode.duration | readableDuration }}</itunes:duration>
       <itunes:episode>{{ post.data.episode.episodeNumber }}</itunes:episode>
       {% if post.data.episode.seasonNumber -%}

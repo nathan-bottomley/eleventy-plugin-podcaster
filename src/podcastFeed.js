@@ -9,7 +9,7 @@ export default function (eleventyConfig, options = {}) {
   }
 
   const podcastFeedPath = path.join(import.meta.dirname, './podcastFeed.njk')
-  eleventyConfig.addTemplate('feed.njk', readFileSync(podcastFeedPath), {
+  eleventyConfig.addTemplate('feed.njk', readFileSync(podcastFeedPath, 'utf8'), {
     eleventyExcludeFromCollections: true,
     eleventyImport: {
       collections: ['episodePost']
@@ -19,7 +19,7 @@ export default function (eleventyConfig, options = {}) {
   })
 
   const chaptersPath = path.join(import.meta.dirname, './chapters.njk')
-  eleventyConfig.addTemplate('chapters.njk', readFileSync(chaptersPath), {
+  eleventyConfig.addTemplate('chapters.njk', readFileSync(chaptersPath, 'utf8'), {
     eleventyExcludeFromCollections: true,
     eleventyImport: {
       collections: ['episodePostWithChapters']

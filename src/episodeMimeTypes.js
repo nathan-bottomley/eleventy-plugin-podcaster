@@ -4,7 +4,7 @@ export default function (eleventyConfig) {
       mp3: 'audio/mpeg',
       m4a: 'audio/x-m4a'
     }
-    const extension = filename.split('.').pop()
+    const extension = filename?.split('.').pop()
     return mimeTypes[extension] || 'audio/mpeg'
   })
 }
